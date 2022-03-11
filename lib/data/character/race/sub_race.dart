@@ -1,16 +1,34 @@
+import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/spell/spell.dart';
+
+import '../../characteristics/resist.dart';
+import '../../skill/skill.dart';
 import 'race.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
 
 class SubRace{
 
-  String _name;
-  Race _race;
-  List<String> _abilityScoreImprovement;
-  Set<SkillCheck> _skills;
-  Set<String> _languages;
-  bool _protected;
+  late String _name;
+  late String _description;
+  late String vision;
+  late List<String> _abilityScoreImprovement;
+  late Set<SkillCheck> _skillChecks;
+  late Set<Spell> _spells;
+  late Set<Skill> _skills;
+  late Set<Proficiency> _proficiencies;
+  late Resist resist;
+  late Set<String> _languages;
+  late bool _protected;
 
-  SubRace(this._name, this._race, this._abilityScoreImprovement, this._skills, this._languages, this._protected);
+  SubRace(this._name, this._race, this._abilityScoreImprovement, this._skillChecks, this._languages, this._protected);
+
+  SubRace.copyFrom(SubRace object, this._race){
+    _name = object._name;
+    _abilityScoreImprovement.addAll(object._abilityScoreImprovement);
+    _skillChecks.addAll(object._skillChecks);
+    _languages.addAll(object._languages);
+    _protected = false;
+  }
 
   bool get protected => _protected;
 
@@ -26,11 +44,11 @@ class SubRace{
     _languages.remove(value);
   }
 
-  Set<SkillCheck> get skills => _skills;
+  Set<SkillCheck> get skills => _skillChecks;
 
   addSkills(SkillCheck value) {
     if (_protected) throw Exception("Denied access to protected data.");
-    _skills.add(value);
+    _skillChecks.add(value);
   }
 
   List<String> get abilityScoreImprovement => _abilityScoreImprovement;

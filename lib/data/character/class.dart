@@ -1,3 +1,4 @@
+import '../characteristics/resist.dart';
 import '../dice/dice.dart';
 import 'level.dart';
 
@@ -11,6 +12,7 @@ class Class{
   List<Level> _levels;
   Set<Class> subClasses = {};
   bool _protected;
+  Resist resist;
 
   static List<Class> classes = [];
   static Set<String> recentlyUsedClassPointsNames = {};

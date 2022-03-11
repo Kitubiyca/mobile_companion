@@ -1,27 +1,44 @@
 class Item{
 
-  String _name;
-  String _description;
-  int _weight;
-  int _cost;
-  Set<String> _notes;
-  bool _protected;
+  late String _name;
+  late String _description;
+  late int _weight;
+  late int _cost;
+  late Set<String> _notes;
+  late bool _protected;
 
   static List<Item> _items = [];
 
-  Item(this._name, this._description, this._weight, this._cost, this._notes,
-      this._protected){_items.add(this);}
+  Item(this._name, this._description, this._weight, this._cost, this._notes, this._protected);
 
-  Item.extendedConstructor(this._name, this._description, this._weight, this._cost, this._notes,
-      this._protected);
+  Item.withAdd(this._name, this._description, this._weight, this._cost, this._notes, this._protected){_items.add(this);}
+
+  Item.copyFrom(Item object){
+    _name = object.name;
+    _description = object.description;
+    _weight = object.weight;
+    _cost = object.cost;
+    _notes.addAll(object.notes);
+    _protected = false;
+  }
 
   bool get protected => _protected;
 
   Set<String> get notes => _notes;
 
-  addNotes(String value) {
+  addNote(String value) {
     if (_protected) throw Exception("Denied access to protected data.");
     _notes.add(value);
+  }
+
+  addNotes(Set<String> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _notes.addAll(value);
+  }
+
+  removeNote(String value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _notes.remove(value);
   }
 
   removeNotes(Set<String> value) {
@@ -56,4 +73,25 @@ class Item{
     if (_protected) throw Exception("Denied access to protected data.");
     _name = value;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Item &&
+          runtimeType == other.runtimeType &&
+          _name == other._name &&
+          _description == other._description &&
+          _weight == other._weight &&
+          _cost == other._cost &&
+          _notes == other._notes &&
+          _protected == other._protected;
+
+  @override
+  int get hashCode =>
+      _name.hashCode ^
+      _description.hashCode ^
+      _weight.hashCode ^
+      _cost.hashCode ^
+      _notes.hashCode ^
+      _protected.hashCode;
 }

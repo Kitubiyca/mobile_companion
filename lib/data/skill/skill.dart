@@ -7,7 +7,8 @@ class Skill{
   int _range;
   Set<String> _notes;
   List<String> _usedClassPoints;
-  static List<ActiveSkill> skills = [];
   bool _protected;
+
+  static List<ActiveSkill> skills = [];
 
 }

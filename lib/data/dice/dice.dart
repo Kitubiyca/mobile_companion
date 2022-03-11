@@ -39,4 +39,16 @@ class Dice{
   int get max => _max;
 
   String get name => _name;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Dice &&
+          runtimeType == other.runtimeType &&
+          _count == other._count &&
+          _name == other._name &&
+          _max == other._max;
+
+  @override
+  int get hashCode => _count.hashCode ^ _name.hashCode ^ _max.hashCode;
 }

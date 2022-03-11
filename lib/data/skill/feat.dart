@@ -1,22 +1,36 @@
-class Proficiency{
+class Feat{
 
   late String _name;
   late String _description;
+  late Map<String, int> _benefits;
   late bool _protected;
 
-  static List<Proficiency> proficiencies = [];
+  static List<Feat> feats = [];
 
-  Proficiency(this._name, this._description, this._protected);
+  Feat(this._name, this._description, this._benefits, this._protected);
 
-  Proficiency.withAdd(this._name, this._description, this._protected) {proficiencies.add(this);}
+  Feat.withAdd(this._name, this._description, this._benefits, this._protected){feats.add(this);}
 
-  Proficiency.copyFrom(Proficiency object){
+  Feat.copyFrom(Feat object){
     _name = object.name;
     _description = object.description;
+    _benefits.addAll(object.benefits);
     _protected = false;
   }
 
   bool get protected => _protected;
+
+  set protected(bool value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _protected = value;
+  }
+
+  Map<String, int> get benefits => _benefits;
+
+  set benefits(Map<String, int> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _benefits = value;
+  }
 
   String get description => _description;
 
@@ -35,14 +49,17 @@ class Proficiency{
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Proficiency &&
+      other is Feat &&
           runtimeType == other.runtimeType &&
           _name == other._name &&
           _description == other._description &&
+          _benefits == other._benefits &&
           _protected == other._protected;
 
   @override
   int get hashCode =>
-      _name.hashCode ^ _description.hashCode ^ _protected.hashCode;
-
+      _name.hashCode ^
+      _description.hashCode ^
+      _benefits.hashCode ^
+      _protected.hashCode;
 }
