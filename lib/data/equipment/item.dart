@@ -7,11 +7,7 @@ class Item{
   late Set<String> _notes;
   late bool _protected;
 
-  static List<Item> _items = [];
-
   Item(this._name, this._description, this._weight, this._cost, this._notes, this._protected);
-
-  Item.withAdd(this._name, this._description, this._weight, this._cost, this._notes, this._protected){_items.add(this);}
 
   Item.copyFrom(Item object){
     _name = object.name;

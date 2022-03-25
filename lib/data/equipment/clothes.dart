@@ -1,10 +1,12 @@
-import '../characteristics/resist.dart';
+import 'package:dnd_companion/data/characteristics/resist.dart';
 import 'item.dart';
 
 class Clothes extends Item{
 
   late String _type;
   late int _AC;
+  late String _ACModifier;
+  late bool _noise;
   late int _requirement;
   late Resist _resist;
 

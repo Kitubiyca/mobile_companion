@@ -1,8 +1,7 @@
+import 'package:dnd_companion/data/characteristics/resist.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
-import '../../characteristics/resist.dart';
-import '../../skill/skill.dart';
 import 'sub_race.dart';
 
 
@@ -11,13 +10,14 @@ class Race{
   late String _name;
   late String _description;
   late String _vision;
-  late List<String> _abilityScoreImprovement;
+  late Map<String, int> _abilityScoreImprovement;
   late int _speed;
   late Set<SkillCheck> _skillChecks;
   late Set<Spell> _spells;
-  late Set<Skill> _skills;
   late Set<Proficiency> _proficiencies;
-  late Resist resist;
+  late Resist _resist;
+  late int _additionalHits;
+  late Map<int, Set<Spell>> _additionalSpells;
   late Set<String> _languages;
   late bool _usable;
   late bool _protected;
@@ -33,9 +33,10 @@ class Race{
       this._speed,
       this._skillChecks,
       this._spells,
-      this._skills,
       this._proficiencies,
-      this.resist,
+      this._resist,
+      this._additionalHits,
+      this._additionalSpells,
       this._languages,
       this._usable,
       this._protected,
@@ -49,39 +50,56 @@ class Race{
       this._speed,
       this._skillChecks,
       this._spells,
-      this._skills,
       this._proficiencies,
-      this.resist,
+      this._resist,
+      this._additionalHits,
+      this._additionalSpells,
       this._languages,
       this._usable,
       this._protected,
-      this._subRaces)
-      {races.add(this);}
+      this._subRaces){races.add(this);}
 
   Race.copyFrom(Race object){
-    _name = object._name;
-    _description = object._description;
-    _vision = object._vision;
-    _abilityScoreImprovement.addAll(object._abilityScoreImprovement);
-    _speed = object._speed;
-    _skillChecks.addAll(object._skillChecks);
-    _spells.addAll(object._spells);
-    _skills.addAll(object._skills);
-    _proficiencies.addAll(object._proficiencies);
-    resist = object.resist;
-    _languages.addAll(object._languages);
-    _usable = object._usable;
+    _name = object.name;
+    _description = object.description;
+    _vision = object.vision;
+    _abilityScoreImprovement.addAll(object.abilityScoreImprovement);
+    _speed = object.speed;
+    for(int i = 0; i < object.skillChecks.length; i++){
+      _skillChecks.add(SkillCheck.copyFrom(object.skillChecks.elementAt(i)));
+    }
+    for(int i = 0; i < object.spells.length; i++){
+      _spells.add(Spell.copyFrom(object.spells.elementAt(i)));
+    }
+    for(int i = 0; i < object.proficiencies.length; i++){
+      _proficiencies.add(Proficiency.copyFrom(object.proficiencies.elementAt(i)));
+    }
+    _resist = Resist.copyFrom(object.resist);
+    _additionalHits = object.additionalHits;
+    for(int i = 0; i < object.additionalSpells.length; i++){
+      _additionalSpells[object.additionalSpells.keys.elementAt(i)] = <Spell>{};
+      for(int k = 0; k < object.additionalSpells[object.additionalSpells.keys.elementAt(i)]!.length; k++){
+        _additionalSpells[object.additionalSpells.keys.elementAt(i)]!.add(Spell.copyFrom(object.additionalSpells.values.elementAt(i).elementAt(k)));
+      }
+    }
+    _languages.addAll(object.languages);
+    _usable = object.usable;
     _protected = false;
-    for(int i = 0; i < object._subRaces.length; i++){
-      _subRaces.add(SubRace.copyFrom(object._subRaces[i], this));
+    for(int i = 0; i < object.subRaces.length; i++){
+      _subRaces.add(SubRace.copyFrom(object.subRaces.elementAt(i)));
     }
   }
 
-  void addSubRace(String subRaceName){
-    _subRaces.add(SubRace(subRaceName, this, abilityScoreImprovement, skills, languages, protected));
+  void copySubRace(int index){
+    _subRaces.add(SubRace.copyFrom(_subRaces.elementAt(index)));
   }
 
-  void add
+  List<SubRace> get subRaces => _subRaces;
+
+  set subRaces(List<SubRace> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _subRaces = value;
+  }
 
   bool get protected => _protected;
 
@@ -99,9 +117,44 @@ class Race{
     _languages = value;
   }
 
-  Set<SkillCheck> get skills => _skillChecks;
+  Map<int, Set<Spell>> get additionalSpells => _additionalSpells;
 
-  set skills(Set<SkillCheck> value) {
+  set additionalSpells(Map<int, Set<Spell>> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _additionalSpells = value;
+  }
+
+  int get additionalHits => _additionalHits;
+
+  set additionalHits(int value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _additionalHits = value;
+  }
+
+  Resist get resist => _resist;
+
+  set resist(Resist value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _resist = value;
+  }
+
+  Set<Proficiency> get proficiencies => _proficiencies;
+
+  set proficiencies(Set<Proficiency> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _proficiencies = value;
+  }
+
+  Set<Spell> get spells => _spells;
+
+  set spells(Set<Spell> value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _spells = value;
+  }
+
+  Set<SkillCheck> get skillChecks => _skillChecks;
+
+  set skillChecks(Set<SkillCheck> value) {
     if (_protected) throw Exception("Denied access to protected data.");
     _skillChecks = value;
   }
@@ -113,11 +166,25 @@ class Race{
     _speed = value;
   }
 
-  List<String> get abilityScoreImprovement => _abilityScoreImprovement;
+  Map<String, int> get abilityScoreImprovement => _abilityScoreImprovement;
 
-  set abilityScoreImprovement(List<String> value) {
+  set abilityScoreImprovement(Map<String, int> value) {
     if (_protected) throw Exception("Denied access to protected data.");
     _abilityScoreImprovement = value;
+  }
+
+  String get vision => _vision;
+
+  set vision(String value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _vision = value;
+  }
+
+  String get description => _description;
+
+  set description(String value) {
+    if (_protected) throw Exception("Denied access to protected data.");
+    _description = value;
   }
 
   String get name => _name;
@@ -127,29 +194,42 @@ class Race{
     _name = value;
   }
 
-  List<SubRace> get subRaces => _subRaces;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Race &&
+          runtimeType == other.runtimeType &&
+          _name == other._name &&
+          _description == other._description &&
+          _vision == other._vision &&
+          _abilityScoreImprovement == other._abilityScoreImprovement &&
+          _speed == other._speed &&
+          _skillChecks == other._skillChecks &&
+          _spells == other._spells &&
+          _proficiencies == other._proficiencies &&
+          _resist == other._resist &&
+          _additionalHits == other._additionalHits &&
+          _additionalSpells == other._additionalSpells &&
+          _languages == other._languages &&
+          _usable == other._usable &&
+          _protected == other._protected &&
+          _subRaces == other._subRaces;
 
-  Set<Proficiency> get proficiencies => _proficiencies;
-
-  Set<Spell> get spells => _spells;
-
-  Set<SkillCheck> get skillChecks => _skillChecks;
-
-  String get vision => _vision;
-
-  String get description => _description;
-
-  set protected(bool value) {
-    _protected = value;
-  }
-
-  set vision(String value) {
-    if (_protected) throw Exception("Denied access to protected data.");
-    _vision = value;
-  }
-
-  set description(String value) {
-    if (_protected) throw Exception("Denied access to protected data.");
-    _description = value;
-  }
+  @override
+  int get hashCode =>
+      _name.hashCode ^
+      _description.hashCode ^
+      _vision.hashCode ^
+      _abilityScoreImprovement.hashCode ^
+      _speed.hashCode ^
+      _skillChecks.hashCode ^
+      _spells.hashCode ^
+      _proficiencies.hashCode ^
+      _resist.hashCode ^
+      _additionalHits.hashCode ^
+      _additionalSpells.hashCode ^
+      _languages.hashCode ^
+      _usable.hashCode ^
+      _protected.hashCode ^
+      _subRaces.hashCode;
 }

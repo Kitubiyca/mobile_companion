@@ -22,22 +22,22 @@ class _MainMenuState extends State<MainMenu> {
             Container(
               height: 60,
             ),
-            _menuButton("characters", "somePath"),
+            _menuButton(context, "Персонажи", "/"),
             Container(
               height: 60,
             ),
-            _menuButton("npcs", "somePath"),
+            _menuButton(context, "Залинания", "/spells"),
             Container(
               height: 60,
             ),
-            _menuButton("spells", "somePath"),
+            _menuButton(context, "Предметы", "/items"),
           ],
         ),
       ),
     );
   }
 
-  Widget _menuButton(String name, String path) {
+  Widget _menuButton(BuildContext context, String name, String path) {
     return SizedBox(
         height: 100,
         width: 300,
@@ -45,7 +45,7 @@ class _MainMenuState extends State<MainMenu> {
           color: Colors.blue,
           child: InkWell(
             splashColor: Colors.blueAccent,
-            onTap: () => null,
+            onTap: () => {Navigator.pushNamed(context, path)},
             child: Center(child: Text(name)),
           ),
         ));

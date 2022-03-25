@@ -1,5 +1,4 @@
 class DamageType {
-
   bool _bludgeoning = false; //Дробящий
   bool _sound = false; //Звук
   bool _radiant = false; //Излучение
@@ -14,7 +13,118 @@ class DamageType {
   bool _electric = false; //Электрический
   bool _poison = false; //Яд
 
-  DamageType(this._bludgeoning,
+  bool isEmpty() {
+    return !(_bludgeoning ||
+        _sound ||
+        _radiant ||
+        _acid ||
+        _piercing ||
+        _necrotic ||
+        _fire ||
+        _psychic ||
+        _slashing ||
+        _force ||
+        _cold ||
+        _electric ||
+        _poison);
+  }
+
+  String getTypes() {
+    String ret = "";
+    bool first = true;
+    if (_bludgeoning) {
+      ret += "дробящий";
+      first = false;
+    }
+    if (_sound) {
+      if (first)
+        ret += "звуковой";
+      else
+        ret += ", звуковой";
+      first = false;
+    }
+    if (_radiant) {
+      if (first)
+        ret += "излучающий";
+      else
+        ret += ", излучающий";
+      first = false;
+    }
+    if (_acid) {
+      if (first)
+        ret += "кислотный";
+      else
+        ret += ", кислотный";
+      first = false;
+    }
+    if (_piercing) {
+      if (first)
+        ret += "колющий";
+      else
+        ret += ", колющий";
+      first = false;
+    }
+    if (_necrotic) {
+      if (first)
+        ret += "некротический";
+      else
+        ret += ", некротический";
+      first = false;
+    }
+    if (_fire) {
+      if (first)
+        ret += "огненный";
+      else
+        ret += ", огненный";
+      first = false;
+    }
+    if (_psychic) {
+      if (first)
+        ret += "психический";
+      else
+        ret += ", психический";
+      first = false;
+    }
+    if (_slashing) {
+      if (first)
+        ret += "рубящий";
+      else
+        ret += ", рубящий";
+      first = false;
+    }
+    if (_force) {
+      if (first)
+        ret += "силовой";
+      else
+        ret += ", силовой";
+      first = false;
+    }
+    if (_cold) {
+      if (first)
+        ret += "холодный";
+      else
+        ret += ", холодный";
+      first = false;
+    }
+    if (_electric) {
+      if (first)
+        ret += "электрический";
+      else
+        ret += ", электрический";
+      first = false;
+    }
+    if (_poison) {
+      if (first)
+        ret += "отравляющий";
+      else
+        ret += ", отравляющий";
+      first = false;
+    }
+    return ret;
+  }
+
+  DamageType(
+      this._bludgeoning,
       this._sound,
       this._radiant,
       this._acid,
@@ -28,9 +138,37 @@ class DamageType {
       this._electric,
       this._poison);
 
+  DamageType.smart(
+      {bludgeoning = false,
+      sound = false,
+      radiant = false,
+      acid = false,
+      piercing = false,
+      necrotic = false,
+      fire = false,
+      psychic = false,
+      slashing = false,
+      force = false,
+      cold = false,
+      electric = false,
+      poison = false})
+      : _bludgeoning = bludgeoning,
+        _sound = sound,
+        _radiant = radiant,
+        _acid = acid,
+        _piercing = piercing,
+        _necrotic = necrotic,
+        _fire = fire,
+        _psychic = psychic,
+        _slashing = slashing,
+        _force = force,
+        _cold = cold,
+        _electric = electric,
+        _poison = poison;
+
   DamageType.empty();
 
-  DamageType.copyFrom(DamageType object){
+  DamageType.copyFrom(DamageType object) {
     _bludgeoning = object.bludgeoning;
     _sound = object.sound;
     _radiant = object.radiant;
@@ -41,7 +179,7 @@ class DamageType {
     _psychic = object.psychic;
     _slashing = object.slashing;
     _force = object.force;
-    _cold = object.cold;
+    _cold = object.frost;
     _electric = object.electric;
     _poison = object.poison;
   }
@@ -106,9 +244,9 @@ class DamageType {
     _force = value;
   }
 
-  bool get cold => _cold;
+  bool get frost => _cold;
 
-  set cold(bool value) {
+  set frost(bool value) {
     _cold = value;
   }
 

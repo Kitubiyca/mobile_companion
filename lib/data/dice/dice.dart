@@ -11,6 +11,11 @@ class Dice{
   Dice(this._count, this._max){
     if(_count<1) throw Exception("Incorrect input data: expected at least 1 roll at count.");
     _name = _count.toString() + "D" + _max.toString();
+  }
+
+  Dice.withAdd(this._count, this._max){
+    if(_count<1) throw Exception("Incorrect input data: expected at least 1 roll at count.");
+    _name = _count.toString() + "D" + _max.toString();
     Dice.dices.add(this);
   }
 

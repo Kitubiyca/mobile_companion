@@ -1,12 +1,12 @@
 import 'package:dnd_companion/data/character/race/race.dart';
-import '../skill/skill_check.dart';
-import 'class.dart';
+import 'package:dnd_companion/data/skill/skill_check.dart';
+import 'class/class.dart';
 
 class Character{
 
   static List<Character> characters = [];
 
-  String _name;
+  /*String _name;
   Map<Class, int> _class;
   String _background;
   String _playerName;
@@ -33,6 +33,6 @@ class Character{
   int _inspiration;
   int _proficiencyBonus;
 
-  Set<SkillCheck> _skillChecks;
+  Set<SkillCheck> _skillChecks;*/
 
 }
