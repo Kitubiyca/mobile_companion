@@ -2,19 +2,16 @@ import 'package:dnd_companion/data/equipment/item.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
 
-class Background{
-
-  late String _name;
-  late String _description;
-  late String _skillName;
-  late String _skill;
-  late Set<SkillCheck> _skillChecks;
-  late Set<Proficiency> _proficiencies;
-  late Set<Item> _items;
-  late Set<String> _languages;
-  late bool _protected;
-
-  static List<Background> backgrounds = [];
+class Background {
+  String _name;
+  String _description;
+  String _skillName;
+  String _skill;
+  Set<SkillCheck> _skillChecks;
+  Set<Proficiency> _proficiencies;
+  Set<Item> _items;
+  Set<String> _languages;
+  bool _protected;
 
   Background(
       this._name,
@@ -23,22 +20,31 @@ class Background{
       this._skill,
       this._skillChecks,
       this._proficiencies,
-      this._languages,
       this._items,
+      this._languages,
       this._protected);
 
-  Background.withAdd(
-      this._name,
-      this._description,
-      this._skillName,
-      this._skill,
-      this._skillChecks,
-      this._proficiencies,
-      this._languages,
-      this._items,
-      this._protected){backgrounds.add(this);}
+  Background.smart(
+      {String name = "Example name",
+      String description = "Example description",
+      String skillName = "Example skill",
+      String skill = "Skill description",
+      Set<SkillCheck>? skillChecks,
+      Set<Proficiency>? proficiencies,
+      Set<Item>? items,
+      Set<String>? languages,
+      bool protected = false})
+      : _name = name,
+        _description = description,
+        _skillName = skillName,
+        _skill = skill,
+        _skillChecks = skillChecks ?? {},
+        _proficiencies = proficiencies ?? {},
+        _items = items ?? {},
+        _languages = languages ?? {},
+        _protected = protected;
 
-  Background.copyFrom(Background object){
+  /*Background.copyFrom(Background object){
     _name = object.name;
     _description = object.description;
     _skillName = object.skillName;
@@ -54,7 +60,7 @@ class Background{
     }
     _languages.addAll(object.languages);
     _protected = false;
-  }
+  }*/
 
   bool get protected => _protected;
 
@@ -67,12 +73,12 @@ class Background{
 
   void addItems(Set<Item> value) {
     if (_protected) throw Exception("Denied access to protected data.");
-    for(int i = 0; i < value.length; i++){
+    for (int i = 0; i < value.length; i++) {
       items.add(Item.copyFrom(value.elementAt(i)));
     }
   }
 
-  void removeItem(Item value){
+  void removeItem(Item value) {
     _items.remove(value);
   }
 
@@ -83,7 +89,7 @@ class Background{
     _languages.addAll(value);
   }
 
-  void removeLanguage(String value){
+  void removeLanguage(String value) {
     _languages.remove(value);
   }
 
@@ -91,12 +97,12 @@ class Background{
 
   void addProficiencies(Set<Proficiency> value) {
     if (_protected) throw Exception("Denied access to protected data.");
-    for(int i = 0; i < value.length; i++){
+    for (int i = 0; i < value.length; i++) {
       _proficiencies.add(Proficiency.copyFrom(value.elementAt(i)));
     }
   }
 
-  void removeProficiencies(Proficiency value){
+  void removeProficiencies(Proficiency value) {
     _proficiencies.remove(value);
   }
 
@@ -104,12 +110,12 @@ class Background{
 
   void addSkillChecks(Set<SkillCheck> value) {
     if (_protected) throw Exception("Denied access to protected data.");
-    for(int i = 0; i < value.length; i++){
+    for (int i = 0; i < value.length; i++) {
       _skillChecks.add(SkillCheck.copyFrom(value.elementAt(i)));
     }
   }
 
-  void removeSkillChecks(SkillCheck value){
+  void removeSkillChecks(SkillCheck value) {
     _skillChecks.remove(value);
   }
 
@@ -152,8 +158,8 @@ class Background{
           _skill == other._skill &&
           _skillChecks == other._skillChecks &&
           _proficiencies == other._proficiencies &&
-          _languages == other._languages &&
           _items == other._items &&
+          _languages == other._languages &&
           _protected == other._protected;
 
   @override
@@ -164,8 +170,7 @@ class Background{
       _skill.hashCode ^
       _skillChecks.hashCode ^
       _proficiencies.hashCode ^
-      _languages.hashCode ^
       _items.hashCode ^
+      _languages.hashCode ^
       _protected.hashCode;
-
 }

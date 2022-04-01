@@ -1,4 +1,4 @@
-class Resist{
+class Resist {
 
   int _bludgeoning = 0; //Дробящий
   int _sound = 0; //Звук
@@ -12,7 +12,7 @@ class Resist{
   int _force = 0; //Силовой
   int _cold = 0; //Холод
   int _electric = 0; //Электрический
-  int _poison = 0;
+  int _poison = 0; //Яд
 
   Resist(
       this._bludgeoning,
@@ -27,11 +27,39 @@ class Resist{
       this._force,
       this._cold,
       this._electric,
-      this._poison); //Яд
+      this._poison);
 
   Resist.empty(); // 0-neutral 1-resist 2-immune -1-vulnerable
 
-  Resist.copyFrom(Resist object){
+  Resist.smart(
+      {int bludgeoning = 0,
+      int sound = 0,
+      int radiant = 0,
+      int acid = 0,
+      int piercing = 0,
+      int necrotic = 0,
+      int fire = 0,
+      int psychic = 0,
+      int slashing = 0,
+      int force = 0,
+      int cold = 0,
+      int electric = 0,
+      int poison = 0})
+      : _bludgeoning = bludgeoning,
+        _sound = sound,
+        _radiant = radiant,
+        _acid = acid,
+        _piercing = piercing,
+        _necrotic = necrotic,
+        _fire = fire,
+        _psychic = psychic,
+        _slashing = slashing,
+        _force = force,
+        _cold = cold,
+        _electric = electric,
+        _poison = poison;
+
+  Resist.copyFrom(Resist object) {
     _bludgeoning = object.bludgeoning;
     _sound = object.sound;
     _radiant = object.radiant;
@@ -159,5 +187,4 @@ class Resist{
       _cold.hashCode ^
       _electric.hashCode ^
       _poison.hashCode;
-
 }

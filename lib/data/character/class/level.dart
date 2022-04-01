@@ -3,27 +3,26 @@ import 'package:dnd_companion/data/skill/skill.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
 
 class Level {
+  int _abilityScorePoints;
+  Map<String, int> _abilityScoreImprovement;
+  Map<String, int> _maxAbilityScoreImprovement;
 
-  late int _abilityScorePoints;
-  late Map<String, int> _abilityScoreImprovement;
-  late Map<String, int> _maxAbilityScoreImprovement;
+  Set<Skill> _skills;
+  Set<Spell> _spells;
+  Set<Spell> _cantrips;
 
-  late Set<Skill> _skills;
-  late Set<Spell> _spells;
-  late Set<Spell> _cantrips;
+  int _skillCount;
+  int _cantripsOnLevel;
+  Map<int, int> _spellsOnLevel;
+  Map<int, int> _generalSpellsOnLevel;
 
-  late int _skillCount;
-  late int _cantripsOnLevel;
-  late Map<int, int> _spellsOnLevel;
-  late Map<int, int> _generalSpellsOnLevel;
+  //late Dice? _martialArts;
+  //late Dice? _sneakAttack;
+  //late int? _unarmoredMovement;
+  //late int? _rageDamage;
+  //late int? _invocations;
 
-  late Dice? _martialArts;
-  late Dice? _sneakAttack;
-  late int? _unarmoredMovement;
-  late int? _rageDamage;
-  late int? _invocations;
-
-  late int? _classPoints;
+  int? _classPoints;
 
   Level(
       this._abilityScorePoints,
@@ -36,47 +35,36 @@ class Level {
       this._cantripsOnLevel,
       this._spellsOnLevel,
       this._generalSpellsOnLevel,
-      [this._martialArts,
-      this._sneakAttack,
-      this._unarmoredMovement,
-      this._rageDamage,
-      this._invocations,
-      this._classPoints]);
+      this._classPoints);
+
+  Level.smart(
+      {int abilityScorePoints = 0,
+      Map<String, int>? abilityScoreImprovement,
+      Map<String, int>? maxAbilityScoreImprovement,
+      Set<Skill>? skills,
+      Set<Spell>? spells,
+      Set<Spell>? cantrips,
+      int skillCount = 0,
+      int cantripsOnLevel = 0,
+      Map<int, int>? spellsOnLevel,
+      Map<int, int>? generalSpellsOnLevel,
+      int? classPoints})
+      : _abilityScorePoints = abilityScorePoints,
+        _abilityScoreImprovement = abilityScoreImprovement ?? {},
+        _maxAbilityScoreImprovement = maxAbilityScoreImprovement ?? {},
+        _skills = skills ?? {},
+        _spells = spells ?? {},
+        _cantrips = cantrips ?? {},
+        _skillCount = skillCount,
+        _cantripsOnLevel = cantripsOnLevel,
+        _spellsOnLevel = spellsOnLevel ?? {},
+        _generalSpellsOnLevel = generalSpellsOnLevel ?? {},
+        _classPoints = classPoints;
 
   int? get classPoints => _classPoints;
 
   set classPoints(int? value) {
     _classPoints = value;
-  }
-
-  int? get invocations => _invocations;
-
-  set invocations(int? value) {
-    _invocations = value;
-  }
-
-  int? get rageDamage => _rageDamage;
-
-  set rageDamage(int? value) {
-    _rageDamage = value;
-  }
-
-  int? get unarmoredMovement => _unarmoredMovement;
-
-  set unarmoredMovement(int? value) {
-    _unarmoredMovement = value;
-  }
-
-  Dice? get sneakAttack => _sneakAttack;
-
-  set sneakAttack(Dice? value) {
-    _sneakAttack = value;
-  }
-
-  Dice? get martialArts => _martialArts;
-
-  set martialArts(Dice? value) {
-    _martialArts = value;
   }
 
   Map<int, int> get generalSpellsOnLevel => _generalSpellsOnLevel;
@@ -155,11 +143,6 @@ class Level {
           _cantripsOnLevel == other._cantripsOnLevel &&
           _spellsOnLevel == other._spellsOnLevel &&
           _generalSpellsOnLevel == other._generalSpellsOnLevel &&
-          _martialArts == other._martialArts &&
-          _sneakAttack == other._sneakAttack &&
-          _unarmoredMovement == other._unarmoredMovement &&
-          _rageDamage == other._rageDamage &&
-          _invocations == other._invocations &&
           _classPoints == other._classPoints;
 
   @override
@@ -174,10 +157,5 @@ class Level {
       _cantripsOnLevel.hashCode ^
       _spellsOnLevel.hashCode ^
       _generalSpellsOnLevel.hashCode ^
-      _martialArts.hashCode ^
-      _sneakAttack.hashCode ^
-      _unarmoredMovement.hashCode ^
-      _rageDamage.hashCode ^
-      _invocations.hashCode ^
       _classPoints.hashCode;
 }

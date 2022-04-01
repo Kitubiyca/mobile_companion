@@ -4,73 +4,113 @@ import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'fighting_style.dart';
 import 'level.dart';
 
-class Class{
-
+class Class {
   late String _name;
   late String _description;
   late Dice _hits;
-  late int? _unarmoredArmorConst;
-  late Set<String>? _unarmoredArmor;
-  late int _spellcasterLevel; // 0-not 1-full 2-half 3-third
-  late bool _hasSpecialMagicTable;
-  late Set<String> _savingChecks;
-  late String _classPointsName;
-  late Set<Proficiency> _proficiencies;
-  late int _subClassChooseLevel;
-  late List<Level> _levels;
-  late List<SubClass> subClasses = [];
-  late List<FightingStyle> styles = [];
-  late bool _protected;
 
-  static List<Class> classes = [];
+  bool _multiClassingLogic; // false = or, true = and
+  int _multiClassingProficienciesCount;
+  Map<String, int> _multiClassingRequirements;
+  Set<Proficiency> _multiClassingProficiencies;
+  Set<Proficiency> _multiClassingProficiencyChoices;
+
+  bool _hasSpecialMagicTable;
+  int _spellcasterStart;
+  int _spellcasterLevel; // 0-not 1-full 2-half 3-third
+
+  int _proficiencyCount;
+  Set<Proficiency> _proficiencyChoices;
+  Set<Proficiency> _proficiencies;
+
+  Set<String> _savingChecks;
+  String _classPointsName;
+  List<Level> _levels;
+
+  int _subClassChooseLevel;
+  List<SubClass> _subClasses;
+
+  //late int? _unarmoredArmorConst;
+  //late Set<String>? _unarmoredArmor;
+  //late List<FightingStyle> styles;
+
+  bool _protected;
 
   Class(
       this._name,
       this._description,
       this._hits,
-      this._unarmoredArmorConst,
-      this._unarmoredArmor,
-      this._spellcasterLevel,
+      this._multiClassingLogic,
+      this._multiClassingProficienciesCount,
+      this._multiClassingRequirements,
+      this._multiClassingProficiencies,
+      this._multiClassingProficiencyChoices,
       this._hasSpecialMagicTable,
+      this._spellcasterStart,
+      this._spellcasterLevel,
+      this._proficiencyCount,
+      this._proficiencyChoices,
+      this._proficiencies,
       this._savingChecks,
       this._classPointsName,
-      this._proficiencies,
-      this._subClassChooseLevel,
       this._levels,
-      this.subClasses,
-      this.styles,
+      this._subClassChooseLevel,
+      this._subClasses,
       this._protected);
 
-  Class.withAdd(
-      this._name,
-      this._description,
-      this._hits,
-      this._unarmoredArmorConst,
-      this._unarmoredArmor,
-      this._spellcasterLevel,
-      this._hasSpecialMagicTable,
-      this._savingChecks,
-      this._classPointsName,
-      this._proficiencies,
-      this._subClassChooseLevel,
-      this._levels,
-      this.subClasses,
-      this.styles,
-      this._protected){classes.add(this);}
-
-  Class.copyFrom(Class object){
-    _name = object.name;
-    _description = object.description;
-    _hits = object.hits;
-
-  }
+  Class.smart(
+      {String name = "Example name",
+      String description = "Example description",
+      Dice? hits,
+      bool multiClassingLogic = true,
+      int multiClassingProficienciesCount = 0,
+      Map<String, int>? multiClassingRequirements,
+      Set<Proficiency>? multiClassingProficiencies,
+      Set<Proficiency>? multiClassingProficiencyChoices,
+      bool hasSpecialMagicTable = false,
+      int spellcasterStart = 0,
+      int spellcasterLevel = 0,
+      int proficiencyCount = 0,
+      Set<Proficiency>? proficiencyChoices,
+      Set<Proficiency>? proficiencies,
+      Set<String>? savingChecks,
+      String classPointsName = "",
+      List<Level>? levels,
+      int subClassChooseLevel = 4,
+      List<SubClass>? subClasses,
+      bool protected = false})
+      : _name = name,
+        _description = description,
+        _hits = hits ?? Dice(1, 12),
+        _multiClassingLogic = multiClassingLogic,
+        _multiClassingProficienciesCount = multiClassingProficienciesCount,
+        _multiClassingRequirements = multiClassingRequirements ?? {},
+        _multiClassingProficiencies = multiClassingProficiencies ?? {},
+        _multiClassingProficiencyChoices =
+            multiClassingProficiencyChoices ?? {},
+        _hasSpecialMagicTable = hasSpecialMagicTable,
+        _spellcasterStart = spellcasterStart,
+        _spellcasterLevel = spellcasterLevel,
+        _proficiencyCount = proficiencyCount,
+        _proficiencyChoices = proficiencyChoices ?? {},
+        _proficiencies = proficiencies ?? {},
+        _savingChecks = savingChecks ?? {},
+        _classPointsName = classPointsName,
+        _levels = levels ?? [],
+        _subClassChooseLevel = subClassChooseLevel,
+        _subClasses = subClasses ?? [],
+        _protected = protected;
 
   bool get protected => _protected;
 
-  List<Level> get levels => _levels;
+  set protected(bool value) {
+    _protected = value;
+  }
 
-  set levels(List<Level> value) {
-    _levels = value;
+  List<SubClass> get subClasses => _subClasses;
+
+  set subClasses(List<SubClass> value) {
+    _subClasses = value;
   }
 
   int get subClassChooseLevel => _subClassChooseLevel;
@@ -79,10 +119,10 @@ class Class{
     _subClassChooseLevel = value;
   }
 
-  Set<Proficiency> get proficiencies => _proficiencies;
+  List<Level> get levels => _levels;
 
-  set proficiencies(Set<Proficiency> value) {
-    _proficiencies = value;
+  set levels(List<Level> value) {
+    _levels = value;
   }
 
   String get classPointsName => _classPointsName;
@@ -97,28 +137,72 @@ class Class{
     _savingChecks = value;
   }
 
+  Set<Proficiency> get proficiencies => _proficiencies;
+
+  set proficiencies(Set<Proficiency> value) {
+    _proficiencies = value;
+  }
+
+  Set<Proficiency> get proficiencyChoices => _proficiencyChoices;
+
+  set proficiencyChoices(Set<Proficiency> value) {
+    _proficiencyChoices = value;
+  }
+
+  int get proficiencyCount => _proficiencyCount;
+
+  set proficiencyCount(int value) {
+    _proficiencyCount = value;
+  }
+
+  int get spellcasterLevel => _spellcasterLevel;
+
+  set spellcasterLevel(int value) {
+    _spellcasterLevel = value;
+  }
+
+  int get spellcasterStart => _spellcasterStart;
+
+  set spellcasterStart(int value) {
+    _spellcasterStart = value;
+  }
+
   bool get hasSpecialMagicTable => _hasSpecialMagicTable;
 
   set hasSpecialMagicTable(bool value) {
     _hasSpecialMagicTable = value;
   }
 
-  int get magicPowerRank => _spellcasterLevel;
+  Set<Proficiency> get multiClassingProficiencyChoices =>
+      _multiClassingProficiencyChoices;
 
-  set magicPowerRank(int value) {
-    _spellcasterLevel = value;
+  set multiClassingProficiencyChoices(Set<Proficiency> value) {
+    _multiClassingProficiencyChoices = value;
   }
 
-  Set<String>? get unarmoredArmor => _unarmoredArmor;
+  Set<Proficiency> get multiClassingProficiencies =>
+      _multiClassingProficiencies;
 
-  set unarmoredArmor(Set<String>? value) {
-    _unarmoredArmor = value;
+  set multiClassingProficiencies(Set<Proficiency> value) {
+    _multiClassingProficiencies = value;
   }
 
-  int? get unarmoredArmorConst => _unarmoredArmorConst;
+  Map<String, int> get multiClassingRequirements => _multiClassingRequirements;
 
-  set unarmoredArmorConst(int? value) {
-    _unarmoredArmorConst = value;
+  set multiClassingRequirements(Map<String, int> value) {
+    _multiClassingRequirements = value;
+  }
+
+  int get multiClassingProficienciesCount => _multiClassingProficienciesCount;
+
+  set multiClassingProficienciesCount(int value) {
+    _multiClassingProficienciesCount = value;
+  }
+
+  bool get multiClassingLogic => _multiClassingLogic;
+
+  set multiClassingLogic(bool value) {
+    _multiClassingLogic = value;
   }
 
   Dice get hits => _hits;
@@ -147,17 +231,24 @@ class Class{
           _name == other._name &&
           _description == other._description &&
           _hits == other._hits &&
-          _unarmoredArmorConst == other._unarmoredArmorConst &&
-          _unarmoredArmor == other._unarmoredArmor &&
-          _spellcasterLevel == other._spellcasterLevel &&
+          _multiClassingLogic == other._multiClassingLogic &&
+          _multiClassingProficienciesCount ==
+              other._multiClassingProficienciesCount &&
+          _multiClassingRequirements == other._multiClassingRequirements &&
+          _multiClassingProficiencies == other._multiClassingProficiencies &&
+          _multiClassingProficiencyChoices ==
+              other._multiClassingProficiencyChoices &&
           _hasSpecialMagicTable == other._hasSpecialMagicTable &&
+          _spellcasterStart == other._spellcasterStart &&
+          _spellcasterLevel == other._spellcasterLevel &&
+          _proficiencyCount == other._proficiencyCount &&
+          _proficiencyChoices == other._proficiencyChoices &&
+          _proficiencies == other._proficiencies &&
           _savingChecks == other._savingChecks &&
           _classPointsName == other._classPointsName &&
-          _proficiencies == other._proficiencies &&
-          _subClassChooseLevel == other._subClassChooseLevel &&
           _levels == other._levels &&
-          subClasses == other.subClasses &&
-          styles == other.styles &&
+          _subClassChooseLevel == other._subClassChooseLevel &&
+          _subClasses == other._subClasses &&
           _protected == other._protected;
 
   @override
@@ -165,16 +256,21 @@ class Class{
       _name.hashCode ^
       _description.hashCode ^
       _hits.hashCode ^
-      _unarmoredArmorConst.hashCode ^
-      _unarmoredArmor.hashCode ^
-      _spellcasterLevel.hashCode ^
+      _multiClassingLogic.hashCode ^
+      _multiClassingProficienciesCount.hashCode ^
+      _multiClassingRequirements.hashCode ^
+      _multiClassingProficiencies.hashCode ^
+      _multiClassingProficiencyChoices.hashCode ^
       _hasSpecialMagicTable.hashCode ^
+      _spellcasterStart.hashCode ^
+      _spellcasterLevel.hashCode ^
+      _proficiencyCount.hashCode ^
+      _proficiencyChoices.hashCode ^
+      _proficiencies.hashCode ^
       _savingChecks.hashCode ^
       _classPointsName.hashCode ^
-      _proficiencies.hashCode ^
-      _subClassChooseLevel.hashCode ^
       _levels.hashCode ^
-      subClasses.hashCode ^
-      styles.hashCode ^
+      _subClassChooseLevel.hashCode ^
+      _subClasses.hashCode ^
       _protected.hashCode;
 }

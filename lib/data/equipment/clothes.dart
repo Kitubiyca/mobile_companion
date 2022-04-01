@@ -10,15 +10,8 @@ class Clothes extends Item{
   late int _requirement;
   late Resist _resist;
 
-  static List<Clothes> clothes = [];
-
   Clothes(String name, String description, int weight, int cost, Set<String> notes, bool protected, this._type, this._AC, this._requirement) : super(name, description, weight, cost, notes, protected){
     resist = Resist.empty();
-  }
-
-  Clothes.withAdd(String name, String description, int weight, int cost, Set<String> notes, bool protected, this._type, this._AC, this._requirement) : super(name, description, weight, cost, notes, protected){
-    resist = Resist.empty();
-    {clothes.add(this);}
   }
 
   Clothes.copyFrom(Clothes object) : super(object.name, object.description, object.weight, object.cost, {}, false){

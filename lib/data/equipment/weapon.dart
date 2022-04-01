@@ -21,8 +21,6 @@ class Weapon extends Item{
   late int _min_distance;
   late int _max_distance;
 
-  static List<Weapon> weapons = [];
-
   Weapon(
       String name,
       String description,
@@ -42,26 +40,6 @@ class Weapon extends Item{
       this._fencing,
       this._min_distance,
       this._max_distance) : super(name, description, weight, cost, {}, false){_damage_type = DamageType.empty();}
-
-  Weapon.withAdd(
-      String name,
-      String description,
-      int weight,
-      int cost,
-      Set<String> notes,
-      bool protected,
-      this._damage,
-      this._universal,
-      this._universal_damage,
-      this._heavy,
-      this._two_handed,
-      this._melee,
-      this._throwable,
-      this._reach,
-      this._special,
-      this._fencing,
-      this._min_distance,
-      this._max_distance) : super(name, description, weight, cost, {}, false){_damage_type = DamageType.empty(); weapons.add(this);}
 
   Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
     addNotes(object.notes);

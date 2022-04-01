@@ -21,7 +21,7 @@ Future<void> main() async {
   Hive.registerAdapter(ItemAdapter());
   Hive.registerAdapter(SpellAdapter());
 
-  Spell spell1 = Spell(
+  /*Spell spell1 = Spell(
     "Волшебная стрела",
     "Вы создаете три светящихся дротика из магической силы. Каждый дротик попадает в существо на ваш выбор, видимое в пределах дистанции. Каждый дротик причиняет урон силовым полем 1к4 + 1. Все дротики атакуют одновременно, и вы можете направить их как в одно существо, так и в разных.",
     ["На больших уровнях. Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, заклинание создает по одному дополнительному дротику за каждый уровень ячейки выше первого."],
@@ -62,27 +62,27 @@ Future<void> main() async {
     [],
     5,
     true
-  );
+  );*/
 
   //Spell spell = Spell('name', 'desc', ['desc1', 'desc2'], 20, true, true, {}, false, '1 day', true, 3, 7, false, false, "cha", DamageType.empty(), [], 6, false);
-  Box<Spell> box = await Hive.openBox<Spell>('spells');
-  box.add(spell1);
-  box.add(spell2);
-  box.close();
+  //Box<Spell> box = await Hive.openBox<Spell>('spells');
+  //box.add(spell1);
+  //box.add(spell2);
+  //box.close();
 
   //box.put('test', spell);
   //box.close();
   //box.deleteFromDisk();
 
-  Item item1 = Item("Книга", "Книга, подробно рассказывающая о похождениях великого рыцаря.", 5, 25, {}, false);
-  Item item2 = Item("Кошель", "", 1, 5, {"дырявый", "выцветший"}, false);
-  Item item3 = Item("Лютня", "Инструмент барда.", 3, 35, {"потрескавшаяся"}, false);
+  //Item item1 = Item("Книга", "Книга, подробно рассказывающая о похождениях великого рыцаря.", 5, 25, {}, false);
+  //Item item2 = Item("Кошель", "", 1, 5, {"дырявый", "выцветший"}, false);
+  //Item item3 = Item("Лютня", "Инструмент барда.", 3, 35, {"потрескавшаяся"}, false);
 
-  Box<Item> boxItem = await Hive.openBox<Item>('items');
-  boxItem.add(item1);
-  boxItem.add(item2);
-  boxItem.add(item3);
-  box.close();
+  //Box<Item> boxItem = await Hive.openBox<Item>('items');
+  //boxItem.add(item1);
+  //boxItem.add(item2);
+  //boxItem.add(item3);
+  //box.close();
 
   //Dice dice = Dice(2, 20);
   //SpellLevel obj = SpellLevel(1, 1, 2, 4, dice, 10);

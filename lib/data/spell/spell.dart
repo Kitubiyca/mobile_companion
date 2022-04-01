@@ -1,3 +1,4 @@
+import 'package:dnd_companion/data/character/class/class.dart';
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
@@ -26,6 +27,8 @@ class Spell{
   late List<Dice> _impact;
   late int _constImpact;
 
+  late Set<Class> _classes;
+
   late bool _protected;
 
   Spell(
@@ -47,6 +50,7 @@ class Spell{
       this._damageType,
       this._impact,
       this._constImpact,
+      this._classes,
       this._protected);
 
   Spell.copyFrom(Spell object);
@@ -231,6 +235,12 @@ class Spell{
     _name = value;
   }
 
+  Set<Class> get classes => _classes;
+
+  set classes(Set<Class> value) {
+    _classes = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -254,6 +264,7 @@ class Spell{
           _damageType == other._damageType &&
           _impact == other._impact &&
           _constImpact == other._constImpact &&
+          _classes == other._classes &&
           _protected == other._protected;
 
   @override
@@ -276,5 +287,6 @@ class Spell{
       _damageType.hashCode ^
       _impact.hashCode ^
       _constImpact.hashCode ^
+      _classes.hashCode ^
       _protected.hashCode;
 }

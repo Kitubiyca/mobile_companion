@@ -1,0 +1,3 @@
+class WeaponHotkey{
+  WeaponHotkey();
+}

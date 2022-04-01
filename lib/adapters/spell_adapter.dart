@@ -1,3 +1,4 @@
+import 'package:dnd_companion/data/character/class/class.dart';
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
@@ -25,6 +26,7 @@ class SpellAdapter extends TypeAdapter<Spell> {
     final DamageType damageType = reader.read();
     final List<Dice> impact = List.castFrom(reader.readList());
     final int constImpact = reader.readInt();
+    final Set<Class> classes = Set.castFrom(reader.readList().toSet());
     final bool protected = reader.readBool();
     return Spell(
         name,
@@ -45,6 +47,7 @@ class SpellAdapter extends TypeAdapter<Spell> {
         damageType,
         impact,
         constImpact,
+        classes,
         protected);
   }
 
@@ -71,6 +74,7 @@ class SpellAdapter extends TypeAdapter<Spell> {
     writer.write(obj.damageType);
     writer.writeList(obj.impact);
     writer.writeInt(obj.constImpact);
+    writer.write(obj.classes.toList());
     writer.writeBool(obj.protected);
   }
 }
