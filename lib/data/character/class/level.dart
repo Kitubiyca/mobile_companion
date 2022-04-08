@@ -1,8 +1,10 @@
-import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/skill/skill.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
+import 'class.dart';
 
 class Level {
+
+  Class _usedClass;
   int _abilityScorePoints;
   Map<String, int> _abilityScoreImprovement;
   Map<String, int> _maxAbilityScoreImprovement;
@@ -25,6 +27,7 @@ class Level {
   int? _classPoints;
 
   Level(
+      this._usedClass,
       this._abilityScorePoints,
       this._abilityScoreImprovement,
       this._maxAbilityScoreImprovement,
@@ -38,6 +41,7 @@ class Level {
       this._classPoints);
 
   Level.smart(
+      this._usedClass,
       {int abilityScorePoints = 0,
       Map<String, int>? abilityScoreImprovement,
       Map<String, int>? maxAbilityScoreImprovement,
@@ -128,11 +132,18 @@ class Level {
     _abilityScorePoints = value;
   }
 
+  Class get usedClass => _usedClass;
+
+  set usedClass(Class value) {
+    _usedClass = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Level &&
           runtimeType == other.runtimeType &&
+          _usedClass == other._usedClass &&
           _abilityScorePoints == other._abilityScorePoints &&
           _abilityScoreImprovement == other._abilityScoreImprovement &&
           _maxAbilityScoreImprovement == other._maxAbilityScoreImprovement &&
@@ -147,6 +158,7 @@ class Level {
 
   @override
   int get hashCode =>
+      _usedClass.hashCode ^
       _abilityScorePoints.hashCode ^
       _abilityScoreImprovement.hashCode ^
       _maxAbilityScoreImprovement.hashCode ^

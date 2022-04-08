@@ -1,0 +1,3 @@
+class SkillHotkey{
+  SkillHotkey();
+}

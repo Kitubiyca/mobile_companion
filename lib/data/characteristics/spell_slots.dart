@@ -5,8 +5,7 @@ class SpellSlots {
   static List<List<int>> specialMagicTable =
   List.filled(20, List.filled(2, 0, growable: false), growable: false); //[0]-level [1]-count
 
-  static() {
-    print("check");
+  static initialize() {
 
     basicMagicTable[0][0] = 2;
 

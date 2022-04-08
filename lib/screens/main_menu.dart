@@ -22,7 +22,7 @@ class _MainMenuState extends State<MainMenu> {
             Container(
               height: 60,
             ),
-            _menuButton(context, "Персонажи", "/"),
+            _menuButton(context, "Персонажи", "/characters"),
             Container(
               height: 60,
             ),

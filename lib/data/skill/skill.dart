@@ -1,37 +1,34 @@
 class Skill{
 
-  late String _name;
-  late String _description;
-  late bool _dice;
-  late bool _damage;
-  late bool _mastery;
-  late bool _unarmed;
-  late String _classPoint;
-  late String _code;
+  Skill();
+
+  /*
+
+  String _name;
+  String _description;
+  bool _dice;
+  bool _damage;
+  bool _mastery;
+  bool _unarmed;
+  String _classPoint;
+  String _code;
 
   late bool _protected;
-
-  static List<Skill> skills = [];
-
 
   Skill(this._name, this._description, this._dice, this._damage, this._mastery,
       this._unarmed, this._classPoint, this._code, this._protected);
 
-
-  Skill.withAdd(this._name, this._description, this._dice, this._damage, this._mastery,
-      this._unarmed, this._classPoint, this._code, this._protected){skills.add(this);}
-
-  Skill.copyFrom(Skill object){
-    _name = object.name;
-    _description = object.description;
-    _dice = object.dice;
-    _damage = object.damage;
-    _mastery = object.mastery;
-    _unarmed = object.unarmed;
-    _classPoint = object.classPoint;
-    _code = code;
-    _protected = false;
-  }
+  //Skill.copyFrom(Skill object){
+  //  _name = object.name;
+  //  _description = object.description;
+  //  _dice = object.dice;
+  //  _damage = object.damage;
+  //  _mastery = object.mastery;
+  //  _unarmed = object.unarmed;
+  //  _classPoint = object.classPoint;
+  //  _code = code;
+  //  _protected = false;
+  //}
 
   String get name => _name;
 
@@ -122,5 +119,7 @@ class Skill{
       _classPoint.hashCode ^
       _code.hashCode ^
       _protected.hashCode;
+
+      */
 
 }

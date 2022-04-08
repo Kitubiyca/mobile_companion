@@ -5,9 +5,10 @@ import 'fighting_style.dart';
 import 'level.dart';
 
 class Class {
-  late String _name;
-  late String _description;
-  late Dice _hits;
+
+  String _name;
+  String _description;
+  Dice _hits;
 
   bool _multiClassingLogic; // false = or, true = and
   int _multiClassingProficienciesCount;

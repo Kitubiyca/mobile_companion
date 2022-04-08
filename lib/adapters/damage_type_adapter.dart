@@ -4,19 +4,19 @@ import 'package:hive/hive.dart';
 class DamageTypeAdapter extends TypeAdapter<DamageType>{
   @override
   DamageType read(BinaryReader reader) {
-    bool bludgeoning = reader.readBool();
-    bool sound = reader.readBool();
-    bool radiant = reader.readBool();
-    bool acid = reader.readBool();
-    bool piercing = reader.readBool();
-    bool necrotic = reader.readBool();
-    bool fire = reader.readBool();
-    bool psychic = reader.readBool();
-    bool slashing = reader.readBool();
-    bool force = reader.readBool();
-    bool cold = reader.readBool();
-    bool electric = reader.readBool();
-    bool poison = reader.readBool();
+    final bool bludgeoning = reader.readBool();
+    final bool sound = reader.readBool();
+    final bool radiant = reader.readBool();
+    final bool acid = reader.readBool();
+    final bool piercing = reader.readBool();
+    final bool necrotic = reader.readBool();
+    final bool fire = reader.readBool();
+    final bool psychic = reader.readBool();
+    final bool slashing = reader.readBool();
+    final bool force = reader.readBool();
+    final bool cold = reader.readBool();
+    final bool electric = reader.readBool();
+    final bool poison = reader.readBool();
     return DamageType(bludgeoning, sound, radiant, acid, piercing, necrotic, fire, psychic, slashing, force, cold, electric, poison);
   }
 

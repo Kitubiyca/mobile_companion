@@ -74,7 +74,7 @@ class Background {
   void addItems(Set<Item> value) {
     if (_protected) throw Exception("Denied access to protected data.");
     for (int i = 0; i < value.length; i++) {
-      items.add(Item.copyFrom(value.elementAt(i)));
+      items.add(value.elementAt(i));
     }
   }
 
@@ -98,7 +98,7 @@ class Background {
   void addProficiencies(Set<Proficiency> value) {
     if (_protected) throw Exception("Denied access to protected data.");
     for (int i = 0; i < value.length; i++) {
-      _proficiencies.add(Proficiency.copyFrom(value.elementAt(i)));
+      _proficiencies.add(value.elementAt(i));
     }
   }
 
@@ -111,7 +111,7 @@ class Background {
   void addSkillChecks(Set<SkillCheck> value) {
     if (_protected) throw Exception("Denied access to protected data.");
     for (int i = 0; i < value.length; i++) {
-      _skillChecks.add(SkillCheck.copyFrom(value.elementAt(i)));
+      _skillChecks.add(value.elementAt(i));
     }
   }
 

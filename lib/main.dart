@@ -1,3 +1,22 @@
+import 'package:dnd_companion/adapters/armor_adapter.dart';
+import 'package:dnd_companion/adapters/background_adapter.dart';
+import 'package:dnd_companion/adapters/character_adapter.dart';
+import 'package:dnd_companion/adapters/class_adapter.dart';
+import 'package:dnd_companion/adapters/feat_adapter.dart';
+import 'package:dnd_companion/adapters/level_adapter.dart';
+import 'package:dnd_companion/adapters/proficiency_adapter.dart';
+import 'package:dnd_companion/adapters/race_adapter.dart';
+import 'package:dnd_companion/adapters/resist_adapter.dart';
+import 'package:dnd_companion/adapters/skill_check_adapter.dart';
+import 'package:dnd_companion/adapters/sub_race_adapter.dart';
+import 'package:dnd_companion/adapters/test_adapters.dart';
+import 'package:dnd_companion/adapters/weapon_adapter.dart';
+import 'package:dnd_companion/adapters/weapon_hotkey_adapter.dart';
+import 'package:dnd_companion/data/character/character.dart';
+import 'package:dnd_companion/data/characteristics/spell_slots.dart';
+import 'package:dnd_companion/data/hotkeys/weapon_hotkey.dart';
+import 'package:dnd_companion/screens/characters/character_view.dart';
+import 'package:dnd_companion/screens/characters/characters_list.dart';
 import 'package:dnd_companion/screens/items/item_view.dart';
 import 'package:dnd_companion/screens/items/items_list.dart';
 import 'package:dnd_companion/screens/main_menu.dart';
@@ -11,15 +30,52 @@ import 'adapters/spell_adapter.dart';
 import 'data/characteristics/damage_type.dart';
 import 'data/dice/dice.dart';
 import 'data/equipment/item.dart';
+import 'data/equipment/weapon.dart';
 import 'data/spell/spell.dart';
 import 'screens/spells/spell_view.dart';
 
 Future<void> main() async {
+  SpellSlots.initialize();
   await Hive.initFlutter();
-  Hive.registerAdapter(DiceAdapter());
+  Hive.registerAdapter(ArmorAdapter());
+  Hive.registerAdapter(BackgroundAdapter());
+  Hive.registerAdapter(CharacterAdapter());
+  Hive.registerAdapter(ClassAdapter());
   Hive.registerAdapter(DamageTypeAdapter());
+  Hive.registerAdapter(DiceAdapter());
+  Hive.registerAdapter(FeatAdapter());
   Hive.registerAdapter(ItemAdapter());
+  Hive.registerAdapter(LevelAdapter());
+  Hive.registerAdapter(ProficiencyAdapter());
+  Hive.registerAdapter(RaceAdapter());
+  Hive.registerAdapter(ResistAdapter());
+  Hive.registerAdapter(SkillCheckAdapter());
   Hive.registerAdapter(SpellAdapter());
+  Hive.registerAdapter(SubRaceAdapter());
+  Hive.registerAdapter(WeaponAdapter());
+  Hive.registerAdapter(WeaponHotkeyAdapter());
+
+  Character character = Character.smart();
+  Weapon weapon = Weapon.smart();
+  WeaponHotkey key = WeaponHotkey.smart("key", weapon, character);
+  character.weaponHotkeys.add(key);
+
+  //var box = await Hive.openBox<Character>("characters");
+  //await box.put(0, character);
+  //box.close();
+
+  Hive.registerAdapter(Test1Adapter());
+  Hive.registerAdapter(Test2Adapter());
+
+  Test1 test1 = Test1("test", Test2.low(12));
+
+  test1.test2.test1 = test1;
+  test1.toString();
+
+  //var box1 = await Hive.openBox<Test1>("test1");
+  //await box1.add(test1);
+  //Test1 test11 = box1.getAt(0)!;
+  //print(test11.toString());
 
   /*Spell spell1 = Spell(
     "Волшебная стрела",
@@ -108,6 +164,8 @@ class MyApp extends StatelessWidget {
         '/spells/view': (context) => const SpellView(),
         '/items': (context) => const ItemList(),
         '/items/view': (context) => const ItemView(),
+        '/characters': (context) => const CharacterList(),
+        '/characters/view': (context) => const CharacterView(),
       },
       title: 'DnD Companion',
       theme: ThemeData(

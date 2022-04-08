@@ -3,33 +3,32 @@ import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
 
-class Spell{
+class Spell {
+  String _name;
+  String _description;
+  List<String> _higherDescription;
+  int _range;
+  bool _verbal;
+  bool _somatic;
+  Map<Item, int> _materials;
+  bool _ritual;
+  String _duration;
+  bool _concentration;
+  int _castingTime;
+  int _level;
 
-  late String _name;
-  late String _description;
-  late List<String> _higherDescription;
-  late int _range;
-  late bool _verbal;
-  late bool _somatic;
-  late Map<Item, int> _materials;
-  late bool _ritual;
-  late String _duration;
-  late bool _concentration;
-  late int _castingTime;
-  late int _level;
+  bool _difficultyClass; // spell evasion difficulty(8 + prof bonus + spellcasting mod(magic save mod)) that target need to beat
+  bool _armorPenetration; // d20 + class attack modifier vs target armor class
 
-  late bool _difficultyClass; // spell evasion difficulty(8 + prof bonus + spellcasting mod(magic save mod)) that target need to beat
-  late bool _armorPenetration; // d20 + class attack modifier vs target armor class
+  String _savingModifier; // d20 + saving mod + (prof bonus)?
 
-  late String _savingModifier; // d20 + saving mod + (prof bonus)?
+  DamageType _damageType;
+  List<Dice> _impact;
+  int _constImpact;
 
-  late DamageType _damageType;
-  late List<Dice> _impact;
-  late int _constImpact;
+  Set<Class> _classes;
 
-  late Set<Class> _classes;
-
-  late bool _protected;
+  bool _protected;
 
   Spell(
       this._name,
@@ -53,7 +52,47 @@ class Spell{
       this._classes,
       this._protected);
 
-  Spell.copyFrom(Spell object);
+  Spell.smart({
+    String name = "Example name",
+    String description = "Example description",
+    List<String>? higherDescription,
+    int range = 90,
+    bool verbal = false,
+    bool somatic = false,
+    Map<Item, int>? materials,
+    bool ritual = false,
+    String duration = "1 час",
+    bool concentration = false,
+    int castingTime = 1,
+    int level = 0,
+    bool difficultyClass = false,
+    bool armorPenetration = false,
+    String savingModifier = "",
+    DamageType? damageType,
+    List<Dice>? impact,
+    int constImpact = 0,
+    Set<Class>? classes,
+    bool protected = false,
+  })  : _name = name,
+        _description = description,
+        _higherDescription = [],
+        _range = range,
+        _verbal = verbal,
+        _somatic = somatic,
+        _materials = materials ?? {},
+        _ritual = ritual,
+        _duration = duration,
+        _concentration = concentration,
+        _castingTime = castingTime,
+        _level = level,
+        _difficultyClass = difficultyClass,
+        _armorPenetration = armorPenetration,
+        _savingModifier = savingModifier,
+        _damageType = damageType ?? DamageType.empty(),
+        _impact = impact ?? [],
+        _constImpact = constImpact,
+        _classes = classes ?? {},
+        _protected = protected;
 
   //Spell.copyFrom(Spell object){
   //  _name = object.name;
@@ -73,53 +112,66 @@ class Spell{
   //  _protected = false;
   //}
 
-  String getDices(){
+  String getDices() {
     String ret = "";
-    if (_impact.isNotEmpty){
+    if (_impact.isNotEmpty) {
       ret += _impact[0].name;
-      for(int i = 1; i < _impact.length; i++){
+      for (int i = 1; i < _impact.length; i++) {
         ret += ", " + _impact[i].name;
       }
     }
     return ret;
   }
 
-  String getMarks(){
+  String getMarks() {
     String ret = "";
     bool first = true;
-    if(_verbal){
+    if (_verbal) {
       ret += "V";
       first = false;
     }
-    if(_somatic){
-      if(first) ret += "S";
-      else ret += ", S";
+    if (_somatic) {
+      if (first)
+        ret += "S";
+      else
+        ret += ", S";
       first = false;
     }
-    if(_materials.isNotEmpty){
-      if(first) ret += "M";
-      else ret += ", M";
+    if (_materials.isNotEmpty) {
+      if (first)
+        ret += "M";
+      else
+        ret += ", M";
       first = false;
     }
-    if(_ritual){
-      if(first) ret += "R";
-      else ret += ", R";
+    if (_ritual) {
+      if (first)
+        ret += "R";
+      else
+        ret += ", R";
       first = false;
     }
-    if(_concentration){
-      if(first) ret += "C";
-      else ret += ", C";
+    if (_concentration) {
+      if (first)
+        ret += "C";
+      else
+        ret += ", C";
       first = false;
     }
     return ret;
   }
 
-  String getMaterials(){
+  String getMaterials() {
     String ret = "";
-    if(_materials.isNotEmpty){
-      ret += _materials.keys.elementAt(0).name + ": " + _materials.values.elementAt(0).toString();
-      for(int i = 1; i < _materials.keys.length; i++){
-        ret += ", " + _materials.keys.elementAt(i).name + ": " + _materials.values.elementAt(i).toString();
+    if (_materials.isNotEmpty) {
+      ret += _materials.keys.elementAt(0).name +
+          ": " +
+          _materials.values.elementAt(0).toString();
+      for (int i = 1; i < _materials.keys.length; i++) {
+        ret += ", " +
+            _materials.keys.elementAt(i).name +
+            ": " +
+            _materials.values.elementAt(i).toString();
       }
     }
     return ret;

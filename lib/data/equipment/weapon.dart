@@ -4,22 +4,21 @@ import 'item.dart';
 
 class Weapon extends Item{
 
-  late List<Dice> _damage;
-  late DamageType _damage_type;
+  List<Dice> _damage;
+  DamageType _damageType;
 
-  late bool _universal;
-  late Dice _universal_damage;
+  List<Dice> _versatileDamage;
 
-  late bool _heavy;
-  late bool _two_handed;
-  late bool _melee;
-  late bool _throwable;
-  late bool _reach;
-  late bool _special;
-  late bool _fencing;
+  bool _heavy;
+  bool _twoHanded;
+  bool _melee;
+  bool _throwable;
+  bool _reach;
+  bool _special;
+  bool _fencing; // finesse
 
-  late int _min_distance;
-  late int _max_distance;
+  int _minDistance;
+  int _maxDistance;
 
   Weapon(
       String name,
@@ -29,123 +28,123 @@ class Weapon extends Item{
       Set<String> notes,
       bool protected,
       this._damage,
-      this._universal,
-      this._universal_damage,
+      this._damageType,
+      this._versatileDamage,
       this._heavy,
-      this._two_handed,
+      this._twoHanded,
       this._melee,
       this._throwable,
       this._reach,
       this._special,
       this._fencing,
-      this._min_distance,
-      this._max_distance) : super(name, description, weight, cost, {}, false){_damage_type = DamageType.empty();}
+      this._minDistance,
+      this._maxDistance) : super(name, description, weight, cost, notes, false);
 
-  Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
-    addNotes(object.notes);
-    _damage = object.damage;
-    _damage_type = DamageType.copyFrom(object.damage_type);
-    _universal = object.universal;
-    _universal_damage = object.universal_damage;
-    _heavy = object.heavy;
-    _two_handed = object.two_handed;
-    _melee = object.melee;
-    _throwable = object.throwable;
-    _reach = object.reach;
-    _special = object.special;
-    _fencing = object.fencing;
-    _min_distance = object.min_distance;
-    _max_distance = object.max_distance;
+  Weapon.smart({
+    String name = "Default name",
+    String description = "Default description",
+    int weight = 10,
+    int cost = 20,
+    Set<String>? notes,
+    bool protected = false,
+    List<Dice>? damage,
+    DamageType? damageType,
+    List<Dice>? versatileDamage,
+    bool heavy = false,
+    bool twoHanded = false,
+    bool melee = false,
+    bool throwable = false,
+    bool reach = false,
+    bool special = false,
+    bool fencing = false,
+    int minDistance = 0,
+    int maxDistance = 20,
+}) :
+        _damage = damage ?? [],
+        _damageType = damageType ?? DamageType.empty(),
+        _versatileDamage = versatileDamage ?? [],
+        _heavy = heavy,
+        _twoHanded = twoHanded,
+        _melee = melee,
+        _throwable = throwable,
+        _reach = reach,
+        _special = special,
+        _fencing = fencing,
+        _minDistance = minDistance,
+        _maxDistance = maxDistance,
+        super(name, description, weight, cost, notes ?? {}, false){
+    if(_damage.isEmpty) _damage.add(Dice(1, 4));
   }
 
-  int get max_distance => _max_distance;
+  int get maxDistance => _maxDistance;
 
-  set max_distance(int value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _max_distance = value;
+  set maxDistance(int value) {
+    _maxDistance = value;
   }
 
-  int get min_distance => _min_distance;
+  int get minDistance => _minDistance;
 
-  set min_distance(int value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _min_distance = value;
+  set minDistance(int value) {
+    _minDistance = value;
   }
 
   bool get fencing => _fencing;
 
   set fencing(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _fencing = value;
   }
 
   bool get special => _special;
 
   set special(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _special = value;
   }
 
   bool get reach => _reach;
 
   set reach(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _reach = value;
   }
 
   bool get throwable => _throwable;
 
   set throwable(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _throwable = value;
   }
 
   bool get melee => _melee;
 
   set melee(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _melee = value;
   }
 
-  bool get two_handed => _two_handed;
+  bool get twoHanded => _twoHanded;
 
-  set two_handed(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _two_handed = value;
+  set twoHanded(bool value) {
+    _twoHanded = value;
   }
 
   bool get heavy => _heavy;
 
   set heavy(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _heavy = value;
   }
 
-  Dice get universal_damage => _universal_damage;
+  List<Dice> get versatileDamage => _versatileDamage;
 
-  set universal_damage(Dice value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _universal_damage = value;
+  set versatileDamage(List<Dice> value) {
+    _versatileDamage = value;
   }
 
-  bool get universal => _universal;
+  DamageType get damageType => _damageType;
 
-  set universal(bool value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _universal = value;
-  }
-
-  DamageType get damage_type => _damage_type;
-
-  set damage_type(DamageType value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
-    _damage_type = value;
+  set damageType(DamageType value) {
+    _damageType = value;
   }
 
   List<Dice> get damage => _damage;
 
   set damage(List<Dice> value) {
-    if (super.protected) throw Exception("Denied access to protected data.");
     _damage = value;
   }
 
@@ -156,33 +155,49 @@ class Weapon extends Item{
           other is Weapon &&
           runtimeType == other.runtimeType &&
           _damage == other._damage &&
-          _damage_type == other._damage_type &&
-          _universal == other._universal &&
-          _universal_damage == other._universal_damage &&
+          _damageType == other._damageType &&
+          _versatileDamage == other._versatileDamage &&
           _heavy == other._heavy &&
-          _two_handed == other._two_handed &&
+          _twoHanded == other._twoHanded &&
           _melee == other._melee &&
           _throwable == other._throwable &&
           _reach == other._reach &&
           _special == other._special &&
           _fencing == other._fencing &&
-          _min_distance == other._min_distance &&
-          _max_distance == other._max_distance;
+          _minDistance == other._minDistance &&
+          _maxDistance == other._maxDistance;
 
   @override
   int get hashCode =>
       super.hashCode ^
       _damage.hashCode ^
-      _damage_type.hashCode ^
-      _universal.hashCode ^
-      _universal_damage.hashCode ^
+      _damageType.hashCode ^
+      _versatileDamage.hashCode ^
       _heavy.hashCode ^
-      _two_handed.hashCode ^
+      _twoHanded.hashCode ^
       _melee.hashCode ^
       _throwable.hashCode ^
       _reach.hashCode ^
       _special.hashCode ^
       _fencing.hashCode ^
-      _min_distance.hashCode ^
-      _max_distance.hashCode;
+      _minDistance.hashCode ^
+      _maxDistance.hashCode;
+
+//Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
+  //  addNotes(object.notes);
+  //  _damage = object.damage;
+  //  _damage_type = DamageType.copyFrom(object.damage_type);
+  //  _versatile_damage = object.versatile_damage;
+  //  _heavy = object.heavy;
+  //  _two_handed = object.two_handed;
+  //  _melee = object.melee;
+  //  _throwable = object.throwable;
+  //  _reach = object.reach;
+  //  _special = object.special;
+  //  _fencing = object.fencing;
+  //  _min_distance = object.min_distance;
+  //  _max_distance = object.max_distance;
+  //}
+
+
 }

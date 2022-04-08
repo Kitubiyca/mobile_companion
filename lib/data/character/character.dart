@@ -2,6 +2,7 @@ import 'package:dnd_companion/data/character/background.dart';
 import 'package:dnd_companion/data/character/race/race.dart';
 import 'package:dnd_companion/data/character/race/sub_race.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
+import 'package:dnd_companion/data/hotkeys/skill_hotkey.dart';
 import 'package:dnd_companion/data/hotkeys/spell_hotkey.dart';
 import 'package:dnd_companion/data/hotkeys/weapon_hotkey.dart';
 import 'package:dnd_companion/data/skill/feat.dart';
@@ -9,7 +10,6 @@ import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/skill/skill.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
-import 'package:flutter/material.dart';
 import 'class/class.dart';
 
 class Character {
@@ -35,10 +35,11 @@ class Character {
   Set<Feat> _feats;
   Set<Skill> _knownSkills;
   Set<Spell> _knownSpells;
-  List<Item> _inventory;
+  Map<Item, int> _inventory;
 
   Set<WeaponHotkey> _weaponHotkeys;
-  Set<SpellHotkey> _spellHotkeys;
+  //Set<SpellHotkey> _spellHotkeys;
+  //Set<SkillHotkey> _skillHotkeys;
 
   Character(
       this._name,
@@ -60,8 +61,7 @@ class Character {
       this._knownSkills,
       this._knownSpells,
       this._inventory,
-      this._weaponHotkeys,
-      this._spellHotkeys);
+      this._weaponHotkeys);
 
   Character.smart(
       {name = "Example name",
@@ -82,9 +82,10 @@ class Character {
       Set<Feat>? feats,
       Set<Skill>? knownSkills,
       Set<Spell>? knownSpells,
-      List<Item>? inventory,
+      Map<Item, int>? inventory,
       Set<WeaponHotkey>? weaponHotkeys,
-      Set<SpellHotkey>? spellHotkeys})
+      Set<SpellHotkey>? spellHotkeys,
+      Set<SkillHotkey>? skillHotkeys})
       : _name = name,
         _characterClass = characterClass ?? <Class, int>{Class.smart(): 1},
         _background = background ?? Background.smart(),
@@ -119,9 +120,8 @@ class Character {
         _feats = feats ?? {},
         _knownSkills = knownSkills ?? {},
         _knownSpells = knownSpells ?? {},
-        _inventory = inventory ?? [],
-        _weaponHotkeys = weaponHotkeys ?? {},
-        _spellHotkeys = spellHotkeys ?? {};
+        _inventory = inventory ?? {},
+        _weaponHotkeys = weaponHotkeys ?? {};
 
   int getStatsBonus(String name){
     int? stat = _stats[name];
@@ -130,11 +130,29 @@ class Character {
       return ((stat - 10)/2).floor();
     }
   }
+  void addItem(Item item, int count){
+    if(inventory[item] != null){inventory[item] = inventory[item]! + count;}
+    else{inventory[item] = count;}
+  }
 
-  Set<SpellHotkey> get spellHotkeys => _spellHotkeys;
+  bool removeItem(Item item, int count){
+    if(inventory[item] != null){
+      if(inventory[item]! - count > 0){
+        inventory[item] = inventory[item]! - count;
+        return true;
+      } else if(inventory[item]! - count == 0){
+        inventory.remove(item);
+        return true;
+      } else {
+        return false;
+      }
+    } else {return false;}
+  }
 
-  set spellHotkeys(Set<SpellHotkey> value) {
-    _spellHotkeys = value;
+  String get alignment => _alignment;
+
+  set alignment(String value) {
+    _alignment = value;
   }
 
   Set<WeaponHotkey> get weaponHotkeys => _weaponHotkeys;
@@ -149,9 +167,9 @@ class Character {
     _knownSpells = value;
   }
 
-  List<Item> get inventory => _inventory;
+  Map<Item, int> get inventory => _inventory;
 
-  set inventory(List<Item> value) {
+  set inventory(Map<Item, int> value) {
     _inventory = value;
   }
 
@@ -276,13 +294,12 @@ class Character {
           _freeSpells == other._freeSpells &&
           _freeGeneralSpells == other._freeGeneralSpells &&
           _skillChecks == other._skillChecks &&
+          _proficiencies == other._proficiencies &&
           _feats == other._feats &&
           _knownSkills == other._knownSkills &&
-          _proficiencies == other._proficiencies &&
-          _inventory == other._inventory &&
           _knownSpells == other._knownSpells &&
-          _weaponHotkeys == other._weaponHotkeys &&
-          _spellHotkeys == other._spellHotkeys;
+          _inventory == other._inventory &&
+          _weaponHotkeys == other._weaponHotkeys;
 
   @override
   int get hashCode =>
@@ -300,11 +317,10 @@ class Character {
       _freeSpells.hashCode ^
       _freeGeneralSpells.hashCode ^
       _skillChecks.hashCode ^
+      _proficiencies.hashCode ^
       _feats.hashCode ^
       _knownSkills.hashCode ^
-      _proficiencies.hashCode ^
-      _inventory.hashCode ^
       _knownSpells.hashCode ^
-      _weaponHotkeys.hashCode ^
-      _spellHotkeys.hashCode;
+      _inventory.hashCode ^
+      _weaponHotkeys.hashCode;
 }

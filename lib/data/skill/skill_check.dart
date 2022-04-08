@@ -1,20 +1,23 @@
 class SkillCheck {
+  String _name;
+  String _code;
+  bool _protected;
 
-  late String _name;
-  late String _code;
-  late bool _protected;
-
-  static List<SkillCheck> skills = [];
-  
   SkillCheck(this._name, this._code, this._protected);
 
-  SkillCheck.withAdd(this._name, this._code, this._protected){skills.add(this);}
+  SkillCheck.smart({
+    String name = "Example name",
+    String code = "Example name",
+    bool protected = false,
+  })  : _name = name,
+        _code = code,
+        _protected = protected;
 
-  SkillCheck.copyFrom(SkillCheck object){
-    _name = object.name;
-    _code = object.code;
-    _protected = false;
-  }
+  //SkillCheck.copyFrom(SkillCheck object){
+  //  _name = object.name;
+  //  _code = object.code;
+  //  _protected = false;
+  //}
 
   static List<SkillCheck> getStandartSkills() {
     List<SkillCheck> returnSkills = [];

@@ -1,22 +1,36 @@
-class Item{
+class Item {
+  String _name;
+  String _description;
+  int _weight;
+  int _cost;
+  Set<String> _notes;
+  bool _protected;
 
-  late String _name;
-  late String _description;
-  late int _weight;
-  late int _cost;
-  late Set<String> _notes;
-  late bool _protected;
+  Item(this._name, this._description, this._weight, this._cost, this._notes,
+      this._protected);
 
-  Item(this._name, this._description, this._weight, this._cost, this._notes, this._protected);
+  Item.smart(
+      {String name = "Default name",
+      String description = "Default description",
+      int weight = 10,
+      int cost = 20,
+      Set<String>? notes,
+      bool protected = false})
+      : _name = name,
+        _description = description,
+        _weight = weight,
+        _cost = cost,
+        _notes = notes ?? {},
+        _protected = protected;
 
-  Item.copyFrom(Item object){
-    _name = object.name;
-    _description = object.description;
-    _weight = object.weight;
-    _cost = object.cost;
-    _notes.addAll(object.notes);
-    _protected = false;
-  }
+  //Item.copyFrom(Item object){
+  //  _name = object.name;
+  //  _description = object.description;
+  //  _weight = object.weight;
+  //  _cost = object.cost;
+  //  _notes.addAll(object.notes);
+  //  _protected = false;
+  //}
 
   bool get protected => _protected;
 
