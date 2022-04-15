@@ -17,15 +17,15 @@ class WeaponAdapter extends TypeAdapter<Weapon>{
     final DamageType damageType = reader.read();
     final List<Dice> versatileDamage = List.castFrom(reader.readList());
     final bool heavy = reader.readBool();
+    final bool light = reader.readBool();
     final bool twoHanded = reader.readBool();
-    final bool melee = reader.readBool();
-    final bool throwable = reader.readBool();
     final bool reach = reader.readBool();
     final bool special = reader.readBool();
     final bool fencing = reader.readBool();
-    final int minDistance = reader.readInt();
-    final int maxDistance = reader.readInt();
-    return Weapon(name, description, weight, cost, notes, protected, damage, damageType, versatileDamage, heavy, twoHanded, melee, throwable, reach, special, fencing, minDistance, maxDistance);
+    final bool reloading = reader.readBool();
+    final List<int> rangedDistance = reader.readIntList();
+    final List<int> throwableDistance = reader.readIntList();
+    return Weapon(name, description, weight, cost, notes, protected, damage, damageType, versatileDamage, heavy, light, twoHanded, reach, special, fencing, reloading, rangedDistance, throwableDistance);
   }
 
   @override
@@ -43,14 +43,14 @@ class WeaponAdapter extends TypeAdapter<Weapon>{
     writer.write(obj.damageType);
     writer.writeList(obj.versatileDamage);
     writer.writeBool(obj.heavy);
+    writer.writeBool(obj.light);
     writer.writeBool(obj.twoHanded);
-    writer.writeBool(obj.melee);
-    writer.writeBool(obj.throwable);
     writer.writeBool(obj.reach);
     writer.writeBool(obj.special);
     writer.writeBool(obj.fencing);
-    writer.writeInt(obj.minDistance);
-    writer.writeInt(obj.maxDistance);
+    writer.writeBool(obj.reloading);
+    writer.writeIntList(obj.rangedDistance);
+    writer.writeIntList(obj.throwableDistance);
   }
 
 }

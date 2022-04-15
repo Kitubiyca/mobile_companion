@@ -51,7 +51,7 @@ class ClassAdapter extends TypeAdapter<Class>{
     writer.writeInt(obj.proficiencyCount);
     writer.writeList(obj.proficiencyChoices.toList());
     writer.writeList(obj.proficiencies.toList());
-    writer.writeList(obj.savingChecks.toList());
+    writer.writeStringList(obj.savingChecks.toList());
     writer.writeString(obj.classPointsName);
     writer.writeList(obj.levels);
     writer.writeInt(obj.subClassChooseLevel);

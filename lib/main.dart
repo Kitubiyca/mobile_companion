@@ -9,7 +9,6 @@ import 'package:dnd_companion/adapters/race_adapter.dart';
 import 'package:dnd_companion/adapters/resist_adapter.dart';
 import 'package:dnd_companion/adapters/skill_check_adapter.dart';
 import 'package:dnd_companion/adapters/sub_race_adapter.dart';
-import 'package:dnd_companion/adapters/test_adapters.dart';
 import 'package:dnd_companion/adapters/weapon_adapter.dart';
 import 'package:dnd_companion/adapters/weapon_hotkey_adapter.dart';
 import 'package:dnd_companion/data/character/character.dart';
@@ -27,126 +26,23 @@ import 'adapters/damage_type_adapter.dart';
 import 'adapters/dice_adapter.dart';
 import 'adapters/item_adapter.dart';
 import 'adapters/spell_adapter.dart';
+import 'data/character/class/class.dart';
+import 'data/character/race/race.dart';
+import 'data/character/race/sub_race.dart';
 import 'data/characteristics/damage_type.dart';
 import 'data/dice/dice.dart';
+import 'data/equipment/armor.dart';
 import 'data/equipment/item.dart';
 import 'data/equipment/weapon.dart';
+import 'data/skill/skill_check.dart';
 import 'data/spell/spell.dart';
 import 'screens/spells/spell_view.dart';
 
 Future<void> main() async {
-  SpellSlots.initialize();
+
   await Hive.initFlutter();
-  Hive.registerAdapter(ArmorAdapter());
-  Hive.registerAdapter(BackgroundAdapter());
-  Hive.registerAdapter(CharacterAdapter());
-  Hive.registerAdapter(ClassAdapter());
-  Hive.registerAdapter(DamageTypeAdapter());
-  Hive.registerAdapter(DiceAdapter());
-  Hive.registerAdapter(FeatAdapter());
-  Hive.registerAdapter(ItemAdapter());
-  Hive.registerAdapter(LevelAdapter());
-  Hive.registerAdapter(ProficiencyAdapter());
-  Hive.registerAdapter(RaceAdapter());
-  Hive.registerAdapter(ResistAdapter());
-  Hive.registerAdapter(SkillCheckAdapter());
-  Hive.registerAdapter(SpellAdapter());
-  Hive.registerAdapter(SubRaceAdapter());
-  Hive.registerAdapter(WeaponAdapter());
-  Hive.registerAdapter(WeaponHotkeyAdapter());
 
-  Character character = Character.smart();
-  Weapon weapon = Weapon.smart();
-  WeaponHotkey key = WeaponHotkey.smart("key", weapon, character);
-  character.weaponHotkeys.add(key);
-
-  //var box = await Hive.openBox<Character>("characters");
-  //await box.put(0, character);
-  //box.close();
-
-  Hive.registerAdapter(Test1Adapter());
-  Hive.registerAdapter(Test2Adapter());
-
-  Test1 test1 = Test1("test", Test2.low(12));
-
-  test1.test2.test1 = test1;
-  test1.toString();
-
-  //var box1 = await Hive.openBox<Test1>("test1");
-  //await box1.add(test1);
-  //Test1 test11 = box1.getAt(0)!;
-  //print(test11.toString());
-
-  /*Spell spell1 = Spell(
-    "Волшебная стрела",
-    "Вы создаете три светящихся дротика из магической силы. Каждый дротик попадает в существо на ваш выбор, видимое в пределах дистанции. Каждый дротик причиняет урон силовым полем 1к4 + 1. Все дротики атакуют одновременно, и вы можете направить их как в одно существо, так и в разных.",
-    ["На больших уровнях. Если вы накладываете это заклинание, используя ячейку 2 уровня или выше, заклинание создает по одному дополнительному дротику за каждый уровень ячейки выше первого."],
-    120,
-    true,
-    true,
-    {},
-    false,
-    "Мгновенная",
-    false,
-    1,
-    1,
-    false,
-    false,
-    "",
-    DamageType.smart(force: true),
-    [Dice(1, 4)],
-    1,
-    true);
-
-  Spell spell2 = Spell(
-    "Щит",
-    "Невидимый барьер из магической силы появляется, защищая вас. Вы получаете до начала своего следующего хода бонус +5 к КД, в том числе и против вызвавшей срабатывание атаки, и вы не получаете урон от волшебной стрелы.",
-    [],
-    0,
-    true,
-    true,
-    {},
-    false,
-    "1 раунд",
-    false,
-    1,
-    1,
-    false,
-    false,
-    "",
-    DamageType.empty(),
-    [],
-    5,
-    true
-  );*/
-
-  //Spell spell = Spell('name', 'desc', ['desc1', 'desc2'], 20, true, true, {}, false, '1 day', true, 3, 7, false, false, "cha", DamageType.empty(), [], 6, false);
-  //Box<Spell> box = await Hive.openBox<Spell>('spells');
-  //box.add(spell1);
-  //box.add(spell2);
-  //box.close();
-
-  //box.put('test', spell);
-  //box.close();
-  //box.deleteFromDisk();
-
-  //Item item1 = Item("Книга", "Книга, подробно рассказывающая о похождениях великого рыцаря.", 5, 25, {}, false);
-  //Item item2 = Item("Кошель", "", 1, 5, {"дырявый", "выцветший"}, false);
-  //Item item3 = Item("Лютня", "Инструмент барда.", 3, 35, {"потрескавшаяся"}, false);
-
-  //Box<Item> boxItem = await Hive.openBox<Item>('items');
-  //boxItem.add(item1);
-  //boxItem.add(item2);
-  //boxItem.add(item3);
-  //box.close();
-
-  //Dice dice = Dice(2, 20);
-  //SpellLevel obj = SpellLevel(1, 1, 2, 4, dice, 10);
-  //box.put('spell', obj);
-  //SpellLevel obj = box.get('spell');
-  //print(obj.level);
-  //print(obj.constImpact);
-  //print(obj.impact.max);
+  await initializeApp();
 
   runApp(const MyApp());
 }
@@ -173,4 +69,66 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+initializeApp() async {
+  SpellSlots.initialize();
+
+  Hive.registerAdapter(ArmorAdapter());
+  Hive.registerAdapter(BackgroundAdapter());
+  Hive.registerAdapter(CharacterAdapter());
+  Hive.registerAdapter(ClassAdapter());
+  Hive.registerAdapter(DamageTypeAdapter());
+  Hive.registerAdapter(DiceAdapter());
+  Hive.registerAdapter(FeatAdapter());
+  Hive.registerAdapter(ItemAdapter());
+  Hive.registerAdapter(LevelAdapter());
+  Hive.registerAdapter(ProficiencyAdapter());
+  Hive.registerAdapter(RaceAdapter());
+  Hive.registerAdapter(ResistAdapter());
+  Hive.registerAdapter(SkillCheckAdapter());
+  Hive.registerAdapter(SpellAdapter());
+  Hive.registerAdapter(SubRaceAdapter());
+  Hive.registerAdapter(WeaponAdapter());
+  Hive.registerAdapter(WeaponHotkeyAdapter());
+
+  var settings = await Hive.openBox("settings");
+  if(!settings.containsKey("initializedData")){
+
+    Box<SkillCheck> skillCheckBox = await Hive.openBox<SkillCheck>("SkillChecks");
+    await skillCheckBox.addAll(SkillCheck.getStandartSkillChecks());
+    await skillCheckBox.close();
+
+    Box<Spell> spellBox = await Hive.openBox<Spell>("Spells");
+    await spellBox.addAll(Spell.getStandartSpells());
+    await spellBox.close();
+
+    //Box<Weapon> weaponBox = await Hive.openBox<Weapon>("Weapons");
+    //await weaponBox.addAll(Weapon.getStandartWeapons());
+    //await weaponBox.close();
+
+    Box<Item> weaponBox = await Hive.openBox<Item>("items");
+    await weaponBox.addAll(Weapon.getStandartWeapons());
+
+
+    Box<Armor> armorBox = await Hive.openBox<Armor>("Armor");
+    await armorBox.addAll(Armor.getStandartArmor());
+    await armorBox.close();
+
+    SubRace subRace = SubRace.smart(name: "Человек");
+    Class cClass = Class.smart(name: "Воин", savingChecks: {"str", "con"});
+    Box<Character> characterBox = await Hive.openBox<Character>("Characters");
+    Character character = Character.smart(name: "Василий", characterClass: {cClass: 7}, race: subRace, stats: {"str": 14, "dex": 9, "con": 12, "int": 8, "wis": 5, "cha": 11, });
+    character.inventory[weaponBox.getAt(0)!] = 1;
+    character.inventory[weaponBox.getAt(2)!] = 1;
+    character.inventory[weaponBox.getAt(5)!] = 1;
+    character.inventory[weaponBox.getAt(7)!] = 1;
+    await characterBox.add(character);
+    await weaponBox.close();
+    await characterBox.close();
+
+    settings.put("initializedData", true);
+  }
+  settings.close();
+  return;
 }

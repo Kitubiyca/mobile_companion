@@ -28,15 +28,15 @@ class Armor extends Item {
 
   Armor.smart({
     String name = "Default name",
-    String description = "Default description",
-    int weight = 10,
-    int cost = 20,
+    String description = "",
+    int weight = 0,
+    int cost = 0,
     Set<String>? notes,
     bool protected = false,
-    String type = "light",
-    int AC = 10,
-    String ACModifier = "dex",
-    int maxModifier = 2,
+    String type = "",
+    int AC = 0,
+    String ACModifier = "",
+    int maxModifier = 0,
     bool noise = false,
     int requirement = 0,
     Resist? resist,
@@ -56,6 +56,27 @@ class Armor extends Item {
   //  _requirement = object.requirement;
   //  _resist = Resist.copyFrom(object.resist);
   //}
+
+  static List<Armor> getStandartArmor(){
+    List<Armor> armor = [];
+    armor.add(Armor.smart(name: "Стёганый доспех", cost: 500, AC: 11, ACModifier: "dex", noise: true, weight: 8, notes: {"лёгкий"}));
+    armor.add(Armor.smart(name: "Кожаный доспех", cost: 1000, AC: 11, ACModifier: "dex", weight: 10, notes: {"лёгкий"}));
+    armor.add(Armor.smart(name: "Проклёпаный кожаный доспех", cost: 4500, AC: 12, ACModifier: "dex", weight: 13, notes: {"лёгкий"}));
+
+    armor.add(Armor.smart(name: "Шкурный доспех", cost: 1000, AC: 12, ACModifier: "dex", maxModifier: 2, weight: 12, notes: {"средний"}));
+    armor.add(Armor.smart(name: "Кольчужная рубаха", cost: 5000, AC: 13, ACModifier: "dex", maxModifier: 2, weight: 20, notes: {"средний"}));
+    armor.add(Armor.smart(name: "Чешуйчатый доспех", cost: 5000, AC: 14, ACModifier: "dex", maxModifier: 2, noise: true, weight: 45, notes: {"средний"}));
+    armor.add(Armor.smart(name: "Кираса", cost: 40000, AC: 14, ACModifier: "dex", maxModifier: 2, weight: 20, notes: {"средний"}));
+    armor.add(Armor.smart(name: "Полулаты", cost: 75000, AC: 15, ACModifier: "dex", maxModifier: 2, noise: true, weight: 40, notes: {"средний"}));
+
+    armor.add(Armor.smart(name: "Калечный доспех", cost: 3000, AC: 14, noise: true, weight: 40, notes: {"тяжёлый"}));
+    armor.add(Armor.smart(name: "Кольчужный доспех", cost: 7500, AC: 16, requirement: 13, noise: true, weight: 55, notes: {"тяжёлый"}));
+    armor.add(Armor.smart(name: "Наборный доспех", cost: 20000, AC: 17, requirement: 15, noise: true, weight: 60, notes: {"тяжёлый"}));
+    armor.add(Armor.smart(name: "Латный доспех", cost: 150000, AC: 18, requirement: 15, noise: true, weight: 65, notes: {"тяжёлый"}));
+
+    armor.add(Armor.smart(name: "Щит", cost: 1000, AC: 2, weight: 6, notes: {"щит"}));
+    return armor;
+  }
 
   Resist get resist => _resist;
 

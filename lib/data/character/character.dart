@@ -1,6 +1,6 @@
 import 'package:dnd_companion/data/character/background.dart';
-import 'package:dnd_companion/data/character/race/race.dart';
 import 'package:dnd_companion/data/character/race/sub_race.dart';
+import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
 import 'package:dnd_companion/data/hotkeys/skill_hotkey.dart';
 import 'package:dnd_companion/data/hotkeys/spell_hotkey.dart';
@@ -16,8 +16,7 @@ class Character {
   String _name;
   Map<Class, int> _characterClass;
   Background _background;
-  Race _race;
-  SubRace? _subRace;
+  SubRace _race;
   String _alignment;
   int _experience;
 
@@ -38,15 +37,14 @@ class Character {
   Map<Item, int> _inventory;
 
   Set<WeaponHotkey> _weaponHotkeys;
-  //Set<SpellHotkey> _spellHotkeys;
-  //Set<SkillHotkey> _skillHotkeys;
+  Set<SpellHotkey> _spellHotkeys;
+  Set<SkillHotkey> _skillHotkeys;
 
   Character(
       this._name,
       this._characterClass,
       this._background,
       this._race,
-      this._subRace,
       this._alignment,
       this._experience,
       this._stats,
@@ -61,14 +59,15 @@ class Character {
       this._knownSkills,
       this._knownSpells,
       this._inventory,
-      this._weaponHotkeys);
+      this._weaponHotkeys,
+      this._spellHotkeys,
+      this._skillHotkeys);
 
   Character.smart(
       {name = "Example name",
       Map<Class, int>? characterClass,
       Background? background,
-      Race? race,
-      SubRace? subRace,
+      required SubRace race,
       String alignment = "True Neutral",
       int experience = 0,
       Map<String, int>? stats,
@@ -87,10 +86,9 @@ class Character {
       Set<SpellHotkey>? spellHotkeys,
       Set<SkillHotkey>? skillHotkeys})
       : _name = name,
-        _characterClass = characterClass ?? <Class, int>{Class.smart(): 1},
+        _characterClass = characterClass ?? {},
         _background = background ?? Background.smart(),
-        _race = race ?? Race.smart(),
-        _subRace = subRace,
+        _race = race,
         _alignment = alignment,
         _experience = experience,
         _stats = stats ??
@@ -121,32 +119,77 @@ class Character {
         _knownSkills = knownSkills ?? {},
         _knownSpells = knownSpells ?? {},
         _inventory = inventory ?? {},
-        _weaponHotkeys = weaponHotkeys ?? {};
+        _weaponHotkeys = weaponHotkeys ?? {},
+        _spellHotkeys = spellHotkeys ?? {},
+        _skillHotkeys = skillHotkeys ?? {};
 
-  int getStatsBonus(String name){
-    int? stat = _stats[name];
-    if (stat == null ? true : false){return 0;}
-    else{
-      return ((stat - 10)/2).floor();
+  void addItem(Item item, int count) {
+    if (inventory[item] != null) {
+      inventory[item] = inventory[item]! + count;
+    } else {
+      inventory[item] = count;
     }
   }
-  void addItem(Item item, int count){
-    if(inventory[item] != null){inventory[item] = inventory[item]! + count;}
-    else{inventory[item] = count;}
-  }
 
-  bool removeItem(Item item, int count){
-    if(inventory[item] != null){
-      if(inventory[item]! - count > 0){
+  bool removeItem(Item item, int count) {
+    if (inventory[item] != null) {
+      if (inventory[item]! - count > 0) {
         inventory[item] = inventory[item]! - count;
         return true;
-      } else if(inventory[item]! - count == 0){
+      } else if (inventory[item]! - count == 0) {
         inventory.remove(item);
         return true;
       } else {
         return false;
       }
-    } else {return false;}
+    } else {
+      return false;
+    }
+  }
+
+  int getProficiencyBonus(){
+    int ret = 0;
+    for(Class obj in _characterClass.keys){
+      ret += _characterClass[obj]!;
+    }
+    ret--;
+    ret = (ret/4).floor();
+    ret++;
+    ret++;
+    return ret;
+  }
+
+  int getStatBonus(String identifier){
+    if(stats[identifier] != null){
+      return ((stats[identifier]! - 10)/2).floor();
+    }
+    return 0;
+  }
+
+  int getInitiativeBonus(){
+    int stat = getStatBonus("dex");
+    return stat;
+  }
+
+  int getArmorClass(){
+    int ret = 10 + getStatBonus("dex");
+    return ret;
+  }
+
+//SkillCheck skillCheck = SkillCheck("Внимательность", "wis", true);
+
+  int getSkillCheckResult(SkillCheck skillCheck, {bool fixed = false}){
+    int ret = 0;
+    if(fixed){
+      ret += 10;
+    } else {
+      ret += Dice(1, 20).roll()[0];
+    }
+    ret += getStatBonus(skillCheck.code);
+    if(_skillChecks.contains(skillCheck)){
+      ret += getProficiencyBonus();
+    }
+    return ret;
   }
 
   String get alignment => _alignment;
@@ -245,15 +288,9 @@ class Character {
     _alignment = value;
   }
 
-  SubRace? get subRace => _subRace;
+  SubRace get race => _race;
 
-  set subRace(SubRace? value) {
-    _subRace = value;
-  }
-
-  Race get race => _race;
-
-  set race(Race value) {
+  set race(SubRace value) {
     _race = value;
   }
 
@@ -275,6 +312,18 @@ class Character {
     _name = value;
   }
 
+  Set<SkillHotkey> get skillHotkeys => _skillHotkeys;
+
+  set skillHotkeys(Set<SkillHotkey> value) {
+    _skillHotkeys = value;
+  }
+
+  Set<SpellHotkey> get spellHotkeys => _spellHotkeys;
+
+  set spellHotkeys(Set<SpellHotkey> value) {
+    _spellHotkeys = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -284,7 +333,6 @@ class Character {
           _characterClass == other._characterClass &&
           _background == other._background &&
           _race == other._race &&
-          _subRace == other._subRace &&
           _alignment == other._alignment &&
           _experience == other._experience &&
           _stats == other._stats &&
@@ -299,7 +347,9 @@ class Character {
           _knownSkills == other._knownSkills &&
           _knownSpells == other._knownSpells &&
           _inventory == other._inventory &&
-          _weaponHotkeys == other._weaponHotkeys;
+          _weaponHotkeys == other._weaponHotkeys &&
+          _spellHotkeys == other._spellHotkeys &&
+          _skillHotkeys == other._skillHotkeys;
 
   @override
   int get hashCode =>
@@ -307,7 +357,6 @@ class Character {
       _characterClass.hashCode ^
       _background.hashCode ^
       _race.hashCode ^
-      _subRace.hashCode ^
       _alignment.hashCode ^
       _experience.hashCode ^
       _stats.hashCode ^
@@ -322,5 +371,7 @@ class Character {
       _knownSkills.hashCode ^
       _knownSpells.hashCode ^
       _inventory.hashCode ^
-      _weaponHotkeys.hashCode;
+      _weaponHotkeys.hashCode ^
+      _spellHotkeys.hashCode ^
+      _skillHotkeys.hashCode;
 }

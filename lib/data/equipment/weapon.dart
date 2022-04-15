@@ -10,15 +10,15 @@ class Weapon extends Item{
   List<Dice> _versatileDamage;
 
   bool _heavy;
+  bool _light;
   bool _twoHanded;
-  bool _melee;
-  bool _throwable;
   bool _reach;
   bool _special;
   bool _fencing; // finesse
+  bool _reloading;
 
-  int _minDistance;
-  int _maxDistance;
+  List<int> _rangedDistance;
+  List<int> _throwableDistance;
 
   Weapon(
       String name,
@@ -31,61 +31,70 @@ class Weapon extends Item{
       this._damageType,
       this._versatileDamage,
       this._heavy,
+      this._light,
       this._twoHanded,
-      this._melee,
-      this._throwable,
       this._reach,
       this._special,
       this._fencing,
-      this._minDistance,
-      this._maxDistance) : super(name, description, weight, cost, notes, false);
+      this._reloading,
+      this._rangedDistance,
+      this._throwableDistance) : super(name, description, weight, cost, notes, false);
 
   Weapon.smart({
     String name = "Default name",
-    String description = "Default description",
-    int weight = 10,
-    int cost = 20,
+    String description = "",
+    int weight = 0,
+    int cost = 0,
     Set<String>? notes,
     bool protected = false,
     List<Dice>? damage,
     DamageType? damageType,
     List<Dice>? versatileDamage,
     bool heavy = false,
+    bool light = false,
     bool twoHanded = false,
-    bool melee = false,
-    bool throwable = false,
     bool reach = false,
     bool special = false,
     bool fencing = false,
-    int minDistance = 0,
-    int maxDistance = 20,
+    bool reloading = false,
+    List<int>? rangedDistance,
+    List<int>? throwableDistance,
 }) :
         _damage = damage ?? [],
         _damageType = damageType ?? DamageType.empty(),
         _versatileDamage = versatileDamage ?? [],
         _heavy = heavy,
+  _light = light,
         _twoHanded = twoHanded,
-        _melee = melee,
-        _throwable = throwable,
         _reach = reach,
         _special = special,
         _fencing = fencing,
-        _minDistance = minDistance,
-        _maxDistance = maxDistance,
+  _reloading = reloading,
+  _rangedDistance = rangedDistance ?? [],
+  _throwableDistance = throwableDistance ?? [],
         super(name, description, weight, cost, notes ?? {}, false){
     if(_damage.isEmpty) _damage.add(Dice(1, 4));
   }
 
-  int get maxDistance => _maxDistance;
+  static List<Weapon> getStandartWeapons(){
+    List<Weapon> weapons = [];
+    weapons.add(Weapon.smart(name: "Боевой посох", cost: 20, damage: [Dice(1, 6)], damageType: DamageType.smart(bludgeoning: true), weight: 4, versatileDamage: [Dice(1, 8)]));
+    weapons.add(Weapon.smart(name: "Булава", cost: 500, damage: [Dice(1, 6)], damageType: DamageType.smart(bludgeoning: true), weight: 4));
+    weapons.add(Weapon.smart(name: "Дубинка", cost: 10, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), weight: 2, light: true));
+    weapons.add(Weapon.smart(name: "Кинжал", cost: 200, damage: [Dice(1, 4)], damageType: DamageType.smart(piercing: true), weight: 1, light: true, throwableDistance: [20, 60], fencing: true));
+    weapons.add(Weapon.smart(name: "Копьё", cost: 100, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 3, throwableDistance: [20, 60], versatileDamage: [Dice(1, 8)]));
+    weapons.add(Weapon.smart(name: "Лёгкий молот", cost: 200, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), weight: 2, light: true, throwableDistance: [20, 60]));
+    weapons.add(Weapon.smart(name: "Метательное копьё", cost: 50, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 2, throwableDistance: [30, 120]));
+    weapons.add(Weapon.smart(name: "Палица", cost: 20, damage: [Dice(1, 8)], damageType: DamageType.smart(bludgeoning: true), weight: 10, twoHanded: true));
+    weapons.add(Weapon.smart(name: "Ручной топор", cost: 500, damage: [Dice(1, 6)], damageType: DamageType.smart(slashing: true), weight: 2, light: true, throwableDistance: [20, 60]));
+    weapons.add(Weapon.smart(name: "Серп", cost: 100, damage: [Dice(1, 4)], damageType: DamageType.smart(slashing: true), weight: 2, light: true));
 
-  set maxDistance(int value) {
-    _maxDistance = value;
-  }
+    weapons.add(Weapon.smart(name: "Арбалет, лёгкий", cost: 2500, damage: [Dice(1, 8)], damageType: DamageType.smart(piercing: true), weight: 5, rangedDistance: [80, 320], twoHanded: true, reloading: true));
+    weapons.add(Weapon.smart(name: "Дротик", cost: 5, damage: [Dice(1, 4)], damageType: DamageType.smart(piercing: true), throwableDistance: [20, 60], fencing: true));
+    weapons.add(Weapon.smart(name: "Короткий лук", cost: 2500, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 2, rangedDistance: [80, 320], twoHanded: true));
+    weapons.add(Weapon.smart(name: "Праща", cost: 10, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), rangedDistance: [30, 120]));
 
-  int get minDistance => _minDistance;
-
-  set minDistance(int value) {
-    _minDistance = value;
+    return weapons;
   }
 
   bool get fencing => _fencing;
@@ -104,18 +113,6 @@ class Weapon extends Item{
 
   set reach(bool value) {
     _reach = value;
-  }
-
-  bool get throwable => _throwable;
-
-  set throwable(bool value) {
-    _throwable = value;
-  }
-
-  bool get melee => _melee;
-
-  set melee(bool value) {
-    _melee = value;
   }
 
   bool get twoHanded => _twoHanded;
@@ -148,6 +145,30 @@ class Weapon extends Item{
     _damage = value;
   }
 
+  bool get light => _light;
+
+  set light(bool value) {
+    _light = value;
+  }
+
+  List<int> get throwableDistance => _throwableDistance;
+
+  set throwableDistance(List<int> value) {
+    _throwableDistance = value;
+  }
+
+  List<int> get rangedDistance => _rangedDistance;
+
+  set rangedDistance(List<int> value) {
+    _rangedDistance = value;
+  }
+
+  bool get reloading => _reloading;
+
+  set reloading(bool value) {
+    _reloading = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -158,14 +179,14 @@ class Weapon extends Item{
           _damageType == other._damageType &&
           _versatileDamage == other._versatileDamage &&
           _heavy == other._heavy &&
+          _light == other._light &&
           _twoHanded == other._twoHanded &&
-          _melee == other._melee &&
-          _throwable == other._throwable &&
           _reach == other._reach &&
           _special == other._special &&
           _fencing == other._fencing &&
-          _minDistance == other._minDistance &&
-          _maxDistance == other._maxDistance;
+          _reloading == other._reloading &&
+          _rangedDistance == other._rangedDistance &&
+          _throwableDistance == other._throwableDistance;
 
   @override
   int get hashCode =>
@@ -174,14 +195,14 @@ class Weapon extends Item{
       _damageType.hashCode ^
       _versatileDamage.hashCode ^
       _heavy.hashCode ^
+      _light.hashCode ^
       _twoHanded.hashCode ^
-      _melee.hashCode ^
-      _throwable.hashCode ^
       _reach.hashCode ^
       _special.hashCode ^
       _fencing.hashCode ^
-      _minDistance.hashCode ^
-      _maxDistance.hashCode;
+      _reloading.hashCode ^
+      _rangedDistance.hashCode ^
+      _throwableDistance.hashCode;
 
 //Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
   //  addNotes(object.notes);

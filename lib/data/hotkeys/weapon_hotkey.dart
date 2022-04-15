@@ -6,17 +6,15 @@ class WeaponHotkey {
   String _name;
   Weapon _weapon;
   String _characteristic;
-  Character _character;
   bool _versatile;
   Item? _ammunition;
 
-  WeaponHotkey(this._name, this._weapon, this._characteristic, this._character,
+  WeaponHotkey(this._name, this._weapon, this._characteristic,
       this._versatile, this._ammunition);
 
   WeaponHotkey.smart(
     this._name,
-    this._weapon,
-    this._character, {
+    this._weapon, {
     String? characteristic,
     bool versatile = false,
     Item? ammunition,
@@ -34,12 +32,6 @@ class WeaponHotkey {
 
   set ammunition(Item? value) {
     _ammunition = value;
-  }
-
-  Character get character => _character;
-
-  set character(Character value) {
-    _character = value;
   }
 
   String get characteristic => _characteristic;
@@ -68,7 +60,6 @@ class WeaponHotkey {
           _name == other._name &&
           _weapon == other._weapon &&
           _characteristic == other._characteristic &&
-          _character == other._character &&
           _versatile == other._versatile &&
           _ammunition == other._ammunition;
 
@@ -77,7 +68,6 @@ class WeaponHotkey {
       _name.hashCode ^
       _weapon.hashCode ^
       _characteristic.hashCode ^
-      _character.hashCode ^
       _versatile.hashCode ^
       _ammunition.hashCode;
 }

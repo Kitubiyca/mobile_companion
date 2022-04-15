@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import '../data/character/class/class.dart';
 import '../data/character/class/level.dart';
 import '../data/skill/skill.dart';
 import '../data/spell/spell.dart';
@@ -8,7 +7,6 @@ class LevelAdapter extends TypeAdapter<Level>{
 
   @override
   Level read(BinaryReader reader) {
-    final Class usedClass = reader.read();
     final int abilityScorePoints = reader.readInt();
     final Map<String, int> abilityScoreImprovement = Map.castFrom(reader.readMap());
     final Map<String, int> maxAbilityScoreImprovement = Map.castFrom(reader.readMap());
@@ -20,7 +18,7 @@ class LevelAdapter extends TypeAdapter<Level>{
     final Map<int, int> spellsOnLevel = Map.castFrom(reader.readMap());
     final Map<int, int> generalSpellsOnLevel = Map.castFrom(reader.readMap());
     final int? classPoints = reader.readInt();
-    return Level(usedClass, abilityScorePoints, abilityScoreImprovement, maxAbilityScoreImprovement, skills, spells, cantrips, skillCount, cantripsOnLevel, spellsOnLevel, generalSpellsOnLevel, classPoints);
+    return Level(abilityScorePoints, abilityScoreImprovement, maxAbilityScoreImprovement, skills, spells, cantrips, skillCount, cantripsOnLevel, spellsOnLevel, generalSpellsOnLevel, classPoints);
   }
 
   @override
@@ -28,7 +26,6 @@ class LevelAdapter extends TypeAdapter<Level>{
 
   @override
   void write(BinaryWriter writer, Level obj) {
-    writer.write(obj.usedClass);
     writer.writeInt(obj.abilityScorePoints);
     writer.writeMap(obj.abilityScoreImprovement);
     writer.writeMap(obj.maxAbilityScoreImprovement);

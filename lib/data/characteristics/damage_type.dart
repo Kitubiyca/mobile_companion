@@ -1,4 +1,5 @@
 class DamageType {
+
   bool _bludgeoning = false; //Дробящий
   bool _sound = false; //Звук
   bool _radiant = false; //Излучение

@@ -1,5 +1,7 @@
 class Skill{
 
+  //print classes with this skill
+
   Skill();
 
   /*

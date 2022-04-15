@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import '../data/character/class/class.dart';
 import '../data/character/race/race.dart';
 import '../data/character/race/sub_race.dart';
 import '../data/characteristics/resist.dart';
@@ -25,13 +24,12 @@ class RaceAdapter extends TypeAdapter<Race>{
     final Set<Proficiency> traits = Set.castFrom(reader.readList().toSet());
     final Resist resist = reader.read();
     final int additionalHits = reader.readInt();
-    final Map<Set<Class>, int> classSpells = Map.castFrom(reader.readMap());
+    final Map<String, Map<int, int>> classSpells = Map.castFrom(reader.readMap());
     final Map<int, Set<Spell>> giftedSpells = Map.castFrom(reader.readMap());
     final Set<String> languages = reader.readStringList().toSet();
-    final bool usable = reader.readBool();
-    final bool protected = reader.readBool();
     final List<SubRace> subRaces = List.castFrom(reader.readList());
-    return Race(name, description, speed, age, size, vision, abilityScoreImprovement, skillChecks, optionalProficiencies, startingProficienciesCount, startingProficiencies, traits, resist, additionalHits, classSpells, giftedSpells, languages, usable, protected, subRaces);
+    final bool protected = reader.readBool();
+    return Race(name, description, speed, age, size, vision, abilityScoreImprovement, skillChecks, optionalProficiencies, startingProficienciesCount, startingProficiencies, traits, resist, additionalHits, classSpells, giftedSpells, languages, subRaces, protected);
   }
 
   @override
@@ -56,9 +54,8 @@ class RaceAdapter extends TypeAdapter<Race>{
     writer.writeMap(obj.classSpells);
     writer.writeMap(obj.giftedSpells);
     writer.writeList(obj.languages.toList());
-    writer.writeBool(obj.usable);
-    writer.writeBool(obj.protected);
     writer.writeList(obj.subRaces);
+    writer.writeBool(obj.protected);
   }
 
 }

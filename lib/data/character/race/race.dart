@@ -20,12 +20,12 @@ class Race {
   Set<Proficiency> _traits;
   Resist _resist;
   int _additionalHits;
-  Map<Set<Class>, int> _classSpells; // Set<class spells>, spell num
+  Map<String, Map<int, int>> _classSpells; // Set<class spells>, spell num
   Map<int, Set<Spell>> _giftedSpells; // level, set<Spells>
   Set<String> _languages;
-  bool _usable;
-  bool _protected;
   List<SubRace> _subRaces = [];
+  bool _protected;
+
 
   Race(
       this._name,
@@ -45,9 +45,8 @@ class Race {
       this._classSpells,
       this._giftedSpells,
       this._languages,
-      this._usable,
-      this._protected,
-      this._subRaces);
+  this._subRaces,
+      this._protected);
 
   Race.smart(
       {String name = "Example name",
@@ -64,12 +63,12 @@ class Race {
       Set<Proficiency>? traits,
       Resist? resist,
       int additionalHits = 0,
-      Map<Set<Class>, int>? classSpells,
+        Map<String, Map<int, int>>? classSpells,
       Map<int, Set<Spell>>? giftedSpells,
       Set<String>? languages,
       bool usable = true,
-      bool protected = false,
-      List<SubRace>? subRaces})
+        List<SubRace>? subRaces,
+      bool protected = false})
       : _name = name,
         _description = description,
         _speed = speed,
@@ -87,9 +86,8 @@ class Race {
         _classSpells = classSpells ?? {},
         _giftedSpells = giftedSpells ?? {},
         _languages = languages ?? {},
-        _usable = usable,
-        _protected = protected,
-        _subRaces = subRaces ?? [];
+        _subRaces = subRaces ?? [],
+        _protected = protected;
 
   static String getStringSize(int sizeId) {
     switch (sizeId) {
@@ -122,12 +120,6 @@ class Race {
     _protected = value;
   }
 
-  bool get usable => _usable;
-
-  set usable(bool value) {
-    _usable = value;
-  }
-
   Set<String> get languages => _languages;
 
   set languages(Set<String> value) {
@@ -138,12 +130,6 @@ class Race {
 
   set giftedSpells(Map<int, Set<Spell>> value) {
     _giftedSpells = value;
-  }
-
-  Map<Set<Class>, int> get classSpells => _classSpells;
-
-  set classSpells(Map<Set<Class>, int> value) {
-    _classSpells = value;
   }
 
   int get additionalHits => _additionalHits;
@@ -230,6 +216,12 @@ class Race {
     _name = value;
   }
 
+  Map<String, Map<int, int>> get classSpells => _classSpells;
+
+  set classSpells(Map<String, Map<int, int>> value) {
+    _classSpells = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -252,9 +244,8 @@ class Race {
           _classSpells == other._classSpells &&
           _giftedSpells == other._giftedSpells &&
           _languages == other._languages &&
-          _usable == other._usable &&
-          _protected == other._protected &&
-          _subRaces == other._subRaces;
+          _subRaces == other._subRaces &&
+          _protected == other._protected;
 
   @override
   int get hashCode =>
@@ -275,9 +266,8 @@ class Race {
       _classSpells.hashCode ^
       _giftedSpells.hashCode ^
       _languages.hashCode ^
-      _usable.hashCode ^
-      _protected.hashCode ^
-      _subRaces.hashCode;
+      _subRaces.hashCode ^
+      _protected.hashCode;
 
 /*Race.copyFrom(Race object){
     _name = object.name;

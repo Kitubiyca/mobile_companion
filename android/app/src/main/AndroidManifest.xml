@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.dnd_companion">
    <application
-        android:label="dnd_companion"
-        android:icon="@mipmap/ic_launcher">
+        android:label="D&amp;D companion"
+        android:icon="@mipmap/d20">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

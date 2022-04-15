@@ -20,11 +20,10 @@ class SubRace {
   Set<Proficiency> _traits;
   Resist _resist;
   int _additionalHits;
-  Map<Set<Class>, int> _classSpells; // Set<class spells>, spell num
+  Map<String, Map<int, int>> _classSpells; // Set<class spells>, spell num
   Map<int, Set<Spell>> _giftedSpells; // level, set<Spells>
   Set<String> _languages;
   bool _protected;
-  Race _ancestor;
 
   SubRace(
       this._name,
@@ -44,8 +43,7 @@ class SubRace {
       this._classSpells,
       this._giftedSpells,
       this._languages,
-      this._protected,
-      this._ancestor);
+      this._protected);
 
   SubRace.smart(
       {String name = "Example name",
@@ -62,11 +60,10 @@ class SubRace {
       Set<Proficiency>? traits,
       Resist? resist,
       int additionalHits = 0,
-      Map<Set<Class>, int>? classSpells,
+        Map<String, Map<int, int>>? classSpells,
       Map<int, Set<Spell>>? giftedSpells,
       Set<String>? languages,
-      bool protected = false,
-      required Race ancestor})
+      bool protected = false})
       : _name = name,
         _description = description,
         _speed = speed,
@@ -84,14 +81,7 @@ class SubRace {
         _classSpells = classSpells ?? {},
         _giftedSpells = giftedSpells ?? {},
         _languages = languages ?? {},
-        _protected = protected,
-        _ancestor = ancestor;
-
-  Race get ancestor => _ancestor;
-
-  set ancestor(Race value) {
-    _ancestor = value;
-  }
+        _protected = protected;
 
   bool get protected => _protected;
 
@@ -109,12 +99,6 @@ class SubRace {
 
   set giftedSpells(Map<int, Set<Spell>> value) {
     _giftedSpells = value;
-  }
-
-  Map<Set<Class>, int> get classSpells => _classSpells;
-
-  set classSpells(Map<Set<Class>, int> value) {
-    _classSpells = value;
   }
 
   int get additionalHits => _additionalHits;
@@ -201,6 +185,12 @@ class SubRace {
     _name = value;
   }
 
+  Map<String, Map<int, int>> get classSpells => _classSpells;
+
+  set classSpells(Map<String, Map<int, int>> value) {
+    _classSpells = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -223,8 +213,7 @@ class SubRace {
           _classSpells == other._classSpells &&
           _giftedSpells == other._giftedSpells &&
           _languages == other._languages &&
-          _protected == other._protected &&
-          _ancestor == other._ancestor;
+          _protected == other._protected;
 
   @override
   int get hashCode =>
@@ -245,6 +234,5 @@ class SubRace {
       _classSpells.hashCode ^
       _giftedSpells.hashCode ^
       _languages.hashCode ^
-      _protected.hashCode ^
-      _ancestor.hashCode;
+      _protected.hashCode;
 }

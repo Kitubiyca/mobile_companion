@@ -33,7 +33,7 @@ class Dice{
   List<int> roll(){
     List<int> ret = <int>[0];
     for(int i = 0; i<_count; i++) {
-      ret.add(Random().nextInt(_max));
+      ret.add(Random().nextInt(_max) + 1);
     }
     for (int element in ret) {ret[0]+=element;}
     return ret;

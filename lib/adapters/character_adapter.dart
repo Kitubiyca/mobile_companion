@@ -1,4 +1,6 @@
 import 'package:dnd_companion/data/character/character.dart';
+import 'package:dnd_companion/data/hotkeys/skill_hotkey.dart';
+import 'package:dnd_companion/data/hotkeys/spell_hotkey.dart';
 import 'package:hive/hive.dart';
 import '../data/character/background.dart';
 import '../data/character/class/class.dart';
@@ -19,8 +21,7 @@ class CharacterAdapter extends TypeAdapter<Character>{
     final String name = reader.readString();
     final Map<Class, int> characterClass = Map.castFrom(reader.readMap());
     final Background background = reader.read();
-    final Race race = reader.read();
-    final SubRace? subRace = reader.read();
+    final SubRace race = reader.read();
     final String alignment = reader.readString();
     final int experience = reader.readInt();
     final Map<String, int> stats = Map.castFrom(reader.readMap());
@@ -36,7 +37,9 @@ class CharacterAdapter extends TypeAdapter<Character>{
     final Set<Spell> knownSpells = Set.castFrom(reader.readList().toSet());
     final Map<Item, int> inventory = Map.castFrom(reader.readMap());
     final Set<WeaponHotkey> weaponHotkeys = Set.castFrom(reader.readList().toSet());
-    return Character(name, characterClass, background, race, subRace, alignment, experience, stats, maxStats, additionalPoints, freeCantrips, freeSpells, freeGeneralSpells, skillChecks, proficiencies, feats, knownSkills, knownSpells, inventory, weaponHotkeys);
+    final Set<SpellHotkey> spellHotkeys = Set.castFrom(reader.readList().toSet());
+    final Set<SkillHotkey> skillHotkeys = Set.castFrom(reader.readList().toSet());
+    return Character(name, characterClass, background, race, alignment, experience, stats, maxStats, additionalPoints, freeCantrips, freeSpells, freeGeneralSpells, skillChecks, proficiencies, feats, knownSkills, knownSpells, inventory, weaponHotkeys, spellHotkeys, skillHotkeys);
   }
 
   @override
@@ -45,10 +48,9 @@ class CharacterAdapter extends TypeAdapter<Character>{
   @override
   void write(BinaryWriter writer, Character obj) {
     writer.writeString(obj.name);
-    writer.write(obj.characterClass);
+    writer.writeMap(obj.characterClass);
     writer.write(obj.background);
     writer.write(obj.race);
-    writer.write(obj.subRace);
     writer.writeString(obj.alignment);
     writer.writeInt(obj.experience);
     writer.writeMap(obj.stats);
@@ -64,6 +66,8 @@ class CharacterAdapter extends TypeAdapter<Character>{
     writer.writeList(obj.knownSpells.toList());
     writer.writeMap(obj.inventory);
     writer.writeList(obj.weaponHotkeys.toList());
+    writer.writeList(obj.spellHotkeys.toList());
+    writer.writeList(obj.skillHotkeys.toList());
   }
 
 }

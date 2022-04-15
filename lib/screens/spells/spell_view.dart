@@ -96,7 +96,7 @@ class _SpellViewState extends State<SpellView> {
               visible: spell.impact.isNotEmpty,
               maintainSize: false,
               child: Text(
-                "Воздействие: " + spell.getDices(),
+                "Воздействие: " + spell.getDices()[0],
                 style: const TextStyle(fontSize: 24),
               )),
           Text(

@@ -1,4 +1,3 @@
-import 'package:dnd_companion/data/character/class/class.dart';
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
@@ -9,6 +8,8 @@ class SpellAdapter extends TypeAdapter<Spell> {
   @override
   Spell read(BinaryReader reader) {
     final String name = reader.readString();
+    final int level = reader.readInt();
+    final school = reader.readString();
     final String description = reader.readString();
     final List<String> higherDescription = reader.readStringList();
     final int range = reader.readInt();
@@ -18,18 +19,18 @@ class SpellAdapter extends TypeAdapter<Spell> {
     final bool ritual = reader.readBool();
     final String duration = reader.readString();
     final bool concentration = reader.readBool();
+    final bool bonus = reader.readBool();
     final int castingTime = reader.readInt();
-    final int level = reader.readInt();
-    final bool difficultyClass = reader.readBool();
-    final bool armorPenetration = reader.readBool();
     final String savingModifier = reader.readString();
+    final bool armorPenetration = reader.readBool();
     final DamageType damageType = reader.read();
-    final List<Dice> impact = List.castFrom(reader.readList());
+    final Map<int, List<Dice>> impact = Map.castFrom(reader.readMap());
     final int constImpact = reader.readInt();
-    final Set<Class> classes = Set.castFrom(reader.readList().toSet());
     final bool protected = reader.readBool();
     return Spell(
         name,
+        level,
+        school,
         description,
         higherDescription,
         range,
@@ -39,15 +40,13 @@ class SpellAdapter extends TypeAdapter<Spell> {
         ritual,
         duration,
         concentration,
+        bonus,
         castingTime,
-        level,
-        difficultyClass,
-        armorPenetration,
         savingModifier,
+        armorPenetration,
         damageType,
         impact,
         constImpact,
-        classes,
         protected);
   }
 
@@ -57,6 +56,8 @@ class SpellAdapter extends TypeAdapter<Spell> {
   @override
   void write(BinaryWriter writer, Spell obj) {
     writer.writeString(obj.name);
+    writer.writeInt(obj.level);
+    writer.writeString(obj.school);
     writer.writeString(obj.description);
     writer.writeStringList(obj.higherDescription);
     writer.writeInt(obj.range);
@@ -66,15 +67,13 @@ class SpellAdapter extends TypeAdapter<Spell> {
     writer.writeBool(obj.ritual);
     writer.writeString(obj.duration);
     writer.writeBool(obj.concentration);
+    writer.writeBool(obj.bonus);
     writer.writeInt(obj.castingTime);
-    writer.writeInt(obj.level);
-    writer.writeBool(obj.difficultyClass);
-    writer.writeBool(obj.armorPenetration);
     writer.writeString(obj.savingModifier);
+    writer.writeBool(obj.armorPenetration);
     writer.write(obj.damageType);
-    writer.writeList(obj.impact);
+    writer.writeMap(obj.impact);
     writer.writeInt(obj.constImpact);
-    writer.write(obj.classes.toList());
     writer.writeBool(obj.protected);
   }
 }

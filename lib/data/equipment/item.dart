@@ -11,9 +11,9 @@ class Item {
 
   Item.smart(
       {String name = "Default name",
-      String description = "Default description",
-      int weight = 10,
-      int cost = 20,
+      String description = "",
+      int weight = 0,
+      int cost = 0,
       Set<String>? notes,
       bool protected = false})
       : _name = name,
@@ -31,6 +31,12 @@ class Item {
   //  _notes.addAll(object.notes);
   //  _protected = false;
   //}
+
+  static List<Item> getStandartItems(){
+    List<Item> items = [];
+
+    return items;
+  }
 
   bool get protected => _protected;
 

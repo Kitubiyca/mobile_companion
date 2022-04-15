@@ -1,12 +1,12 @@
 class SpellSlots {
   static List<List<int>> basicMagicTable =
-  List.filled(20, List.filled(9, 0, growable: false), growable: false);
+      List.filled(20, List.filled(9, 0, growable: false), growable: false);
 
-  static List<List<int>> specialMagicTable =
-  List.filled(20, List.filled(2, 0, growable: false), growable: false); //[0]-level [1]-count
+  static List<List<int>> specialMagicTable = List.filled(
+      20, List.filled(2, 0, growable: false),
+      growable: false); //[0]-level [1]-count
 
   static initialize() {
-
     basicMagicTable[0][0] = 2;
 
     basicMagicTable[1][0] = 3;
@@ -135,65 +135,64 @@ class SpellSlots {
     basicMagicTable[19][7] = 1;
     basicMagicTable[19][8] = 1;
 
-  specialMagicTable[0][0] = 1;
-  specialMagicTable[0][1] = 1;
+    specialMagicTable[0][0] = 1;
+    specialMagicTable[0][1] = 1;
 
-  specialMagicTable[1][0] = 1;
-  specialMagicTable[1][1] = 2;
+    specialMagicTable[1][0] = 1;
+    specialMagicTable[1][1] = 2;
 
-  specialMagicTable[2][0] = 2;
-  specialMagicTable[2][1] = 2;
+    specialMagicTable[2][0] = 2;
+    specialMagicTable[2][1] = 2;
 
-  specialMagicTable[3][0] = 2;
-  specialMagicTable[3][1] = 2;
+    specialMagicTable[3][0] = 2;
+    specialMagicTable[3][1] = 2;
 
-  specialMagicTable[4][0] = 3;
-  specialMagicTable[4][1] = 2;
+    specialMagicTable[4][0] = 3;
+    specialMagicTable[4][1] = 2;
 
-  specialMagicTable[5][0] = 3;
-  specialMagicTable[5][1] = 2;
+    specialMagicTable[5][0] = 3;
+    specialMagicTable[5][1] = 2;
 
-  specialMagicTable[6][0] = 4;
-  specialMagicTable[6][1] = 2;
+    specialMagicTable[6][0] = 4;
+    specialMagicTable[6][1] = 2;
 
-  specialMagicTable[7][0] = 4;
-  specialMagicTable[7][1] = 2;
+    specialMagicTable[7][0] = 4;
+    specialMagicTable[7][1] = 2;
 
-  specialMagicTable[8][0] = 5;
-  specialMagicTable[8][1] = 2;
+    specialMagicTable[8][0] = 5;
+    specialMagicTable[8][1] = 2;
 
-  specialMagicTable[9][0] = 5;
-  specialMagicTable[9][1] = 2;
+    specialMagicTable[9][0] = 5;
+    specialMagicTable[9][1] = 2;
 
-  specialMagicTable[10][0] = 5;
-  specialMagicTable[10][1] = 3;
+    specialMagicTable[10][0] = 5;
+    specialMagicTable[10][1] = 3;
 
-  specialMagicTable[11][0] = 5;
-  specialMagicTable[11][1] = 3;
+    specialMagicTable[11][0] = 5;
+    specialMagicTable[11][1] = 3;
 
-  specialMagicTable[12][0] = 5;
-  specialMagicTable[12][1] = 3;
+    specialMagicTable[12][0] = 5;
+    specialMagicTable[12][1] = 3;
 
-  specialMagicTable[13][0] = 5;
-  specialMagicTable[13][1] = 3;
+    specialMagicTable[13][0] = 5;
+    specialMagicTable[13][1] = 3;
 
-  specialMagicTable[14][0] = 5;
-  specialMagicTable[14][1] = 3;
+    specialMagicTable[14][0] = 5;
+    specialMagicTable[14][1] = 3;
 
-  specialMagicTable[15][0] = 5;
-  specialMagicTable[15][1] = 3;
+    specialMagicTable[15][0] = 5;
+    specialMagicTable[15][1] = 3;
 
-  specialMagicTable[16][0] = 5;
-  specialMagicTable[16][1] = 4;
+    specialMagicTable[16][0] = 5;
+    specialMagicTable[16][1] = 4;
 
-  specialMagicTable[17][0] = 5;
-  specialMagicTable[17][1] = 4;
+    specialMagicTable[17][0] = 5;
+    specialMagicTable[17][1] = 4;
 
-  specialMagicTable[18][0] = 5;
-  specialMagicTable[18][1] = 4;
+    specialMagicTable[18][0] = 5;
+    specialMagicTable[18][1] = 4;
 
-  specialMagicTable[19][0] = 5;
-  specialMagicTable[19][1] = 4;
+    specialMagicTable[19][0] = 5;
+    specialMagicTable[19][1] = 4;
   }
-
 }
