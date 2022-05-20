@@ -1,20 +1,42 @@
+import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/skill/skill.dart';
-import 'package:dnd_companion/data/spell/spell.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:hive/hive.dart';
 
+part 'package:dnd_companion/g_parts/level.g.dart';
+
+@HiveType(typeId: 113)
 class Level {
-
+  @HiveField(0)
   int _abilityScorePoints;
-  Map<String, int> _abilityScoreImprovement;
-  Map<String, int> _maxAbilityScoreImprovement;
-
+  @HiveField(1)
+  Map<Characteristic, int> _abilityScoreImprovement;
+  @HiveField(2)
+  Map<Characteristic, int> _maxAbilityScoreImprovement;
+  @HiveField(3)
   Set<Skill> _skills;
-  Set<Spell> _spells;
-  Set<Spell> _cantrips;
+  @HiveField(4)
+  int? _skillChoicesCount;
+  @HiveField(5)
+  Set<Skill>? _skillChoices;
+  @HiveField(6)
+  Set<String> _languages;
+  @HiveField(7)
+  int _skillChecksCount;
+  @HiveField(8)
+  Map<String?, Map<String?, Map<int, int>>>
+      _spellChoices; // getting spells with restraints (class, school, level count)
+  @HiveField(9)
+  int? _classPoints;
+  @HiveField(10)
+  Dice? _classDice;
 
-  int _skillCount;
-  int _cantripsOnLevel;
-  Map<int, int> _spellsOnLevel;
-  Map<int, int> _generalSpellsOnLevel;
+  //Set<Spell> _spells;
+  //Set<Spell> _cantrips;
+
+  //int _cantripsOnLevel;
+  //Map<int, int> _spellsOnLevel;
+  //Map<int, int> _generalSpellsOnLevel;
 
   //late Dice? _martialArts;
   //late Dice? _sneakAttack;
@@ -22,44 +44,48 @@ class Level {
   //late int? _rageDamage;
   //late int? _invocations;
 
-  int? _classPoints;
-
   Level(
       this._abilityScorePoints,
       this._abilityScoreImprovement,
       this._maxAbilityScoreImprovement,
       this._skills,
-      this._spells,
-      this._cantrips,
-      this._skillCount,
-      this._cantripsOnLevel,
-      this._spellsOnLevel,
-      this._generalSpellsOnLevel,
-      this._classPoints);
+      this._skillChoicesCount,
+      this._skillChoices,
+      this._languages,
+      this._skillChecksCount,
+      this._spellChoices,
+      this._classPoints,
+      this._classDice);
 
-  Level.smart(
-      {int abilityScorePoints = 0,
-      Map<String, int>? abilityScoreImprovement,
-      Map<String, int>? maxAbilityScoreImprovement,
-      Set<Skill>? skills,
-      Set<Spell>? spells,
-      Set<Spell>? cantrips,
-      int skillCount = 0,
-      int cantripsOnLevel = 0,
-      Map<int, int>? spellsOnLevel,
-      Map<int, int>? generalSpellsOnLevel,
-      int? classPoints})
-      : _abilityScorePoints = abilityScorePoints,
+  Level.smart({
+    int abilityScorePoints = 0,
+    Map<Characteristic, int>? abilityScoreImprovement,
+    Map<Characteristic, int>? maxAbilityScoreImprovement,
+    Set<Skill>? skills,
+    int? skillChoicesCount,
+    Set<Skill>? skillChoices,
+    Set<String>? languages,
+    int skillChecksCount = 0,
+    Map<String, Map<String, Map<int, int>>>? spellChoices,
+    int? classPoints,
+    Dice? classDice,
+  })  : _abilityScorePoints = abilityScorePoints,
         _abilityScoreImprovement = abilityScoreImprovement ?? {},
         _maxAbilityScoreImprovement = maxAbilityScoreImprovement ?? {},
         _skills = skills ?? {},
-        _spells = spells ?? {},
-        _cantrips = cantrips ?? {},
-        _skillCount = skillCount,
-        _cantripsOnLevel = cantripsOnLevel,
-        _spellsOnLevel = spellsOnLevel ?? {},
-        _generalSpellsOnLevel = generalSpellsOnLevel ?? {},
-        _classPoints = classPoints;
+        _skillChoicesCount = skillChoicesCount,
+        _skillChoices = skillChoices,
+        _languages = languages ?? {},
+        _skillChecksCount = skillChecksCount,
+        _spellChoices = spellChoices ?? {},
+        _classPoints = classPoints,
+        _classDice = classDice;
+
+  Dice? get classDice => _classDice;
+
+  set classDice(Dice? value) {
+    _classDice = value;
+  }
 
   int? get classPoints => _classPoints;
 
@@ -67,40 +93,34 @@ class Level {
     _classPoints = value;
   }
 
-  Map<int, int> get generalSpellsOnLevel => _generalSpellsOnLevel;
+  Map<String?, Map<String?, Map<int, int>>> get spellChoices => _spellChoices;
 
-  set generalSpellsOnLevel(Map<int, int> value) {
-    _generalSpellsOnLevel = value;
+  set spellChoices(Map<String?, Map<String?, Map<int, int>>> value) {
+    _spellChoices = value;
   }
 
-  Map<int, int> get spellsOnLevel => _spellsOnLevel;
+  int get skillChecksCount => _skillChecksCount;
 
-  set spellsOnLevel(Map<int, int> value) {
-    _spellsOnLevel = value;
+  set skillChecksCount(int value) {
+    _skillChecksCount = value;
   }
 
-  int get cantripsOnLevel => _cantripsOnLevel;
+  Set<String> get languages => _languages;
 
-  set cantripsOnLevel(int value) {
-    _cantripsOnLevel = value;
+  set languages(Set<String> value) {
+    _languages = value;
   }
 
-  int get skillCount => _skillCount;
+  Set<Skill>? get skillChoices => _skillChoices;
 
-  set skillCount(int value) {
-    _skillCount = value;
+  set skillChoices(Set<Skill>? value) {
+    _skillChoices = value;
   }
 
-  Set<Spell> get cantrips => _cantrips;
+  int? get skillChoicesCount => _skillChoicesCount;
 
-  set cantrips(Set<Spell> value) {
-    _cantrips = value;
-  }
-
-  Set<Spell> get spells => _spells;
-
-  set spells(Set<Spell> value) {
-    _spells = value;
+  set skillChoicesCount(int? value) {
+    _skillChoicesCount = value;
   }
 
   Set<Skill> get skills => _skills;
@@ -109,16 +129,17 @@ class Level {
     _skills = value;
   }
 
-  Map<String, int> get maxAbilityScoreImprovement =>
+  Map<Characteristic, int> get maxAbilityScoreImprovement =>
       _maxAbilityScoreImprovement;
 
-  set maxAbilityScoreImprovement(Map<String, int> value) {
+  set maxAbilityScoreImprovement(Map<Characteristic, int> value) {
     _maxAbilityScoreImprovement = value;
   }
 
-  Map<String, int> get abilityScoreImprovement => _abilityScoreImprovement;
+  Map<Characteristic, int> get abilityScoreImprovement =>
+      _abilityScoreImprovement;
 
-  set abilityScoreImprovement(Map<String, int> value) {
+  set abilityScoreImprovement(Map<Characteristic, int> value) {
     _abilityScoreImprovement = value;
   }
 
@@ -137,13 +158,13 @@ class Level {
           _abilityScoreImprovement == other._abilityScoreImprovement &&
           _maxAbilityScoreImprovement == other._maxAbilityScoreImprovement &&
           _skills == other._skills &&
-          _spells == other._spells &&
-          _cantrips == other._cantrips &&
-          _skillCount == other._skillCount &&
-          _cantripsOnLevel == other._cantripsOnLevel &&
-          _spellsOnLevel == other._spellsOnLevel &&
-          _generalSpellsOnLevel == other._generalSpellsOnLevel &&
-          _classPoints == other._classPoints;
+          _skillChoicesCount == other._skillChoicesCount &&
+          _skillChoices == other._skillChoices &&
+          _languages == other._languages &&
+          _skillChecksCount == other._skillChecksCount &&
+          _spellChoices == other._spellChoices &&
+          _classPoints == other._classPoints &&
+          _classDice == other._classDice;
 
   @override
   int get hashCode =>
@@ -151,11 +172,11 @@ class Level {
       _abilityScoreImprovement.hashCode ^
       _maxAbilityScoreImprovement.hashCode ^
       _skills.hashCode ^
-      _spells.hashCode ^
-      _cantrips.hashCode ^
-      _skillCount.hashCode ^
-      _cantripsOnLevel.hashCode ^
-      _spellsOnLevel.hashCode ^
-      _generalSpellsOnLevel.hashCode ^
-      _classPoints.hashCode;
+      _skillChoicesCount.hashCode ^
+      _skillChoices.hashCode ^
+      _languages.hashCode ^
+      _skillChecksCount.hashCode ^
+      _spellChoices.hashCode ^
+      _classPoints.hashCode ^
+      _classDice.hashCode;
 }

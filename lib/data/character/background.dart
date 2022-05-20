@@ -9,8 +9,8 @@ class Background {
   String _skill;
   Set<SkillCheck> _skillChecks;
   Set<Proficiency> _proficiencies;
-  Set<Item> _items;
-  Set<String> _languages;
+  Set<Item> _items; //TODO сделать нормальный выбор предметов и наборов
+  Set<String> _languages; //TODO сделать нормальный выбор языков
   bool _protected;
 
   Background(

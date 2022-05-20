@@ -1,10 +1,13 @@
 import 'package:dnd_companion/data/characteristics/resist.dart';
+import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:hive/hive.dart';
 import 'item.dart';
 
-class Armor extends Item {
+class Armor extends Item { //TODO проверить и поменять тяжелый средний и лёгкий доспех на бонусы
   String _type;
   int _AC;
-  String _ACModifier;
+  Characteristic _ACModifier;
   int _maxModifier;
   bool _noise;
   int _requirement;
@@ -15,6 +18,7 @@ class Armor extends Item {
       String description,
       int weight,
       int cost,
+      Set<Proficiency> proficiencies,
       Set<String> notes,
       bool protected,
       this._type,
@@ -24,18 +28,19 @@ class Armor extends Item {
       this._noise,
       this._requirement,
       this._resist)
-      : super(name, description, weight, cost, notes, protected);
+      : super(name, description, weight, cost, proficiencies, notes, protected);
 
   Armor.smart({
-    String name = "Default name",
+    required String name,
     String description = "",
     int weight = 0,
     int cost = 0,
+    Set<Proficiency>? proficiencies,
     Set<String>? notes,
     bool protected = false,
     String type = "",
     int AC = 0,
-    String ACModifier = "",
+    Characteristic ACModifier = Characteristic.none,
     int maxModifier = 0,
     bool noise = false,
     int requirement = 0,
@@ -47,7 +52,7 @@ class Armor extends Item {
         _noise = noise,
         _requirement = requirement,
         _resist = resist ?? Resist.empty(),
-        super(name, description, weight, cost, notes ?? {}, protected);
+        super(name, description, weight, cost, proficiencies ?? {}, notes ?? {}, protected);
 
   //Armor.copyFrom(Armor object) : super(object.name, object.description, object.weight, object.cost, {}, false){
   //  addNotes(object.notes);
@@ -57,25 +62,25 @@ class Armor extends Item {
   //  _resist = Resist.copyFrom(object.resist);
   //}
 
-  static List<Armor> getStandartArmor(){
+  static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
     List<Armor> armor = [];
-    armor.add(Armor.smart(name: "Стёганый доспех", cost: 500, AC: 11, ACModifier: "dex", noise: true, weight: 8, notes: {"лёгкий"}));
-    armor.add(Armor.smart(name: "Кожаный доспех", cost: 1000, AC: 11, ACModifier: "dex", weight: 10, notes: {"лёгкий"}));
-    armor.add(Armor.smart(name: "Проклёпаный кожаный доспех", cost: 4500, AC: 12, ACModifier: "dex", weight: 13, notes: {"лёгкий"}));
+    items.put("padded armor", Armor.smart(name: "Стёганый доспех", cost: 500, AC: 11, ACModifier: Characteristic.dexterity, noise: true, weight: 8, proficiencies: {proficiencies.get("light armor")!}));
+    items.put("leather armor", Armor.smart(name: "Кожаный доспех", cost: 1000, AC: 11, ACModifier: Characteristic.dexterity, weight: 10, proficiencies: {proficiencies.get("light armor")!}));
+    items.put("studded leather armor", Armor.smart(name: "Проклёпаный кожаный доспех", cost: 4500, AC: 12, ACModifier: Characteristic.dexterity, weight: 13, proficiencies: {proficiencies.get("light armor")!}));
 
-    armor.add(Armor.smart(name: "Шкурный доспех", cost: 1000, AC: 12, ACModifier: "dex", maxModifier: 2, weight: 12, notes: {"средний"}));
-    armor.add(Armor.smart(name: "Кольчужная рубаха", cost: 5000, AC: 13, ACModifier: "dex", maxModifier: 2, weight: 20, notes: {"средний"}));
-    armor.add(Armor.smart(name: "Чешуйчатый доспех", cost: 5000, AC: 14, ACModifier: "dex", maxModifier: 2, noise: true, weight: 45, notes: {"средний"}));
-    armor.add(Armor.smart(name: "Кираса", cost: 40000, AC: 14, ACModifier: "dex", maxModifier: 2, weight: 20, notes: {"средний"}));
-    armor.add(Armor.smart(name: "Полулаты", cost: 75000, AC: 15, ACModifier: "dex", maxModifier: 2, noise: true, weight: 40, notes: {"средний"}));
+    items.put("hide", Armor.smart(name: "Шкурный доспех", cost: 1000, AC: 12, ACModifier: Characteristic.dexterity, maxModifier: 2, weight: 12, proficiencies: {proficiencies.get("medium armor")!}));
+    items.put("chain shirt", Armor.smart(name: "Кольчужная рубаха", cost: 5000, AC: 13, ACModifier: Characteristic.dexterity, maxModifier: 2, weight: 20, proficiencies: {proficiencies.get("medium armor")!}));
+    items.put("scale mail", Armor.smart(name: "Чешуйчатый доспех", cost: 5000, AC: 14, ACModifier: Characteristic.dexterity, maxModifier: 2, noise: true, weight: 45, proficiencies: {proficiencies.get("medium armor")!}));
+    items.put("breastplate", Armor.smart(name: "Кираса", cost: 40000, AC: 14, ACModifier: Characteristic.dexterity, maxModifier: 2, weight: 20, proficiencies: {proficiencies.get("medium armor")!}));
+    items.put("half plate", Armor.smart(name: "Полулаты", cost: 75000, AC: 15, ACModifier: Characteristic.dexterity, maxModifier: 2, noise: true, weight: 40, proficiencies: {proficiencies.get("medium armor")!}));
 
-    armor.add(Armor.smart(name: "Калечный доспех", cost: 3000, AC: 14, noise: true, weight: 40, notes: {"тяжёлый"}));
-    armor.add(Armor.smart(name: "Кольчужный доспех", cost: 7500, AC: 16, requirement: 13, noise: true, weight: 55, notes: {"тяжёлый"}));
-    armor.add(Armor.smart(name: "Наборный доспех", cost: 20000, AC: 17, requirement: 15, noise: true, weight: 60, notes: {"тяжёлый"}));
-    armor.add(Armor.smart(name: "Латный доспех", cost: 150000, AC: 18, requirement: 15, noise: true, weight: 65, notes: {"тяжёлый"}));
+    items.put("ring mail", Armor.smart(name: "Калечный доспех", cost: 3000, AC: 14, noise: true, weight: 40, proficiencies: {proficiencies.get("all armor")!}));
+    items.put("chain mail", Armor.smart(name: "Кольчужный доспех", cost: 7500, AC: 16, requirement: 13, noise: true, weight: 55, proficiencies: {proficiencies.get("all armor")!}));
+    items.put("splint armor", Armor.smart(name: "Наборный доспех", cost: 20000, AC: 17, requirement: 15, noise: true, weight: 60, proficiencies: {proficiencies.get("all armor")!}));
+    items.put("plate armor", Armor.smart(name: "Латный доспех", cost: 150000, AC: 18, requirement: 15, noise: true, weight: 65, proficiencies: {proficiencies.get("all armor")!}));
 
-    armor.add(Armor.smart(name: "Щит", cost: 1000, AC: 2, weight: 6, notes: {"щит"}));
-    return armor;
+    items.put("shield", Armor.smart(name: "Щит", cost: 1000, AC: 2, weight: 6, proficiencies: {proficiencies.get("shields")!}));
+    return;
   }
 
   Resist get resist => _resist;
@@ -106,9 +111,9 @@ class Armor extends Item {
     _type = value;
   }
 
-  String get ACModifier => _ACModifier;
+  Characteristic get ACModifier => _ACModifier;
 
-  set ACModifier(String value) {
+  set ACModifier(Characteristic value) {
     _ACModifier = value;
   }
 

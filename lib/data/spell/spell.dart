@@ -1,32 +1,60 @@
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
+import 'package:hive_flutter/adapters.dart';
 
+part 'package:dnd_companion/g_parts/spell.g.dart';
+
+@HiveType(typeId: 71)
 class Spell {
+
+  //TODO вывод заклинаний по классам
+  //TODO print classes with this spell
+
+  @HiveField(0)
   String _name;
+  @HiveField(1)
   int _level;
+  @HiveField(2)
   String _school;
+  @HiveField(3)
   String _description;
+  @HiveField(4)
   List<String> _higherDescription;
+  @HiveField(5)
   int _range; // -1 - на себя, 0 - касание, больше 0 - футы
+  @HiveField(6)
   bool _verbal;
+  @HiveField(7)
   bool _somatic;
-  Map<Item, int> _materials;
+  @HiveField(8)
+  Map<Item, int> _materials; // simple = without price, count=0; advanced = with price, count=0; expendable = with price, count>0
+  @HiveField(9)
   bool _ritual;
+  @HiveField(10)
   String _duration; // заменить на int
+  @HiveField(11)
   bool _concentration;
+  @HiveField(12)
   bool _bonus; // bonus action
+  @HiveField(13)
   int _castingTime;
 
   // d20 + saving mod + (prof bonus)?
+  @HiveField(14)
   String
       _savingModifier; // spell evasion difficulty(8 + prof bonus + spellcasting mod(magic save mod)) that target need to beat
+  @HiveField(15)
   bool _armorPenetration; // d20 + class attack modifier vs target armor class
 
+  @HiveField(16)
   DamageType _damageType;
+  @HiveField(17)
   Map<int, List<Dice>> _impact;
+  @HiveField(18)
   int _constImpact;
 
+  @HiveField(19)
   bool _protected;
 
   Spell(
@@ -49,7 +77,7 @@ class Spell {
       this._damageType,
       this._impact,
       this._constImpact,
-      this._protected); //print classes with this spell
+      this._protected);
 
   Spell.smart({
     String name = "",
@@ -117,7 +145,7 @@ class Spell {
       String elem = "";
       if (_impact.values.elementAt(i).isNotEmpty) {
         elem += _impact.values.elementAt(i)[0].name;
-        for (int j = 1; j < _impact.length; j++) {
+        for (int j = 1; j < _impact.values.elementAt(i).length; j++) {
           elem += ", " + _impact.values.elementAt(i)[j].name;
         }
         ret.add(elem);
@@ -164,6 +192,9 @@ class Spell {
     return ret;
   }
 
+  //TODO реализовать функцию вывода всех материалов (или 3 разные функции)
+
+  @Deprecated("выводит только простые материалы")
   String getMaterials() {
     String ret = "";
     if (_materials.isNotEmpty) {
@@ -180,9 +211,8 @@ class Spell {
     return ret;
   }
 
-  static List<Spell> getStandartSpells() {
-    List<Spell> spells = [];
-    spells.add(Spell.smart(
+  static Future<void> unpack(Box<Spell> spells, Box<Item> items) async {
+    spells.put("meteor swarm", Spell.smart(
         level: 9,
         school: "воплощение",
         name: "Метеоритный дождь",
@@ -198,7 +228,7 @@ class Spell {
         damageType: DamageType.smart(fire: true, bludgeoning: true),
         description:
             "Пылающие шары ударяют о землю в четырёх разных точках, видимых в пределах дистанции. Все существа в сфере с радиусом 40 футов с центром на каждой из точек должны совершить спасбросок Ловкости. Сфера огибает углы. Существо получает при провале 20к6 урона огнём и 20к6 дробящего урона, или половину урона при успехе. Существо, находящееся в области двух взрывов получает урон только один раз.\n\nЗаклинание наносит урон предметам и воспламеняет горючие предметы, которые никто не несёт и не носит."));
-    spells.add(Spell.smart(
+    spells.put("wish", Spell.smart(
         level: 9,
         school: "вызов",
         name: "Исполнение желаний",
@@ -207,7 +237,7 @@ class Spell {
         verbal: true,
         duration: "мгновенная",
         description: ""));
-    spells.add(Spell.smart(
+    spells.put("vicious mockery", Spell.smart(
         level: 0,
         school: "очарование",
         name: "Злая насмешка",
@@ -230,7 +260,7 @@ class Spell {
           "11-ый уровень класса: урон равен 3к4",
           "17-ый уровень класса: урон равен 4к4"
         ]));
-    spells.add(Spell.smart(
+    spells.put("fire bolt", Spell.smart(
         level: 0,
         school: "воплощение",
         name: "Огненный снаряд",
@@ -253,7 +283,7 @@ class Spell {
           "11-ый уровень класса: урон равен 3к10",
           "17-ый уровень класса: урон равен 4к10"
         ]));
-    spells.add(Spell.smart(
+    spells.put("eldritch blast", Spell.smart(
         level: 0,
         school: "воплощение",
         name: "Мистический заряд",
@@ -264,9 +294,9 @@ class Spell {
         duration: "мгновенная",
         impact: {
           0: [Dice(1, 4)],
-          5: [Dice(2, 4)],
-          11: [Dice(3, 4)],
-          17: [Dice(4, 4)]
+          5: [Dice(1, 4), Dice(1, 4)],
+          11: [Dice(1, 4), Dice(1, 4), Dice(1, 4)],
+          17: [Dice(1, 4), Dice(1, 4), Dice(1, 4), Dice(1, 4)]
         },
         damageType: DamageType.smart(force: true),
         description:
@@ -276,7 +306,7 @@ class Spell {
           "11-ый уровень класса: количество лучей равно трём",
           "17-ый уровень класса: количество лучей равно четырём"
         ]));
-    spells.add(Spell.smart(
+    spells.put("Tasha's hideous laughter", Spell.smart(
         level: 1,
         school: "очарование",
         name: "Жуткий смех Таши",
@@ -285,16 +315,14 @@ class Spell {
         verbal: true,
         somatic: true,
         materials: {
-          Item.smart(
-              name:
-                  "маленькие пирожные и перо, которым нужно махать в воздухе"): 1
+          items.get("tasha")!: 1
         },
         duration: "вплоть до одной минуты",
         concentration: true,
         savingModifier: "wis",
         description:
             "Существо на ваш выбор, видимое в пределах дистанции, воспринимает всё невероятно смешным и корчится от смеха, если заклинание на него действует. Цель должна преуспеть в спасброске Мудрости, иначе она падает ничком, становится недееспособной и в течение действия заклинания не может встать. Существа со значением Интеллекта 4 и ниже не попадают под действие этого заклинания.\n\nВ конце каждого своего хода и каждый раз при получении урона цель может совершать новый спасбросок Мудрости. Спасбросок совершается с преимуществом, если он был вызван получением урона. При успехе заклинание оканчивается."));
-    spells.add(Spell.smart(
+    spells.put("mage armor", Spell.smart(
       level: 1,
       school: "ограждение",
       name: "Доспехи мага",
@@ -302,12 +330,12 @@ class Spell {
       range: 0,
       verbal: true,
       somatic: true,
-      materials: {Item.smart(name: "Кусочек выделанной кожи"): 1},
+      materials: {items.get("mage armor")!: 1},
       duration: "8 часов",
       description:
           "Вы касаетесь согласного существа, не носящего доспех, и на время действия заклинания его окутывает защитное магическое поле. Базовый КД существа становится равен 13 + его модификатор Ловкости. Заклинание оканчивается, если цель надевает доспех или вы оканчиваете его действием.",
     ));
-    spells.add(Spell.smart(
+    spells.put("invisibility", Spell.smart(
       level: 2,
       school: "иллюзия",
       name: "Невидимость",
@@ -315,7 +343,7 @@ class Spell {
       range: 0,
       verbal: true,
       somatic: true,
-      materials: {Item.smart(name: "Ресница в смоле"): 1},
+      materials: {items.get("invisibility")!: 1},
       concentration: true,
       duration: "вплоть до одного часа",
       description:
@@ -324,7 +352,7 @@ class Spell {
         "Если вы накладываете это заклинание, используя ячейку 3-го уровня или выше, вы можете сделать целью одно дополнительное существо за каждый уровень ячейки выше второго.Если вы накладываете это заклинание, используя ячейку 3-го уровня или выше, вы можете сделать целью одно дополнительное существо за каждый уровень ячейки выше второго."
       ],
     ));
-    spells.add(Spell.smart(
+    spells.put("misty step", Spell.smart(
       level: 2,
       school: "вызов",
       name: "Туманный шаг",
@@ -335,7 +363,7 @@ class Spell {
       duration: "мгновенная",
       description: "Окутавшись серебристым туманом, вы телепортируетесь на 30 футов в свободное пространство, видимое вами.",
     ));
-    spells.add(Spell.smart(
+    spells.put("rope trick", Spell.smart(
       level: 2,
       school: "преобразование",
       name: "Трюк с верёвкой",
@@ -343,11 +371,11 @@ class Spell {
       range: 0,
       verbal: true,
       somatic: true,
-      materials: {Item.smart(name: "Экстракт зерна и петля из пергамента"): 1},
+      materials: {items.get("rope trick")!: 1},
       duration: "1 час",
       description: "Вы касаетесь верёвки длиной до 60 футов. Один её конец поднимается в воздух, а остальная часть висит перпендикулярно полу. На верхнем конце верёвки появляется невидимый вход в межпространство, существующий, пока заклинание активно.\n\nВ межпространство можно попасть забравшись по верёвке наверх. В этом межпространстве может поместиться восемь существ с размером не больше Среднего. Верёвку можно затянуть внутрь, после чего снаружи её не будет видно.\n\nАтаки и заклинания не могут проходить через вход внутрь межпространства и наружу, но те, кто находятся внутри, могут все видеть как через окно 3 × 5 футов с центром на верёвке.\n\nВсё, что находится в межпространстве, вываливается наружу, когда заклинание оканчивается.",
     ));
-    spells.add(Spell.smart(
+    spells.put("fireball", Spell.smart(
       level: 3,
       school: "воплощение",
       name: "Огненный шар",
@@ -355,7 +383,7 @@ class Spell {
       range: 150,
       verbal: true,
       somatic: true,
-      materials: {Item.smart(name: "крошечный шарик из гуано летучей мыши и серы"): 1},
+      materials: {items.get("fireball")!: 1},
       duration: "мгновенная",
         savingModifier: "dex",
         damageType: DamageType.smart(fire: true),
@@ -363,7 +391,7 @@ class Spell {
       description: "Яркий луч вылетает из вашего указательного пальца в точку, выбранную вами в пределах дистанции, где и происходит взрыв пламени с гулким ревом. Все существа в пределах сферы с радиусом 20 футов с центром в этой точке должны совершить спасбросок Ловкости. Цель получает 8к6 урона огнём при провале или половину этого урона при успехе. Этот огонь огибает углы. Он воспламеняет горючие предметы, которые никто не несет и не носит.",
       higherDescription: ["Если вы накладываете это заклинание, используя ячейку 4-го уровня или выше, урон увеличивается на 1к6 за каждый уровень ячейки выше третьего."],
     ));
-    return spells;
+    return;
   }
 
   bool get protected => _protected;
@@ -428,9 +456,9 @@ class Spell {
     _ritual = value;
   }
 
-  Map<Item, int> get materials => _materials;
+  Map<Item, int> get simpleMaterials => _materials;
 
-  set materials(Map<Item, int> value) {
+  set simpleMaterials(Map<Item, int> value) {
     _materials = value;
   }
 

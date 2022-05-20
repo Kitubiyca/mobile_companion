@@ -1,4 +1,5 @@
 import 'package:dnd_companion/data/skill/skill_check.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:hive/hive.dart';
 
 class SkillCheckAdapter extends TypeAdapter<SkillCheck>{
@@ -6,7 +7,7 @@ class SkillCheckAdapter extends TypeAdapter<SkillCheck>{
   @override
   SkillCheck read(BinaryReader reader) {
     final String name = reader.readString();
-    final String code = reader.readString();
+    final Characteristic code = reader.read();
     final bool protected = reader.readBool();
     return SkillCheck(name, code, protected);
   }
@@ -17,7 +18,7 @@ class SkillCheckAdapter extends TypeAdapter<SkillCheck>{
   @override
   void write(BinaryWriter writer, SkillCheck obj) {
     writer.writeString(obj.name);
-    writer.writeString(obj.code);
+    writer.write(obj.code);
     writer.writeBool(obj.protected);
   }
 

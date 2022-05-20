@@ -4,6 +4,7 @@ import 'package:dnd_companion/data/equipment/item.dart';
 import 'package:dnd_companion/data/equipment/weapon.dart';
 import 'package:dnd_companion/data/hotkeys/weapon_hotkey.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -20,6 +21,10 @@ class CharacterView extends StatefulWidget {
 
 class _CharacterViewState extends State<CharacterView> {
 
+  // TODO добавить сложность заклинания и её характеристику
+
+  // TODO добавить предмет магической фокусировки
+
   final PageController _controller = PageController(initialPage: 1);
 
   Set<String> _chosenStats = {};
@@ -29,6 +34,7 @@ class _CharacterViewState extends State<CharacterView> {
     final Character character =
         ModalRoute.of(context)!.settings.arguments as Character;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: PageView(controller: _controller, children: [
       ConstrainedBox(
         constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
@@ -36,7 +42,7 @@ class _CharacterViewState extends State<CharacterView> {
           decoration: const BoxDecoration(
             image: DecorationImage(
                 alignment: AlignmentDirectional(0, 0),
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.cover,
                 image: AssetImage("resources/paper.jpg")
               ),
           ),
@@ -62,7 +68,12 @@ class _CharacterViewState extends State<CharacterView> {
                   subtitle: Text(character.weaponHotkeys.elementAt(index - 1).weapon.name + " / " + character.weaponHotkeys.elementAt(index - 1).weapon.damage.first.name),
                   onTap: (){
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(character.weaponHotkeys.elementAt(index - 1).weapon.damage.elementAt(0).roll().elementAt(0).toString()),
+                      duration: const Duration(seconds: 3),
+                      content: Text(
+                        "Броски атаки: " + (Dice(1, 20).roll().first + character.getStatBonus(character.weaponHotkeys.elementAt(index - 1).characteristic.getText())).toString() + " и " +
+                            (Dice(1, 20).roll().first + character.getStatBonus(character.weaponHotkeys.elementAt(index - 1).characteristic.getText())).toString() + "      Бросок урона: " +
+                          (character.weaponHotkeys.elementAt(index - 1).weapon.damage.elementAt(0).roll().first + character.getStatBonus(character.weaponHotkeys.elementAt(index - 1).characteristic.getText())).toString()
+                      ),
                     ));
                   },
                 );
@@ -115,7 +126,7 @@ class _CharacterViewState extends State<CharacterView> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20.0),
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                              filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
                               child: Container(
                                 height: MediaQuery.of(context).size.height * 0.3,
                                 width: MediaQuery.of(context).size.width * 0.3,
@@ -123,11 +134,11 @@ class _CharacterViewState extends State<CharacterView> {
                                   border: Border.all(
                                       width: 1.5, color: const Color(0xff58007D)),
                                   borderRadius: BorderRadius.circular(20),
-                                  image: const DecorationImage(
+                                  image: (character.name == "Астерион" ? const DecorationImage(
                                       alignment: AlignmentDirectional(0, 0),
                                       fit: BoxFit.fitHeight,
                                       image: AssetImage(
-                                          "resources/portraits/human_test.jpg")),
+                                          "resources/portraits/human_test.jpg")) : null),
                                 ),
                               ),
                             ),
@@ -259,7 +270,7 @@ class _CharacterViewState extends State<CharacterView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                  const Text("Пассивная мудрость (Внимательность)", style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),),
+                  const Text("Пассивная мудрость (Внимательность)", style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03,),
                   Container(
                     height: 50,
@@ -268,7 +279,7 @@ class _CharacterViewState extends State<CharacterView> {
                       border: Border.all(color: Colors.black54, width: 2),
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Внимательность", "wis", true), fixed: true).toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
+                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Внимательность", Characteristic.wisdom, true), fixed: true).toString(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   ),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.05,),
                 ],),
@@ -276,7 +287,7 @@ class _CharacterViewState extends State<CharacterView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                  const Text("Пассивный интеллект (Анализ)", style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),),
+                  const Text("Пассивный интеллект (Анализ)", style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03,),
                   Container(
                     height: 50,
@@ -285,7 +296,7 @@ class _CharacterViewState extends State<CharacterView> {
                       border: Border.all(color: Colors.black54, width: 2),
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Анализ", "int", true), fixed: true).toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
+                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Анализ", Characteristic.intelligence, true), fixed: true).toString(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   ),
                     SizedBox(width: MediaQuery.of(context).size.width * 0.05,),
                 ],),
@@ -293,7 +304,7 @@ class _CharacterViewState extends State<CharacterView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                  const Text("Пассивная мудрость (Проницательность)", style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),),
+                  const Text("Пассивная мудрость (Проницательность)", style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03,),
                   Container(
                     height: 50,
@@ -302,7 +313,7 @@ class _CharacterViewState extends State<CharacterView> {
                       border: Border.all(color: Colors.black54, width: 2),
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Проницательность", "wis", true), fixed: true).toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
+                    child: Center(child: Text(character.getSkillCheckResult(SkillCheck("Проницательность", Characteristic.wisdom, true), fixed: true).toString(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),),
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.05,),
                 ],),
@@ -346,6 +357,7 @@ class _CharacterViewState extends State<CharacterView> {
             int roll = Dice(1, 20).roll().first;
             String symbol = (num < 0 ? "-" : "+");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: const Duration(seconds: 2),
               content: Text(roll.toString() + symbol + num.abs().toString() + "=" + (roll + num).toString() + " (D20 + " + identifier + " modifier)"),
             ));
           },
@@ -415,16 +427,16 @@ class _CharacterViewState extends State<CharacterView> {
 
 
 
-
-
-
+  TextEditingController controller = TextEditingController();
+  Weapon? value;
+  Characteristic? value2 = Characteristic.strength;
 
   void showCreator(BuildContext context, Character character) {
 
-    TextEditingController controller = TextEditingController();
+    //Weapon? value;
+    //String? value2 = "str";
 
-    Weapon? value;
-    String value2 = "";
+    value ??= character.inventory.keys.first as Weapon;
 
     List<DropdownMenuItem<Weapon>> weapons = [];
     for(Item item in character.inventory.keys){
@@ -443,9 +455,9 @@ class _CharacterViewState extends State<CharacterView> {
     Widget createButton = TextButton(
       child: const Text("Сохранить"),
       onPressed: () {
-        if (controller.text.isNotEmpty && value != null && value2 != "") {
+        if (controller.text.isNotEmpty && value != null && value2 != Characteristic.none) {
           setState(() {
-            character.weaponHotkeys.add(WeaponHotkey.smart(controller.text, value!, characteristic: value2));
+            character.weaponHotkeys.add(WeaponHotkey.smart(name: controller.text, weapon: value!, characteristic: value2!));
           });
           Navigator.pop(context);
         } else {
@@ -463,29 +475,31 @@ class _CharacterViewState extends State<CharacterView> {
       decoration: const InputDecoration(labelText: "Название категории"),
     );
 
-    func (Weapon? selectedValue){
-      setState(() {
-        value = selectedValue;
-      });
-    }
-
-    func2 (String? selectedValue){
-      setState(() {
-        value2 = selectedValue ?? "";
-      });
-    }
-
     Widget picker = StatefulBuilder(builder: (context, setState) {
       return Column(
         children: [
-          DropdownButton(value: value, onChanged: func, items: weapons,),
-          DropdownButton(onChanged: func2, items: const [
-            DropdownMenuItem<String>(child: Text("Сила"), value: "str",),
-            DropdownMenuItem<String>(child: Text("Ловкость"), value: "dex",),
-            DropdownMenuItem<String>(child: Text("Выносливость"), value: "con",),
-            DropdownMenuItem<String>(child: Text("Интеллект"), value: "int",),
-            DropdownMenuItem<String>(child: Text("Мудрость"), value: "wis",),
-            DropdownMenuItem<String>(child: Text("Харизма"), value: "cha",),
+          DropdownButton<Weapon>(
+            value: value,
+            onChanged: (Weapon? selectedValue){
+              setState(() {
+                value = selectedValue;
+              });
+            },
+            items: weapons,),
+          DropdownButton<Characteristic>(
+            value: value2,
+            onChanged: (Characteristic? selectedValue){
+              setState(() {
+                value2 = selectedValue ?? Characteristic.none;
+              });
+            },
+            items: const [
+            DropdownMenuItem<Characteristic>(child: Text("Сила"), value: Characteristic.strength,),
+            DropdownMenuItem<Characteristic>(child: Text("Ловкость"), value: Characteristic.dexterity,),
+            DropdownMenuItem<Characteristic>(child: Text("Выносливость"), value: Characteristic.constitution,),
+            DropdownMenuItem<Characteristic>(child: Text("Интеллект"), value: Characteristic.intelligence,),
+            DropdownMenuItem<Characteristic>(child: Text("Мудрость"), value: Characteristic.wisdom,),
+            DropdownMenuItem<Characteristic>(child: Text("Харизма"), value: Characteristic.charisma,),
           ],),
         ],
       );

@@ -12,29 +12,40 @@ class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("DnD companion"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              height: 60,
-            ),
-            _menuButton(context, "Персонажи", "/characters"),
-            Container(
-              height: 60,
-            ),
-            _menuButton(context, "Залинания", "/spells"),
-            Container(
-              height: 60,
-            ),
-            _menuButton(context, "Предметы", "/items"),
-          ],
+        body: InkWell(
+          onTap: (){Navigator.pushReplacementNamed(context, "/characters");},
+      child: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              alignment: AlignmentDirectional(0.2, 0),
+              fit: BoxFit.fitHeight,
+              image: AssetImage("resources/backgrounds/main.jpg")),
         ),
       ),
-    );
+    )
+        //appBar: AppBar(
+        //  title: Text("DnD companion"),
+        //),
+        //body: Center(
+        //  child: Column(
+        //    mainAxisAlignment: MainAxisAlignment.start,
+        //    children: [
+        //      Container(
+        //        height: 60,
+        //      ),
+        //      _menuButton(context, "Персонажи", "/characters"),
+        //      Container(
+        //        height: 60,
+        //      ),
+        //      _menuButton(context, "Залинания", "/spells"),
+        //      Container(
+        //        height: 60,
+        //      ),
+        //      _menuButton(context, "Предметы", "/items"),
+        //    ],
+        //  ),
+        //),
+        );
   }
 
   Widget _menuButton(BuildContext context, String name, String path) {

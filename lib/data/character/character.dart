@@ -10,9 +10,28 @@ import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/skill/skill.dart';
 import 'package:dnd_companion/data/skill/skill_check.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:hive/hive.dart';
 import 'class/class.dart';
 
+part 'package:dnd_companion/g_parts/character.g.dart';
+
+@HiveType(typeId: 12)
 class Character {
+
+  //TODO реализовать постоянный эффект (например элементальный урон у чародея-дракона)
+  //TODO реализовать механики ярости
+  //TODO реализовать механики изменения облика
+  //TODO восстановление маны после короткого отдыха (описано в скиллах)
+  //TODO реализация под-подкласса?
+  //TODO реализация списка эффектов (невидимость, отравление)
+  //TODO защита и скорость без доспеха
+  //TODO скрытная атака с уровнем
+  //TODO множитель проверок характеристик
+  //TODO кастомные баффы (например, избранные враги следопыта)
+  //TODO спутник (зверь, питомец)
+  //TODO использование костей хитов персонажа (и питомца)
+
   String _name;
   Map<Class, int> _characterClass;
   Background _background;
@@ -20,10 +39,10 @@ class Character {
   String _alignment;
   int _experience;
 
-  Map<String, int> _stats; // str, dex, con, int, wis, cha
-  Map<String, int> _maxStats;
+  Map<Characteristic, int> _stats; // str, dex, con, int, wis, cha
+  Map<Characteristic, int> _maxStats;
 
-  Map<String, int> _additionalPoints;
+  Map<Characteristic, int> _additionalPoints;
 
   int _freeCantrips;
   Map<int, int> _freeSpells;
@@ -32,13 +51,28 @@ class Character {
   Set<SkillCheck> _skillChecks;
   Set<Proficiency> _proficiencies;
   Set<Feat> _feats;
-  Set<Skill> _knownSkills;
+  Map<Skill, int> _knownSkills; // skill with charges
   Set<Spell> _knownSpells;
   Map<Item, int> _inventory;
 
   Set<WeaponHotkey> _weaponHotkeys;
   Set<SpellHotkey> _spellHotkeys;
-  Set<SkillHotkey> _skillHotkeys;
+  Set<SkillHotkey> _skillHotkeys; // TODO check for delete
+
+  Map<String, Dice> _damageBuff;
+  Map<String, int> _constDamageBuff;
+  Map<String, Dice> _universalBuff;
+
+  bool _halfSkillCheckBonus;
+  bool _fullProficiencyBonus;
+  Set<SkillCheck> _doubleSkillCheckBonus;
+  bool _stateIsActive;
+
+  Set<Spell> _preparedSpells;
+  Set<Spell> _alwaysPreparedSpells;
+
+  //Set<CharacterState> _states; //TODO ярость, облик животного или древнего чемпиона (паладина)
+  //CharacterState? _activeState;
 
   Character(
       this._name,

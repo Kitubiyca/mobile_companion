@@ -1,14 +1,17 @@
-class SkillCheck {
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:hive/hive.dart';
+
+class SkillCheck { // Навык
 
   String _name;
-  String _code;
+  Characteristic _code;
   bool _protected;
 
   SkillCheck(this._name, this._code, this._protected);
 
   SkillCheck.smart({
-    String name = "Example name",
-    String code = "Example name",
+    required String name,
+    required Characteristic code,
     bool protected = false,
   })  : _name = name,
         _code = code,
@@ -20,34 +23,33 @@ class SkillCheck {
   //  _protected = false;
   //}
 
-  static List<SkillCheck> getStandartSkillChecks() {
-    List<SkillCheck> ret = [];
-    ret.add(SkillCheck("Акробатика", "dex", true));
-    ret.add(SkillCheck("Анализ", "int", true));
-    ret.add(SkillCheck("Атлетика", "str", true));
-    ret.add(SkillCheck("Внимательность", "wis", true));
-    ret.add(SkillCheck("Выживание", "wis", true));
-    ret.add(SkillCheck("Выступление", "cha", true));
-    ret.add(SkillCheck("Запугивание", "cha", true));
-    ret.add(SkillCheck("История", "int", true));
-    ret.add(SkillCheck("Ловкость рук", "dex", true));
-    ret.add(SkillCheck("Магия", "int", true));
-    ret.add(SkillCheck("Медицина", "wis", true));
-    ret.add(SkillCheck("Обман", "cha", true));
-    ret.add(SkillCheck("Природа", "int", true));
-    ret.add(SkillCheck("Проницательность", "wis", true));
-    ret.add(SkillCheck("Религия", "int", true));
-    ret.add(SkillCheck("Скрытность", "dex", true));
-    ret.add(SkillCheck("Убеждение", "cha", true));
-    ret.add(SkillCheck("Уход за животными", "wis", true));
-    return ret;
+  static Future<void> unpack(Box<SkillCheck> skillChecks) async {
+    await skillChecks.put("acrobatics", SkillCheck("Акробатика", Characteristic.dexterity, true));
+    await skillChecks.put("investigation", SkillCheck("Анализ", Characteristic.intelligence, true));
+    await skillChecks.put("athletics", SkillCheck("Атлетика", Characteristic.strength, true));
+    await skillChecks.put("perception", SkillCheck("Внимательность", Characteristic.wisdom, true));
+    await skillChecks.put("survival", SkillCheck("Выживание", Characteristic.wisdom, true));
+    await skillChecks.put("performance", SkillCheck("Выступление", Characteristic.charisma, true));
+    await skillChecks.put("intimidation", SkillCheck("Запугивание", Characteristic.charisma, true));
+    await skillChecks.put("history", SkillCheck("История", Characteristic.intelligence, true));
+    await skillChecks.put("sleight of hand", SkillCheck("Ловкость рук", Characteristic.dexterity, true));
+    await skillChecks.put("arcana", SkillCheck("Магия", Characteristic.intelligence, true));
+    await skillChecks.put("medicine", SkillCheck("Медицина", Characteristic.wisdom, true));
+    await skillChecks.put("deception", SkillCheck("Обман", Characteristic.charisma, true));
+    await skillChecks.put("nature", SkillCheck("Природа", Characteristic.intelligence, true));
+    await skillChecks.put("insight", SkillCheck("Проницательность", Characteristic.wisdom, true));
+    await skillChecks.put("religion", SkillCheck("Религия", Characteristic.intelligence, true));
+    await skillChecks.put("stealth", SkillCheck("Скрытность", Characteristic.dexterity, true));
+    await skillChecks.put("persuasion", SkillCheck("Убеждение", Characteristic.charisma, true));
+    await skillChecks.put("animal handling", SkillCheck("Уход за животными", Characteristic.wisdom, true));
+    return;
   }
 
   bool get protected => _protected;
 
-  String get code => _code;
+  Characteristic get code => _code;
 
-  set code(String value) {
+  set code(Characteristic value) {
     if (_protected) throw Exception("Denied access to protected data.");
     _code = value;
   }

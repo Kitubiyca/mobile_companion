@@ -67,7 +67,7 @@ class _SpellViewState extends State<SpellView> {
             style: const TextStyle(fontSize: 24),
           ),
           Visibility(
-              visible: spell.materials.isNotEmpty,
+              visible: spell.simpleMaterials.isNotEmpty,
               maintainSize: false,
               child: Text(
                 "Материалы: " + spell.getMaterials(),

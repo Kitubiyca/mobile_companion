@@ -1,25 +1,42 @@
+import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:hive/hive.dart';
+
+part 'package:dnd_companion/g_parts/item.g.dart';
+
+@HiveType(typeId: 43)
 class Item {
+
+  @HiveField(0)
   String _name;
+  @HiveField(1)
   String _description;
+  @HiveField(2)
   int _weight;
+  @HiveField(3)
   int _cost;
-  Set<String> _notes;
+  @HiveField(4)
+  Set<Proficiency> _proficiencies;
+  @HiveField(5)
+  Set<String> _notes; // TODO реализовать владение
+  @HiveField(6)
   bool _protected;
 
-  Item(this._name, this._description, this._weight, this._cost, this._notes,
+  Item(this._name, this._description, this._weight, this._cost, this._proficiencies, this._notes,
       this._protected);
 
   Item.smart(
-      {String name = "Default name",
+      {required String name,
       String description = "",
       int weight = 0,
       int cost = 0,
+      Set<Proficiency>? proficiencies,
       Set<String>? notes,
       bool protected = false})
       : _name = name,
         _description = description,
         _weight = weight,
         _cost = cost,
+        _proficiencies = proficiencies ?? {},
         _notes = notes ?? {},
         _protected = protected;
 
@@ -32,10 +49,13 @@ class Item {
   //  _protected = false;
   //}
 
-  static List<Item> getStandartItems(){
-    List<Item> items = [];
-
-    return items;
+  static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
+    items.put("tasha", Item.smart(name: "маленькие пирожные и перо, которым нужно махать в воздухе"));
+    items.put("mage armor", Item.smart(name: "кусочек выделанной кожи"));
+    items.put("invisibility", Item.smart(name: "ресница в смоле"));
+    items.put("rope trick", Item.smart(name: "экстракт зерна и петля из пергамента"));
+    items.put("fireball", Item.smart(name: "крошечный шарик из гуано летучей мыши и серы"));
+    return;
   }
 
   bool get protected => _protected;
@@ -90,6 +110,12 @@ class Item {
     _name = value;
   }
 
+  Set<Proficiency> get proficiencies => _proficiencies;
+
+  set proficiencies(Set<Proficiency> value) {
+    _proficiencies = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -99,6 +125,7 @@ class Item {
           _description == other._description &&
           _weight == other._weight &&
           _cost == other._cost &&
+          _proficiencies == other._proficiencies &&
           _notes == other._notes &&
           _protected == other._protected;
 
@@ -108,6 +135,7 @@ class Item {
       _description.hashCode ^
       _weight.hashCode ^
       _cost.hashCode ^
+      _proficiencies.hashCode ^
       _notes.hashCode ^
       _protected.hashCode;
 }

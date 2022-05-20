@@ -1,3 +1,4 @@
+/*
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
@@ -77,3 +78,4 @@ class SpellAdapter extends TypeAdapter<Spell> {
     writer.writeBool(obj.protected);
   }
 }
+*/

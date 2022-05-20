@@ -1,40 +1,83 @@
 import 'package:dnd_companion/data/character/class/sub_class.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
-import 'fighting_style.dart';
+import 'package:dnd_companion/data/equipment/item.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:dnd_companion/data/structures/rest.dart';
+import 'package:dnd_companion/data/structures/spellcaster_type.dart';
+import 'package:hive/hive.dart';
 import 'level.dart';
 
-class Class {
+part 'package:dnd_companion/g_parts/class.g.dart';
 
+@HiveType(typeId: 111)
+class Class {
+  //TODO выбор стартового снаряжения?
+  //TODO выбор умений или инструментов
+
+  @HiveField(0)
   String _name;
+  @HiveField(1)
   String _description;
+  @HiveField(2)
   Dice _hits;
 
-  bool _multiClassingLogic; // false = or, true = and
-  int _multiClassingProficienciesCount;
-  Map<String, int> _multiClassingRequirements;
-  Set<Proficiency> _multiClassingProficiencies;
-  Set<Proficiency> _multiClassingProficiencyChoices;
+  @HiveField(3)
+  bool? _multiClassingLogic; // false = or, true = and
+  @HiveField(4)
+  int? _multiClassingProficienciesCount;
+  @HiveField(5)
+  Map<String, int>? _multiClassingRequirements;
+  @HiveField(6)
+  Set<Proficiency>? _multiClassingProficiencies;
+  @HiveField(7)
+  Set<Proficiency>? _multiClassingProficiencyChoices;
 
+  @HiveField(8)
+  Characteristic _spellCastingAbility;
+  @HiveField(9)
+  String? _focusItem;
+  @HiveField(10)
   bool _hasSpecialMagicTable;
-  int _spellcasterStart;
-  int _spellcasterLevel; // 0-not 1-full 2-half 3-third
+  @HiveField(11)
+  int _spellcasterStartLevel;
+  @HiveField(12)
+  SpellcasterType _spellcasterType;
 
+  @HiveField(13)
   int _proficiencyCount;
+  @HiveField(14)
   Set<Proficiency> _proficiencyChoices;
+  @HiveField(15)
   Set<Proficiency> _proficiencies;
 
+  @HiveField(16)
   Set<String> _savingChecks;
-  String _classPointsName;
+  @HiveField(17)
+  Rest? _restType; // points regen rest type
+  @HiveField(18)
+  String? _classPointsName;
+  @HiveField(19)
+  String? _classDiceName;
+  @HiveField(20)
   List<Level> _levels;
 
+  @HiveField(21)
+  Map<Item, int> _items;
+
+  //Characteristic _preparedSpellCounter; // TODO check this for duplicating spellCastingAbility
+  //String? _activeState; //TODO active states like animal forms or barbarian rage
+
+  @HiveField(22)
   int _subClassChooseLevel;
+  @HiveField(23)
   List<SubClass> _subClasses;
 
   //late int? _unarmoredArmorConst;
   //late Set<String>? _unarmoredArmor;
   //late List<FightingStyle> styles;
 
+  @HiveField(24)
   bool _protected;
 
   Class(
@@ -46,58 +89,72 @@ class Class {
       this._multiClassingRequirements,
       this._multiClassingProficiencies,
       this._multiClassingProficiencyChoices,
+      this._spellCastingAbility,
+      this._focusItem,
       this._hasSpecialMagicTable,
-      this._spellcasterStart,
-      this._spellcasterLevel,
+      this._spellcasterStartLevel,
+      this._spellcasterType,
       this._proficiencyCount,
       this._proficiencyChoices,
       this._proficiencies,
       this._savingChecks,
+      this._restType,
       this._classPointsName,
+      this._classDiceName,
       this._levels,
+      this._items,
       this._subClassChooseLevel,
       this._subClasses,
       this._protected);
 
   Class.smart(
-      {String name = "Example name",
-      String description = "Example description",
-      Dice? hits,
-      bool multiClassingLogic = true,
-      int multiClassingProficienciesCount = 0,
+      {required String name,
+      String description = "",
+      required Dice hits,
+      bool? multiClassingLogic,
+      int? multiClassingProficienciesCount,
       Map<String, int>? multiClassingRequirements,
       Set<Proficiency>? multiClassingProficiencies,
       Set<Proficiency>? multiClassingProficiencyChoices,
+      Characteristic spellCastingAbility = Characteristic.none,
+      String? focusItem,
       bool hasSpecialMagicTable = false,
-      int spellcasterStart = 0,
-      int spellcasterLevel = 0,
+      int spellcasterStartLevel = 0,
+      SpellcasterType spellcasterType = SpellcasterType.none,
       int proficiencyCount = 0,
       Set<Proficiency>? proficiencyChoices,
       Set<Proficiency>? proficiencies,
-      Set<String>? savingChecks,
-      String classPointsName = "",
-      List<Level>? levels,
-      int subClassChooseLevel = 4,
+      required Set<String> savingChecks,
+      Rest? restType,
+      String? classPointsName,
+      String? classDiceName,
+      required List<Level> levels,
+      Map<Item, int>? items,
+      int subClassChooseLevel = 2,
       List<SubClass>? subClasses,
       bool protected = false})
       : _name = name,
         _description = description,
-        _hits = hits ?? Dice(1, 12),
+        _hits = hits,
         _multiClassingLogic = multiClassingLogic,
         _multiClassingProficienciesCount = multiClassingProficienciesCount,
-        _multiClassingRequirements = multiClassingRequirements ?? {},
-        _multiClassingProficiencies = multiClassingProficiencies ?? {},
-        _multiClassingProficiencyChoices =
-            multiClassingProficiencyChoices ?? {},
+        _multiClassingRequirements = multiClassingRequirements,
+        _multiClassingProficiencies = multiClassingProficiencies,
+        _multiClassingProficiencyChoices = multiClassingProficiencyChoices,
+        _spellCastingAbility = spellCastingAbility,
+        _focusItem = focusItem,
         _hasSpecialMagicTable = hasSpecialMagicTable,
-        _spellcasterStart = spellcasterStart,
-        _spellcasterLevel = spellcasterLevel,
+        _spellcasterStartLevel = spellcasterStartLevel,
+        _spellcasterType = spellcasterType,
         _proficiencyCount = proficiencyCount,
         _proficiencyChoices = proficiencyChoices ?? {},
         _proficiencies = proficiencies ?? {},
-        _savingChecks = savingChecks ?? {},
+        _savingChecks = savingChecks,
+        _restType = restType,
         _classPointsName = classPointsName,
-        _levels = levels ?? [],
+        _classDiceName = classDiceName,
+        _levels = levels,
+        _items = items ?? {},
         _subClassChooseLevel = subClassChooseLevel,
         _subClasses = subClasses ?? [],
         _protected = protected;
@@ -126,10 +183,22 @@ class Class {
     _levels = value;
   }
 
-  String get classPointsName => _classPointsName;
+  String? get classDiceName => _classDiceName;
 
-  set classPointsName(String value) {
+  set classDiceName(String? value) {
+    _classDiceName = value;
+  }
+
+  String? get classPointsName => _classPointsName;
+
+  set classPointsName(String? value) {
     _classPointsName = value;
+  }
+
+  Rest? get restType => _restType;
+
+  set restType(Rest? value) {
+    _restType = value;
   }
 
   Set<String> get savingChecks => _savingChecks;
@@ -156,16 +225,16 @@ class Class {
     _proficiencyCount = value;
   }
 
-  int get spellcasterLevel => _spellcasterLevel;
+  SpellcasterType get spellcasterType => _spellcasterType;
 
-  set spellcasterLevel(int value) {
-    _spellcasterLevel = value;
+  set spellcasterType(SpellcasterType value) {
+    _spellcasterType = value;
   }
 
-  int get spellcasterStart => _spellcasterStart;
+  int get spellcasterStartLevel => _spellcasterStartLevel;
 
-  set spellcasterStart(int value) {
-    _spellcasterStart = value;
+  set spellcasterStartLevel(int value) {
+    _spellcasterStartLevel = value;
   }
 
   bool get hasSpecialMagicTable => _hasSpecialMagicTable;
@@ -174,35 +243,47 @@ class Class {
     _hasSpecialMagicTable = value;
   }
 
-  Set<Proficiency> get multiClassingProficiencyChoices =>
+  String? get focusItem => _focusItem;
+
+  set focusItem(String? value) {
+    _focusItem = value;
+  }
+
+  Characteristic get spellCastingAbility => _spellCastingAbility;
+
+  set spellCastingAbility(Characteristic value) {
+    _spellCastingAbility = value;
+  }
+
+  Set<Proficiency>? get multiClassingProficiencyChoices =>
       _multiClassingProficiencyChoices;
 
-  set multiClassingProficiencyChoices(Set<Proficiency> value) {
+  set multiClassingProficiencyChoices(Set<Proficiency>? value) {
     _multiClassingProficiencyChoices = value;
   }
 
-  Set<Proficiency> get multiClassingProficiencies =>
+  Set<Proficiency>? get multiClassingProficiencies =>
       _multiClassingProficiencies;
 
-  set multiClassingProficiencies(Set<Proficiency> value) {
+  set multiClassingProficiencies(Set<Proficiency>? value) {
     _multiClassingProficiencies = value;
   }
 
-  Map<String, int> get multiClassingRequirements => _multiClassingRequirements;
+  Map<String, int>? get multiClassingRequirements => _multiClassingRequirements;
 
-  set multiClassingRequirements(Map<String, int> value) {
+  set multiClassingRequirements(Map<String, int>? value) {
     _multiClassingRequirements = value;
   }
 
-  int get multiClassingProficienciesCount => _multiClassingProficienciesCount;
+  int? get multiClassingProficienciesCount => _multiClassingProficienciesCount;
 
-  set multiClassingProficienciesCount(int value) {
+  set multiClassingProficienciesCount(int? value) {
     _multiClassingProficienciesCount = value;
   }
 
-  bool get multiClassingLogic => _multiClassingLogic;
+  bool? get multiClassingLogic => _multiClassingLogic;
 
-  set multiClassingLogic(bool value) {
+  set multiClassingLogic(bool? value) {
     _multiClassingLogic = value;
   }
 
@@ -224,6 +305,12 @@ class Class {
     _name = value;
   }
 
+  Map<Item, int> get items => _items;
+
+  set items(Map<Item, int> value) {
+    _items = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -239,15 +326,20 @@ class Class {
           _multiClassingProficiencies == other._multiClassingProficiencies &&
           _multiClassingProficiencyChoices ==
               other._multiClassingProficiencyChoices &&
+          _spellCastingAbility == other._spellCastingAbility &&
+          _focusItem == other._focusItem &&
           _hasSpecialMagicTable == other._hasSpecialMagicTable &&
-          _spellcasterStart == other._spellcasterStart &&
-          _spellcasterLevel == other._spellcasterLevel &&
+          _spellcasterStartLevel == other._spellcasterStartLevel &&
+          _spellcasterType == other._spellcasterType &&
           _proficiencyCount == other._proficiencyCount &&
           _proficiencyChoices == other._proficiencyChoices &&
           _proficiencies == other._proficiencies &&
           _savingChecks == other._savingChecks &&
+          _restType == other._restType &&
           _classPointsName == other._classPointsName &&
+          _classDiceName == other._classDiceName &&
           _levels == other._levels &&
+          _items == other._items &&
           _subClassChooseLevel == other._subClassChooseLevel &&
           _subClasses == other._subClasses &&
           _protected == other._protected;
@@ -262,15 +354,20 @@ class Class {
       _multiClassingRequirements.hashCode ^
       _multiClassingProficiencies.hashCode ^
       _multiClassingProficiencyChoices.hashCode ^
+      _spellCastingAbility.hashCode ^
+      _focusItem.hashCode ^
       _hasSpecialMagicTable.hashCode ^
-      _spellcasterStart.hashCode ^
-      _spellcasterLevel.hashCode ^
+      _spellcasterStartLevel.hashCode ^
+      _spellcasterType.hashCode ^
       _proficiencyCount.hashCode ^
       _proficiencyChoices.hashCode ^
       _proficiencies.hashCode ^
       _savingChecks.hashCode ^
+      _restType.hashCode ^
       _classPointsName.hashCode ^
+      _classDiceName.hashCode ^
       _levels.hashCode ^
+      _items.hashCode ^
       _subClassChooseLevel.hashCode ^
       _subClasses.hashCode ^
       _protected.hashCode;

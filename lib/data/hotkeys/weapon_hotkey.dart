@@ -1,24 +1,26 @@
 import 'package:dnd_companion/data/equipment/weapon.dart';
-import '../character/character.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
 import '../equipment/item.dart';
 
 class WeaponHotkey {
   String _name;
   Weapon _weapon;
-  String _characteristic;
+  Characteristic _characteristic;
   bool _versatile;
   Item? _ammunition;
 
-  WeaponHotkey(this._name, this._weapon, this._characteristic,
-      this._versatile, this._ammunition);
+  WeaponHotkey(this._name, this._weapon, this._characteristic, this._versatile,
+      this._ammunition);
 
-  WeaponHotkey.smart(
-    this._name,
-    this._weapon, {
-    String? characteristic,
+  WeaponHotkey.smart({
+    required String name,
+    required Weapon weapon,
+    Characteristic? characteristic,
     bool versatile = false,
     Item? ammunition,
-  })  : _characteristic = characteristic ?? "str",
+  })  : _name = name,
+        _weapon = weapon,
+        _characteristic = characteristic ?? Characteristic.none,
         _versatile = versatile,
         _ammunition = ammunition;
 
@@ -34,9 +36,9 @@ class WeaponHotkey {
     _ammunition = value;
   }
 
-  String get characteristic => _characteristic;
+  Characteristic get characteristic => _characteristic;
 
-  set characteristic(String value) {
+  set characteristic(Characteristic value) {
     _characteristic = value;
   }
 

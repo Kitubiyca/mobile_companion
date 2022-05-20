@@ -1,5 +1,8 @@
 class Feat {
 
+  //TODO нормальные система требований
+  //TODO нормальная система черт
+
   String _name;
   List<String> _description;
   String _requirement;
@@ -10,7 +13,7 @@ class Feat {
       this._protected);
 
   Feat.smart({
-    String name = "Example name",
+    required String name,
     List<String>? description,
     String requirement = "",
     Map<String, int>? benefits,

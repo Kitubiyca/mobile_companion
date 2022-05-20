@@ -1,23 +1,27 @@
+import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/structures/weapon_feature.dart';
+import 'package:hive/hive.dart';
 import '../characteristics/damage_type.dart';
 import '../dice/dice.dart';
 import 'item.dart';
 
-class Weapon extends Item{
+part 'package:dnd_companion/g_parts/weapon.g.dart';
 
+@HiveType(typeId: 44)
+class Weapon extends Item {
+  //TODO лёгкое тяжёлое фехтовальное - мод лов \ сил \ лов или сил
+
+  @HiveField(0)
   List<Dice> _damage;
+  @HiveField(1)
   DamageType _damageType;
-
+  @HiveField(2)
   List<Dice> _versatileDamage;
-
-  bool _heavy;
-  bool _light;
-  bool _twoHanded;
-  bool _reach;
-  bool _special;
-  bool _fencing; // finesse
-  bool _reloading;
-
+  @HiveField(3)
+  Set<WeaponFeature> _features;
+  @HiveField(4)
   List<int> _rangedDistance;
+  @HiveField(5)
   List<int> _throwableDistance;
 
   Weapon(
@@ -25,106 +29,175 @@ class Weapon extends Item{
       String description,
       int weight,
       int cost,
+      Set<Proficiency> proficiencies,
       Set<String> notes,
       bool protected,
       this._damage,
       this._damageType,
       this._versatileDamage,
-      this._heavy,
-      this._light,
-      this._twoHanded,
-      this._reach,
-      this._special,
-      this._fencing,
-      this._reloading,
+      this._features,
       this._rangedDistance,
-      this._throwableDistance) : super(name, description, weight, cost, notes, false);
+      this._throwableDistance)
+      : super(name, description, weight, cost, proficiencies, notes, false);
 
   Weapon.smart({
-    String name = "Default name",
+    required String name,
     String description = "",
     int weight = 0,
     int cost = 0,
+    Set<Proficiency>? proficiencies,
     Set<String>? notes,
     bool protected = false,
-    List<Dice>? damage,
-    DamageType? damageType,
+    required List<Dice> damage,
+    required DamageType damageType,
     List<Dice>? versatileDamage,
-    bool heavy = false,
-    bool light = false,
-    bool twoHanded = false,
-    bool reach = false,
-    bool special = false,
-    bool fencing = false,
-    bool reloading = false,
+    Set<WeaponFeature>? features,
     List<int>? rangedDistance,
     List<int>? throwableDistance,
-}) :
-        _damage = damage ?? [],
-        _damageType = damageType ?? DamageType.empty(),
+  })  : _damage = damage,
+        _damageType = damageType,
         _versatileDamage = versatileDamage ?? [],
-        _heavy = heavy,
-  _light = light,
-        _twoHanded = twoHanded,
-        _reach = reach,
-        _special = special,
-        _fencing = fencing,
-  _reloading = reloading,
-  _rangedDistance = rangedDistance ?? [],
-  _throwableDistance = throwableDistance ?? [],
-        super(name, description, weight, cost, notes ?? {}, false){
-    if(_damage.isEmpty) _damage.add(Dice(1, 4));
+        _features = features ?? {},
+        _rangedDistance = rangedDistance ?? [],
+        _throwableDistance = throwableDistance ?? [],
+        super(name, description, weight, cost, proficiencies ?? {}, notes ?? {}, false);
+
+  static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
+    items.put("quarterstaff", Weapon.smart(
+        name: "Боевой посох",
+        cost: 20,
+        proficiencies: {proficiencies.get("quarterstaffs")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(bludgeoning: true),
+        weight: 4,
+        versatileDamage: [Dice(1, 8)]));
+    items.put("mace", Weapon.smart(
+        name: "Булава",
+        cost: 500,
+        proficiencies: {proficiencies.get("maces")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(bludgeoning: true),
+        weight: 4));
+    items.put("club", Weapon.smart(
+        name: "Дубинка",
+        cost: 10,
+        proficiencies: {proficiencies.get("clubs")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(bludgeoning: true),
+        weight: 2,
+        features: {WeaponFeature.light}));
+    items.put("dagger", Weapon.smart(
+        name: "Кинжал",
+        cost: 200,
+        proficiencies: {proficiencies.get("daggers")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(piercing: true),
+        weight: 1,
+        throwableDistance: [20, 60],
+        features: {WeaponFeature.light, WeaponFeature.fencing}));
+    items.put("spear", Weapon.smart(
+        name: "Копьё",
+        cost: 100,
+        proficiencies: {proficiencies.get("spears")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(piercing: true),
+        weight: 3,
+        throwableDistance: [20, 60],
+        versatileDamage: [Dice(1, 8)]));
+    items.put("light hammer", Weapon.smart(
+        name: "Лёгкий молот",
+        cost: 200,
+        proficiencies: {proficiencies.get("throwing hammers")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(bludgeoning: true),
+        weight: 2,
+        features: {WeaponFeature.light},
+        throwableDistance: [20, 60]));
+    items.put("javelin", Weapon.smart(
+        name: "Метательное копьё",
+        cost: 50,
+        proficiencies: {proficiencies.get("javelins")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(piercing: true),
+        weight: 2,
+        throwableDistance: [30, 120]));
+    items.put("greatclub", Weapon.smart(
+        name: "Палица",
+        cost: 20,
+        proficiencies: {proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 8)],
+        damageType: DamageType.smart(bludgeoning: true),
+        weight: 10,
+        features: {WeaponFeature.twoHanded}));
+    items.put("handaxe", Weapon.smart(
+        name: "Ручной топор",
+        cost: 500,
+        proficiencies: {proficiencies.get("handaxes")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(slashing: true),
+        weight: 2,
+        features: {WeaponFeature.light},
+        throwableDistance: [20, 60]));
+    items.put("sickle", Weapon.smart(
+        name: "Серп",
+        cost: 100,
+        proficiencies: {proficiencies.get("sickles")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(slashing: true),
+        weight: 2,
+        features: {WeaponFeature.light}));
+    items.put("crossbow, light", Weapon.smart(
+        name: "Арбалет, лёгкий",
+        cost: 2500,
+        proficiencies: {proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 8)],
+        damageType: DamageType.smart(piercing: true),
+        weight: 5,
+        rangedDistance: [80, 320],
+        features: {WeaponFeature.reloading, WeaponFeature.twoHanded}));
+    items.put("dart", Weapon.smart(
+        name: "Дротик",
+        cost: 5,
+        proficiencies: {proficiencies.get("darts")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(piercing: true),
+        throwableDistance: [20, 60],
+        features: {WeaponFeature.fencing}));
+    items.put("shortbow", Weapon.smart(
+        name: "Короткий лук",
+        cost: 2500,
+        proficiencies: {proficiencies.get("shortbows")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 6)],
+        damageType: DamageType.smart(piercing: true),
+        weight: 2,
+        rangedDistance: [80, 320],
+        features: {WeaponFeature.twoHanded}));
+    items.put("sling", Weapon.smart(
+        name: "Праща",
+        cost: 10,
+        proficiencies: {proficiencies.get("slings")!, proficiencies.get("simple weapon")!},
+        damage: [Dice(1, 4)],
+        damageType: DamageType.smart(bludgeoning: true),
+        rangedDistance: [30, 120]));
+    return;
   }
 
-  static List<Weapon> getStandartWeapons(){
-    List<Weapon> weapons = [];
-    weapons.add(Weapon.smart(name: "Боевой посох", cost: 20, damage: [Dice(1, 6)], damageType: DamageType.smart(bludgeoning: true), weight: 4, versatileDamage: [Dice(1, 8)]));
-    weapons.add(Weapon.smart(name: "Булава", cost: 500, damage: [Dice(1, 6)], damageType: DamageType.smart(bludgeoning: true), weight: 4));
-    weapons.add(Weapon.smart(name: "Дубинка", cost: 10, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), weight: 2, light: true));
-    weapons.add(Weapon.smart(name: "Кинжал", cost: 200, damage: [Dice(1, 4)], damageType: DamageType.smart(piercing: true), weight: 1, light: true, throwableDistance: [20, 60], fencing: true));
-    weapons.add(Weapon.smart(name: "Копьё", cost: 100, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 3, throwableDistance: [20, 60], versatileDamage: [Dice(1, 8)]));
-    weapons.add(Weapon.smart(name: "Лёгкий молот", cost: 200, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), weight: 2, light: true, throwableDistance: [20, 60]));
-    weapons.add(Weapon.smart(name: "Метательное копьё", cost: 50, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 2, throwableDistance: [30, 120]));
-    weapons.add(Weapon.smart(name: "Палица", cost: 20, damage: [Dice(1, 8)], damageType: DamageType.smart(bludgeoning: true), weight: 10, twoHanded: true));
-    weapons.add(Weapon.smart(name: "Ручной топор", cost: 500, damage: [Dice(1, 6)], damageType: DamageType.smart(slashing: true), weight: 2, light: true, throwableDistance: [20, 60]));
-    weapons.add(Weapon.smart(name: "Серп", cost: 100, damage: [Dice(1, 4)], damageType: DamageType.smart(slashing: true), weight: 2, light: true));
+  List<int> get throwableDistance => _throwableDistance;
 
-    weapons.add(Weapon.smart(name: "Арбалет, лёгкий", cost: 2500, damage: [Dice(1, 8)], damageType: DamageType.smart(piercing: true), weight: 5, rangedDistance: [80, 320], twoHanded: true, reloading: true));
-    weapons.add(Weapon.smart(name: "Дротик", cost: 5, damage: [Dice(1, 4)], damageType: DamageType.smart(piercing: true), throwableDistance: [20, 60], fencing: true));
-    weapons.add(Weapon.smart(name: "Короткий лук", cost: 2500, damage: [Dice(1, 6)], damageType: DamageType.smart(piercing: true), weight: 2, rangedDistance: [80, 320], twoHanded: true));
-    weapons.add(Weapon.smart(name: "Праща", cost: 10, damage: [Dice(1, 4)], damageType: DamageType.smart(bludgeoning: true), rangedDistance: [30, 120]));
-
-    return weapons;
+  set throwableDistance(List<int> value) {
+    _throwableDistance = value;
   }
 
-  bool get fencing => _fencing;
+  List<int> get rangedDistance => _rangedDistance;
 
-  set fencing(bool value) {
-    _fencing = value;
+  set rangedDistance(List<int> value) {
+    _rangedDistance = value;
   }
 
-  bool get special => _special;
+  Set<WeaponFeature> get features => _features;
 
-  set special(bool value) {
-    _special = value;
-  }
-
-  bool get reach => _reach;
-
-  set reach(bool value) {
-    _reach = value;
-  }
-
-  bool get twoHanded => _twoHanded;
-
-  set twoHanded(bool value) {
-    _twoHanded = value;
-  }
-
-  bool get heavy => _heavy;
-
-  set heavy(bool value) {
-    _heavy = value;
+  set features(Set<WeaponFeature> value) {
+    _features = value;
   }
 
   List<Dice> get versatileDamage => _versatileDamage;
@@ -145,30 +218,6 @@ class Weapon extends Item{
     _damage = value;
   }
 
-  bool get light => _light;
-
-  set light(bool value) {
-    _light = value;
-  }
-
-  List<int> get throwableDistance => _throwableDistance;
-
-  set throwableDistance(List<int> value) {
-    _throwableDistance = value;
-  }
-
-  List<int> get rangedDistance => _rangedDistance;
-
-  set rangedDistance(List<int> value) {
-    _rangedDistance = value;
-  }
-
-  bool get reloading => _reloading;
-
-  set reloading(bool value) {
-    _reloading = value;
-  }
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -178,13 +227,7 @@ class Weapon extends Item{
           _damage == other._damage &&
           _damageType == other._damageType &&
           _versatileDamage == other._versatileDamage &&
-          _heavy == other._heavy &&
-          _light == other._light &&
-          _twoHanded == other._twoHanded &&
-          _reach == other._reach &&
-          _special == other._special &&
-          _fencing == other._fencing &&
-          _reloading == other._reloading &&
+          _features == other._features &&
           _rangedDistance == other._rangedDistance &&
           _throwableDistance == other._throwableDistance;
 
@@ -194,31 +237,24 @@ class Weapon extends Item{
       _damage.hashCode ^
       _damageType.hashCode ^
       _versatileDamage.hashCode ^
-      _heavy.hashCode ^
-      _light.hashCode ^
-      _twoHanded.hashCode ^
-      _reach.hashCode ^
-      _special.hashCode ^
-      _fencing.hashCode ^
-      _reloading.hashCode ^
+      _features.hashCode ^
       _rangedDistance.hashCode ^
       _throwableDistance.hashCode;
 
 //Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
-  //  addNotes(object.notes);
-  //  _damage = object.damage;
-  //  _damage_type = DamageType.copyFrom(object.damage_type);
-  //  _versatile_damage = object.versatile_damage;
-  //  _heavy = object.heavy;
-  //  _two_handed = object.two_handed;
-  //  _melee = object.melee;
-  //  _throwable = object.throwable;
-  //  _reach = object.reach;
-  //  _special = object.special;
-  //  _fencing = object.fencing;
-  //  _min_distance = object.min_distance;
-  //  _max_distance = object.max_distance;
-  //}
-
+//  addNotes(object.notes);
+//  _damage = object.damage;
+//  _damage_type = DamageType.copyFrom(object.damage_type);
+//  _versatile_damage = object.versatile_damage;
+//  _heavy = object.heavy;
+//  _two_handed = object.two_handed;
+//  _melee = object.melee;
+//  _throwable = object.throwable;
+//  _reach = object.reach;
+//  _special = object.special;
+//  _fencing = object.fencing;
+//  _min_distance = object.min_distance;
+//  _max_distance = object.max_distance;
+//}
 
 }

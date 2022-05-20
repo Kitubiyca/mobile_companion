@@ -68,14 +68,29 @@ class _CharacterListState extends State<CharacterList> {
                 //padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 height: MediaQuery.of(context).padding.top +
                     MediaQuery.of(context).size.height * 0.07,
-                child: const Center(
-                  child: Text(
+                child: Row(
+                  children: [
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: (){_scaffoldKey.currentState!.openDrawer();},
+                      color: const Color(0xffebd8b5),
+                    ),
+                    const Spacer(),
+                    const Text(
                     "Персонажи",
                     style: TextStyle(
                         fontSize: 20.0,
                         color: Color(0xffebd8b5),
                         fontWeight: FontWeight.bold),
-                  ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: (){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("WIP, currently unavailable"),));},
+                      color: const Color(0xffebd8b5),
+                    ),
+                  ]
                 ),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -140,7 +155,7 @@ class _CharacterListState extends State<CharacterList> {
                               ),
                             ),
                             const SizedBox(
-                              height: 40,
+                              height: 15,
                             ),
                           ],
                         ),
@@ -201,7 +216,7 @@ class _CharacterListState extends State<CharacterList> {
         ),
       ),
       child: InkWell(
-        onTap: () => {Navigator.pushNamed(context, path)},
+        onTap: () => {Navigator.pushReplacementNamed(context, path)},
         child: Center(
           child: Text(
             name,
