@@ -7,6 +7,8 @@ import 'package:dnd_companion/adapters/sub_race_adapter.dart';
 import 'package:dnd_companion/adapters/weapon_hotkey_adapter.dart';
 import 'package:dnd_companion/data/characteristics/spell_slots.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:dnd_companion/data/structures/weapon_feature.dart';
 import 'package:dnd_companion/screens/characters/character_view.dart';
 import 'package:dnd_companion/screens/characters/characters_list.dart';
 import 'package:dnd_companion/screens/items/item_view.dart';
@@ -15,8 +17,13 @@ import 'package:dnd_companion/screens/main_menu.dart';
 import 'package:dnd_companion/screens/spells/spells_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'adapters/armor_adapter.dart';
 import 'adapters/damage_type_adapter.dart';
 import 'adapters/dice_adapter.dart';
+import 'adapters/weapon_adapter.dart';
+import 'data/character/character.dart';
+import 'data/character/class/class.dart';
+import 'data/character/class/level.dart';
 import 'data/equipment/armor.dart';
 import 'data/equipment/item.dart';
 import 'data/equipment/weapon.dart';
@@ -78,6 +85,8 @@ initializeApp() async {
   Hive.registerAdapter(SubRaceAdapter());
   Hive.registerAdapter(WeaponAdapter());
   Hive.registerAdapter(WeaponHotkeyAdapter());
+  Hive.registerAdapter(CharacteristicAdapter());
+  Hive.registerAdapter(WeaponFeatureAdapter());
 
   var settings = await Hive.openBox("settings");
   if(!settings.containsKey("initializedData")){

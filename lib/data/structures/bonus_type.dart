@@ -1,7 +1,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/bonus_type.g.dart';
+part 'bonus_type.g.dart';
 
 @HiveType(typeId: 2)
 enum BonusType{

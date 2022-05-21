@@ -2,7 +2,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/characteristic.g.dart';
+part 'characteristic.g.dart';
 
 @HiveType(typeId: 3)
 enum Characteristic{

@@ -3,7 +3,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/stats.g.dart';
+part 'stats.g.dart';
 
 @HiveType(typeId: 8)
 enum Stats {

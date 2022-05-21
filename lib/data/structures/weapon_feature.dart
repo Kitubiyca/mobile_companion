@@ -1,23 +1,23 @@
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/weapon_feature.g.part';
+part 'weapon_feature.g.dart';
 
 @HiveType(typeId: 9)
 enum WeaponFeature{
 
   @HiveField(0)
-  heavy,
+  heavy, // disadvantage for small creatures
   @HiveField(1)
-  light,
+  light, // two weapons
   @HiveField(2)
-  twoHanded,
+  twoHanded, // one weapon in two hands
   @HiveField(3)
-  reach,
+  reach, // +5 ft. to melee range
   @HiveField(4)
-  special,
+  special, // has special rules
   @HiveField(5)
-  fencing, // finesse
+  fencing, // finesse // uses str or dex for attack and damage roll
   @HiveField(6)
-  reloading,
+  reloading, // only one attack at turn // needs to be reloaded
 
 }

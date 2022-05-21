@@ -2,7 +2,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/rest.g.dart';
+part 'rest.g.dart';
 
 @HiveType(typeId: 6)
 enum Rest{

@@ -1,9 +1,10 @@
 import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/item.g.dart';
+part 'item.g.dart';
 
-@HiveType(typeId: 43)
+@HiveType(typeId: 42)
 class Item {
 
   @HiveField(0)
@@ -17,11 +18,17 @@ class Item {
   @HiveField(4)
   Set<Proficiency> _proficiencies;
   @HiveField(5)
-  Set<String> _notes; // TODO реализовать владение
+  bool _equipment;
   @HiveField(6)
+  Map<Characteristic, int> _additionalStats;
+  @HiveField(7)
+  Map<Characteristic, int> _forcedStats;
+  @HiveField(8)
+  Set<String> _notes; // TODO реализовать владение
+  @HiveField(9)
   bool _protected;
 
-  Item(this._name, this._description, this._weight, this._cost, this._proficiencies, this._notes,
+  Item(this._name, this._description, this._weight, this._cost, this._proficiencies, this._equipment, this._additionalStats, this._forcedStats, this._notes,
       this._protected);
 
   Item.smart(
@@ -30,6 +37,9 @@ class Item {
       int weight = 0,
       int cost = 0,
       Set<Proficiency>? proficiencies,
+      bool equipment = false,
+      Map<Characteristic, int>? additionalStats,
+      Map<Characteristic, int>? forcedStats,
       Set<String>? notes,
       bool protected = false})
       : _name = name,
@@ -37,6 +47,9 @@ class Item {
         _weight = weight,
         _cost = cost,
         _proficiencies = proficiencies ?? {},
+        _equipment = equipment,
+        _additionalStats = additionalStats ?? {},
+        _forcedStats = forcedStats ?? {},
         _notes = notes ?? {},
         _protected = protected;
 
@@ -116,6 +129,24 @@ class Item {
     _proficiencies = value;
   }
 
+  Map<Characteristic, int> get forcedStats => _forcedStats;
+
+  set forcedStats(Map<Characteristic, int> value) {
+    _forcedStats = value;
+  }
+
+  Map<Characteristic, int> get additionalStats => _additionalStats;
+
+  set additionalStats(Map<Characteristic, int> value) {
+    _additionalStats = value;
+  }
+
+  bool get equipment => _equipment;
+
+  set equipment(bool value) {
+    _equipment = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -126,6 +157,9 @@ class Item {
           _weight == other._weight &&
           _cost == other._cost &&
           _proficiencies == other._proficiencies &&
+          _equipment == other._equipment &&
+          _additionalStats == other._additionalStats &&
+          _forcedStats == other._forcedStats &&
           _notes == other._notes &&
           _protected == other._protected;
 
@@ -136,6 +170,9 @@ class Item {
       _weight.hashCode ^
       _cost.hashCode ^
       _proficiencies.hashCode ^
+      _equipment.hashCode ^
+      _additionalStats.hashCode ^
+      _forcedStats.hashCode ^
       _notes.hashCode ^
       _protected.hashCode;
 }

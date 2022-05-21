@@ -3,9 +3,9 @@ import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
 import 'package:hive_flutter/adapters.dart';
 
-part 'package:dnd_companion/g_parts/spell.g.dart';
+part 'spell.g.dart';
 
-@HiveType(typeId: 71)
+@HiveType(typeId: 81)
 class Spell {
 
   //TODO вывод заклинаний по классам

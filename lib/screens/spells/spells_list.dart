@@ -136,7 +136,6 @@ class _SpellListState extends State<SpellList> {
                                   onTap: () {
                                     Navigator.pushNamed(
                                         context, "/spells/view",
-                                        //arguments: Spell.getStandartSpells()[index]);
                                         arguments: spells.getAt(index));
                                   },
                                   child: ListTile(

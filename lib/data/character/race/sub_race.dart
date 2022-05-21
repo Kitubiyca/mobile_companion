@@ -1,5 +1,3 @@
-import 'package:dnd_companion/data/character/class/class.dart';
-import 'package:dnd_companion/data/character/race/race.dart';
 import 'package:dnd_companion/data/characteristics/resist.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/spell/spell.dart';

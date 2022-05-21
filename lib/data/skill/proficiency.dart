@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/proficiency.g.dart';
+part 'proficiency.g.dart';
 
 @HiveType(typeId: 72)
 class Proficiency {

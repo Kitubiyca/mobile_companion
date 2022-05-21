@@ -2,7 +2,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/class_dependency.g.dart';
+part 'class_dependency.g.dart';
 
 
 @HiveType(typeId: 4)

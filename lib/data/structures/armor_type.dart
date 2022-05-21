@@ -1,7 +1,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/armor_type.g.dart';
+part 'armor_type.g.dart';
 
 @HiveType(typeId: 1)
 enum ArmorType{

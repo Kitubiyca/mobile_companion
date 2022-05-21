@@ -21,7 +21,7 @@ class BackgroundAdapter extends TypeAdapter<Background>{
   }
 
   @override
-  final int typeId = 11;
+  final int typeId = 13;
 
   @override
   void write(BinaryWriter writer, Background obj) {

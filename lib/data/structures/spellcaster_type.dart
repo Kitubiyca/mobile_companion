@@ -1,8 +1,6 @@
-
-
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/spell_caster_type.g.dart';
+part 'spellcaster_type.g.dart';
 
 @HiveType(typeId: 7)
 enum SpellcasterType{

@@ -10,7 +10,7 @@ class SpellHotkeyAdapter extends TypeAdapter<SpellHotkey>{
   }
 
   @override
-  final int typeId = 2;
+  final int typeId = 51;
 
   @override
   void write(BinaryWriter writer, obj) {

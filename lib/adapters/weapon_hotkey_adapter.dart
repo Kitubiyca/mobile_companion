@@ -17,7 +17,7 @@ class WeaponHotkeyAdapter extends TypeAdapter<WeaponHotkey>{
   }
 
   @override
-  final int typeId = 3;
+  final int typeId = 52;
 
   @override
   void write(BinaryWriter writer, WeaponHotkey obj) {

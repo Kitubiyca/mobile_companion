@@ -4,17 +4,17 @@ import 'package:hive/hive.dart';
 class SkillCheck { // Навык
 
   String _name;
-  Characteristic _code;
+  Characteristic _characteristic;
   bool _protected;
 
-  SkillCheck(this._name, this._code, this._protected);
+  SkillCheck(this._name, this._characteristic, this._protected);
 
   SkillCheck.smart({
     required String name,
     required Characteristic code,
     bool protected = false,
   })  : _name = name,
-        _code = code,
+        _characteristic = code,
         _protected = protected;
 
   //SkillCheck.copyFrom(SkillCheck object){
@@ -47,11 +47,11 @@ class SkillCheck { // Навык
 
   bool get protected => _protected;
 
-  Characteristic get code => _code;
+  Characteristic get characteristic => _characteristic;
 
-  set code(Characteristic value) {
+  set characteristic(Characteristic value) {
     if (_protected) throw Exception("Denied access to protected data.");
-    _code = value;
+    _characteristic = value;
   }
 
   String get name => _name;
@@ -67,9 +67,9 @@ class SkillCheck { // Навык
       other is SkillCheck &&
           runtimeType == other.runtimeType &&
           _name == other._name &&
-          _code == other._code &&
+          _characteristic == other._characteristic &&
           _protected == other._protected;
 
   @override
-  int get hashCode => _name.hashCode ^ _code.hashCode ^ _protected.hashCode;
+  int get hashCode => _name.hashCode ^ _characteristic.hashCode ^ _protected.hashCode;
 }

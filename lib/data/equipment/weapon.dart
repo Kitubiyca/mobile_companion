@@ -1,27 +1,18 @@
 import 'package:dnd_companion/data/skill/proficiency.dart';
+import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:dnd_companion/data/structures/weapon_feature.dart';
 import 'package:hive/hive.dart';
 import '../characteristics/damage_type.dart';
 import '../dice/dice.dart';
 import 'item.dart';
 
-part 'package:dnd_companion/g_parts/weapon.g.dart';
-
-@HiveType(typeId: 44)
 class Weapon extends Item {
-  //TODO лёгкое тяжёлое фехтовальное - мод лов \ сил \ лов или сил
 
-  @HiveField(0)
   List<Dice> _damage;
-  @HiveField(1)
   DamageType _damageType;
-  @HiveField(2)
   List<Dice> _versatileDamage;
-  @HiveField(3)
   Set<WeaponFeature> _features;
-  @HiveField(4)
   List<int> _rangedDistance;
-  @HiveField(5)
   List<int> _throwableDistance;
 
   Weapon(
@@ -30,6 +21,8 @@ class Weapon extends Item {
       int weight,
       int cost,
       Set<Proficiency> proficiencies,
+      Map<Characteristic, int> additionalStats,
+      Map<Characteristic, int> forcedStats,
       Set<String> notes,
       bool protected,
       this._damage,
@@ -38,7 +31,7 @@ class Weapon extends Item {
       this._features,
       this._rangedDistance,
       this._throwableDistance)
-      : super(name, description, weight, cost, proficiencies, notes, false);
+      : super(name, description, weight, cost, proficiencies, true, additionalStats, forcedStats, notes, false);
 
   Weapon.smart({
     required String name,
@@ -46,6 +39,8 @@ class Weapon extends Item {
     int weight = 0,
     int cost = 0,
     Set<Proficiency>? proficiencies,
+    Map<Characteristic, int>? additionalStats,
+    Map<Characteristic, int>? forcedStats,
     Set<String>? notes,
     bool protected = false,
     required List<Dice> damage,
@@ -60,13 +55,13 @@ class Weapon extends Item {
         _features = features ?? {},
         _rangedDistance = rangedDistance ?? [],
         _throwableDistance = throwableDistance ?? [],
-        super(name, description, weight, cost, proficiencies ?? {}, notes ?? {}, false);
+        super(name, description, weight, cost, proficiencies ?? {}, true, additionalStats ?? {}, forcedStats ?? {}, notes ?? {}, false);
 
   static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
     items.put("quarterstaff", Weapon.smart(
         name: "Боевой посох",
         cost: 20,
-        proficiencies: {proficiencies.get("quarterstaffs")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("quarterstaffs")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(bludgeoning: true),
         weight: 4,
@@ -74,14 +69,14 @@ class Weapon extends Item {
     items.put("mace", Weapon.smart(
         name: "Булава",
         cost: 500,
-        proficiencies: {proficiencies.get("maces")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("maces")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(bludgeoning: true),
         weight: 4));
     items.put("club", Weapon.smart(
         name: "Дубинка",
         cost: 10,
-        proficiencies: {proficiencies.get("clubs")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("clubs")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(bludgeoning: true),
         weight: 2,
@@ -89,7 +84,7 @@ class Weapon extends Item {
     items.put("dagger", Weapon.smart(
         name: "Кинжал",
         cost: 200,
-        proficiencies: {proficiencies.get("daggers")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("daggers")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(piercing: true),
         weight: 1,
@@ -98,7 +93,7 @@ class Weapon extends Item {
     items.put("spear", Weapon.smart(
         name: "Копьё",
         cost: 100,
-        proficiencies: {proficiencies.get("spears")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("spears")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(piercing: true),
         weight: 3,
@@ -107,7 +102,7 @@ class Weapon extends Item {
     items.put("light hammer", Weapon.smart(
         name: "Лёгкий молот",
         cost: 200,
-        proficiencies: {proficiencies.get("throwing hammers")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("throwing hammers")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(bludgeoning: true),
         weight: 2,
@@ -116,7 +111,7 @@ class Weapon extends Item {
     items.put("javelin", Weapon.smart(
         name: "Метательное копьё",
         cost: 50,
-        proficiencies: {proficiencies.get("javelins")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("javelins")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(piercing: true),
         weight: 2,
@@ -124,7 +119,7 @@ class Weapon extends Item {
     items.put("greatclub", Weapon.smart(
         name: "Палица",
         cost: 20,
-        proficiencies: {proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("simple weapons")!},
         damage: [Dice(1, 8)],
         damageType: DamageType.smart(bludgeoning: true),
         weight: 10,
@@ -132,7 +127,7 @@ class Weapon extends Item {
     items.put("handaxe", Weapon.smart(
         name: "Ручной топор",
         cost: 500,
-        proficiencies: {proficiencies.get("handaxes")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("handaxes")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(slashing: true),
         weight: 2,
@@ -141,7 +136,7 @@ class Weapon extends Item {
     items.put("sickle", Weapon.smart(
         name: "Серп",
         cost: 100,
-        proficiencies: {proficiencies.get("sickles")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("sickles")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(slashing: true),
         weight: 2,
@@ -149,7 +144,7 @@ class Weapon extends Item {
     items.put("crossbow, light", Weapon.smart(
         name: "Арбалет, лёгкий",
         cost: 2500,
-        proficiencies: {proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("simple weapons")!},
         damage: [Dice(1, 8)],
         damageType: DamageType.smart(piercing: true),
         weight: 5,
@@ -158,7 +153,7 @@ class Weapon extends Item {
     items.put("dart", Weapon.smart(
         name: "Дротик",
         cost: 5,
-        proficiencies: {proficiencies.get("darts")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("darts")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(piercing: true),
         throwableDistance: [20, 60],
@@ -166,7 +161,7 @@ class Weapon extends Item {
     items.put("shortbow", Weapon.smart(
         name: "Короткий лук",
         cost: 2500,
-        proficiencies: {proficiencies.get("shortbows")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("shortbows")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 6)],
         damageType: DamageType.smart(piercing: true),
         weight: 2,
@@ -175,7 +170,7 @@ class Weapon extends Item {
     items.put("sling", Weapon.smart(
         name: "Праща",
         cost: 10,
-        proficiencies: {proficiencies.get("slings")!, proficiencies.get("simple weapon")!},
+        proficiencies: {proficiencies.get("slings")!, proficiencies.get("simple weapons")!},
         damage: [Dice(1, 4)],
         damageType: DamageType.smart(bludgeoning: true),
         rangedDistance: [30, 120]));

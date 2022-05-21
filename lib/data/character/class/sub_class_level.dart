@@ -5,9 +5,9 @@ import 'package:dnd_companion/data/skill/skill_check.dart';
 import 'package:dnd_companion/data/spell/spell.dart';
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/sub_class_level.g.dart';
+part 'sub_class_level.g.dart';
 
-@HiveType(typeId: 115)
+@HiveType(typeId: 114)
 class SubClassLevel{
 
   @HiveField(0)
@@ -37,7 +37,7 @@ class SubClassLevel{
   @HiveField(12)
   Resist? _resist;
   @HiveField(13)
-  int? _knownSpellMulticlassChoices;
+  int? _knownSpellMulticlassChoices; // number of spells of not your class
   @HiveField(14)
   Map<String, Set<Spell>>? _spellPacks; // always prepared;
 

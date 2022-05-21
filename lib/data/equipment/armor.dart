@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'item.dart';
 
 class Armor extends Item { //TODO проверить и поменять тяжелый средний и лёгкий доспех на бонусы
+
   String _type;
   int _AC;
   Characteristic _ACModifier;
@@ -19,6 +20,8 @@ class Armor extends Item { //TODO проверить и поменять тяж�
       int weight,
       int cost,
       Set<Proficiency> proficiencies,
+      Map<Characteristic, int> additionalStats,
+      Map<Characteristic, int> forcedStats,
       Set<String> notes,
       bool protected,
       this._type,
@@ -28,7 +31,7 @@ class Armor extends Item { //TODO проверить и поменять тяж�
       this._noise,
       this._requirement,
       this._resist)
-      : super(name, description, weight, cost, proficiencies, notes, protected);
+      : super(name, description, weight, cost, proficiencies, true, additionalStats, forcedStats, notes, protected);
 
   Armor.smart({
     required String name,
@@ -36,6 +39,8 @@ class Armor extends Item { //TODO проверить и поменять тяж�
     int weight = 0,
     int cost = 0,
     Set<Proficiency>? proficiencies,
+    Map<Characteristic, int>? additionalStats,
+    Map<Characteristic, int>? forcedStats,
     Set<String>? notes,
     bool protected = false,
     String type = "",
@@ -52,7 +57,7 @@ class Armor extends Item { //TODO проверить и поменять тяж�
         _noise = noise,
         _requirement = requirement,
         _resist = resist ?? Resist.empty(),
-        super(name, description, weight, cost, proficiencies ?? {}, notes ?? {}, protected);
+        super(name, description, weight, cost, proficiencies ?? {}, true, additionalStats ?? {}, forcedStats ?? {}, notes ?? {}, protected);
 
   //Armor.copyFrom(Armor object) : super(object.name, object.description, object.weight, object.cost, {}, false){
   //  addNotes(object.notes);

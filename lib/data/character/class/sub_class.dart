@@ -4,9 +4,9 @@ import 'package:dnd_companion/data/structures/rest.dart';
 import 'package:dnd_companion/data/structures/spellcaster_type.dart';
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/sub_class.g.dart';
+part 'sub_class.g.dart';
 
-@HiveType(typeId: 114)
+@HiveType(typeId: 113)
 class SubClass{
 
   @HiveField(0)

@@ -7,9 +7,9 @@ class SkillCheckAdapter extends TypeAdapter<SkillCheck>{
   @override
   SkillCheck read(BinaryReader reader) {
     final String name = reader.readString();
-    final Characteristic code = reader.read();
+    final Characteristic characteristic = reader.read();
     final bool protected = reader.readBool();
-    return SkillCheck(name, code, protected);
+    return SkillCheck(name, characteristic, protected);
   }
 
   @override
@@ -18,7 +18,7 @@ class SkillCheckAdapter extends TypeAdapter<SkillCheck>{
   @override
   void write(BinaryWriter writer, SkillCheck obj) {
     writer.writeString(obj.name);
-    writer.write(obj.code);
+    writer.write(obj.characteristic);
     writer.writeBool(obj.protected);
   }
 

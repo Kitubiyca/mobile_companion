@@ -13,7 +13,7 @@ class FeatAdapter extends TypeAdapter<Feat>{
   }
 
   @override
-  final int typeId = 61;
+  final int typeId = 71;
 
   @override
   void write(BinaryWriter writer, Feat obj) {

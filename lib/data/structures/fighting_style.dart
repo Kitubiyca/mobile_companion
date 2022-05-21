@@ -2,7 +2,7 @@
 
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/fighting_style.g.dart';
+part 'fighting_style.g.dart';
 
 
 @HiveType(typeId: 5)

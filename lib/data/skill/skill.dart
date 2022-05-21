@@ -5,7 +5,7 @@ import 'package:dnd_companion/data/structures/class_dependency.dart';
 import 'package:dnd_companion/data/structures/rest.dart';
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/skill.g.dart';
+part 'skill.g.dart';
 
 @HiveType(typeId: 73)
 class Skill {

@@ -8,7 +8,7 @@ import 'package:dnd_companion/data/structures/spellcaster_type.dart';
 import 'package:hive/hive.dart';
 import 'level.dart';
 
-part 'package:dnd_companion/g_parts/class.g.dart';
+part 'class.g.dart';
 
 @HiveType(typeId: 111)
 class Class {

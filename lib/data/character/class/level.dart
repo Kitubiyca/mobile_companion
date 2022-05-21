@@ -3,9 +3,9 @@ import 'package:dnd_companion/data/skill/skill.dart';
 import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:hive/hive.dart';
 
-part 'package:dnd_companion/g_parts/level.g.dart';
+part 'level.g.dart';
 
-@HiveType(typeId: 113)
+@HiveType(typeId: 112)
 class Level {
   @HiveField(0)
   int _abilityScorePoints;
