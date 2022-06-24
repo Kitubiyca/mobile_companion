@@ -1,4 +1,5 @@
 import 'package:dnd_companion/data/character/class/sub_class_level.dart';
+import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:dnd_companion/data/structures/rest.dart';
 import 'package:dnd_companion/data/structures/spellcaster_type.dart';
@@ -22,10 +23,12 @@ class SubClass{
   @HiveField(5)
   Rest? _restType;
   @HiveField(6)
-  String? _subClassDiceName;
+  String? _diceName; // sub class dice name
   @HiveField(7)
-  Map<int, Set<SubClassLevel>> _subClassSkills;
+  Map<int, Dice> _dice;
   @HiveField(8)
+  Map<int, SubClassLevel> _subClassSkills;
+  @HiveField(9)
   bool _protected;
 
   SubClass(
@@ -35,7 +38,8 @@ class SubClass{
       this._spellCastingAbility,
       this._subClassPointsName,
       this._restType,
-      this._subClassDiceName,
+      this._diceName,
+      this._dice,
       this._subClassSkills,
       this._protected);
 
@@ -46,8 +50,9 @@ class SubClass{
   Characteristic spellCastingAbility = Characteristic.none,
   String? subClassPointsName,
   Rest? restType,
-  String? subClassDiceName,
-  required subClassSkills,
+  String? diceName,
+  Map<int, Dice>? dice,
+  required Map<int, SubClassLevel> subClassSkills,
   protected = false}) :
         _name = name,
         _description = description,
@@ -55,7 +60,8 @@ class SubClass{
         _spellCastingAbility = spellCastingAbility,
         _subClassPointsName = subClassPointsName,
         _restType = restType,
-        _subClassDiceName = subClassDiceName,
+        _diceName = diceName,
+        _dice = dice ?? {},
         _subClassSkills = subClassSkills,
         _protected = protected;
 
@@ -65,16 +71,16 @@ class SubClass{
     _protected = value;
   }
 
-  Map<int, Set<SubClassLevel>> get subClassSkills => _subClassSkills;
+  Map<int, SubClassLevel> get subClassSkills => _subClassSkills;
 
-  set subClassSkills(Map<int, Set<SubClassLevel>> value) {
+  set subClassSkills(Map<int, SubClassLevel> value) {
     _subClassSkills = value;
   }
 
-  String? get subClassDiceName => _subClassDiceName;
+  String? get subClassDiceName => _diceName;
 
   set subClassDiceName(String? value) {
-    _subClassDiceName = value;
+    _diceName = value;
   }
 
   Rest? get restType => _restType;
@@ -113,6 +119,18 @@ class SubClass{
     _name = value;
   }
 
+  Map<int, Dice> get dice => _dice;
+
+  set dice(Map<int, Dice> value) {
+    _dice = value;
+  }
+
+  String? get diceName => _diceName;
+
+  set diceName(String? value) {
+    _diceName = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -124,7 +142,8 @@ class SubClass{
           _spellCastingAbility == other._spellCastingAbility &&
           _subClassPointsName == other._subClassPointsName &&
           _restType == other._restType &&
-          _subClassDiceName == other._subClassDiceName &&
+          _diceName == other._diceName &&
+          _dice == other._dice &&
           _subClassSkills == other._subClassSkills &&
           _protected == other._protected;
 
@@ -136,7 +155,8 @@ class SubClass{
       _spellCastingAbility.hashCode ^
       _subClassPointsName.hashCode ^
       _restType.hashCode ^
-      _subClassDiceName.hashCode ^
+      _diceName.hashCode ^
+      _dice.hashCode ^
       _subClassSkills.hashCode ^
       _protected.hashCode;
 }

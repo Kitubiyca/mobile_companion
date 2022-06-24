@@ -1,5 +1,7 @@
+import 'package:dnd_companion/data/character/character.dart';
 import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:dnd_companion/data/structures/rare_type.dart';
 import 'package:dnd_companion/data/structures/weapon_feature.dart';
 import 'package:hive/hive.dart';
 import '../characteristics/damage_type.dart';
@@ -8,9 +10,8 @@ import 'item.dart';
 
 class Weapon extends Item {
 
-  List<Dice> _damage;
-  DamageType _damageType;
-  List<Dice> _versatileDamage;
+  Map<DamageType, Dice> _damage;
+  Map<DamageType, Dice> _versatileDamage;
   Set<WeaponFeature> _features;
   List<int> _rangedDistance;
   List<int> _throwableDistance;
@@ -18,163 +19,239 @@ class Weapon extends Item {
   Weapon(
       String name,
       String description,
+      String image,
       int weight,
-      int cost,
+      double cost,
+      RareType rare,
       Set<Proficiency> proficiencies,
       Map<Characteristic, int> additionalStats,
       Map<Characteristic, int> forcedStats,
       Set<String> notes,
       bool protected,
       this._damage,
-      this._damageType,
       this._versatileDamage,
       this._features,
       this._rangedDistance,
       this._throwableDistance)
-      : super(name, description, weight, cost, proficiencies, true, additionalStats, forcedStats, notes, false);
+      : super(name, description, image, weight, cost, rare, proficiencies, true, additionalStats, forcedStats, notes, false);
 
   Weapon.smart({
     required String name,
     String description = "",
+    String image = "question-mark.png",
     int weight = 0,
-    int cost = 0,
+    double cost = 0,
+    RareType? rare,
     Set<Proficiency>? proficiencies,
     Map<Characteristic, int>? additionalStats,
     Map<Characteristic, int>? forcedStats,
     Set<String>? notes,
     bool protected = false,
-    required List<Dice> damage,
-    required DamageType damageType,
-    List<Dice>? versatileDamage,
+    required Map<DamageType, Dice> damage,
+    Map<DamageType, Dice>? versatileDamage,
     Set<WeaponFeature>? features,
     List<int>? rangedDistance,
     List<int>? throwableDistance,
   })  : _damage = damage,
-        _damageType = damageType,
-        _versatileDamage = versatileDamage ?? [],
+        _versatileDamage = versatileDamage ?? {},
         _features = features ?? {},
         _rangedDistance = rangedDistance ?? [],
         _throwableDistance = throwableDistance ?? [],
-        super(name, description, weight, cost, proficiencies ?? {}, true, additionalStats ?? {}, forcedStats ?? {}, notes ?? {}, false);
+        super(name, description, image, weight, double.parse(cost.toStringAsPrecision(2)), rare ?? RareType.common, proficiencies ?? {}, true, additionalStats ?? {}, forcedStats ?? {}, notes ?? {}, false);
 
   static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
-    items.put("quarterstaff", Weapon.smart(
+    await items.put("quarterstaff", Weapon.smart(
         name: "Боевой посох",
-        cost: 20,
+        cost: 0.2,
         proficiencies: {proficiencies.get("quarterstaffs")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType. bludgeoning: Dice(1, 6, 0)},
         weight: 4,
-        versatileDamage: [Dice(1, 8)]));
-    items.put("mace", Weapon.smart(
+        versatileDamage: {DamageType.bludgeoning: Dice(1, 8, 0)}));
+    await items.put("mace", Weapon.smart(
         name: "Булава",
-        cost: 500,
+        cost: 5,
         proficiencies: {proficiencies.get("maces")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType.bludgeoning: Dice(1, 6, 0)},
         weight: 4));
-    items.put("club", Weapon.smart(
+    await items.put("club", Weapon.smart(
         name: "Дубинка",
-        cost: 10,
+        cost: 0.1,
         proficiencies: {proficiencies.get("clubs")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType.bludgeoning: Dice(1, 4, 0)},
         weight: 2,
         features: {WeaponFeature.light}));
-    items.put("dagger", Weapon.smart(
+    await items.put("dagger", Weapon.smart(
         name: "Кинжал",
-        cost: 200,
+        cost: 2,
         proficiencies: {proficiencies.get("daggers")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 4, 0)},
         weight: 1,
         throwableDistance: [20, 60],
         features: {WeaponFeature.light, WeaponFeature.fencing}));
-    items.put("spear", Weapon.smart(
+    await items.put("spear", Weapon.smart(
         name: "Копьё",
-        cost: 100,
+        cost: 1,
         proficiencies: {proficiencies.get("spears")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 6, 0)},
         weight: 3,
         throwableDistance: [20, 60],
-        versatileDamage: [Dice(1, 8)]));
-    items.put("light hammer", Weapon.smart(
+        versatileDamage: {DamageType.piercing: Dice(1, 8, 0)}));
+    await items.put("light hammer", Weapon.smart(
         name: "Лёгкий молот",
-        cost: 200,
+        cost: 2,
         proficiencies: {proficiencies.get("throwing hammers")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType.bludgeoning: Dice(1, 4, 0)},
         weight: 2,
         features: {WeaponFeature.light},
         throwableDistance: [20, 60]));
-    items.put("javelin", Weapon.smart(
+    await items.put("javelin", Weapon.smart(
         name: "Метательное копьё",
-        cost: 50,
+        cost: 0.5,
         proficiencies: {proficiencies.get("javelins")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 6, 0)},
         weight: 2,
         throwableDistance: [30, 120]));
-    items.put("greatclub", Weapon.smart(
+    await items.put("greatclub", Weapon.smart(
         name: "Палица",
-        cost: 20,
+        cost: 0.5,
         proficiencies: {proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 8)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType.bludgeoning: Dice(1, 8, 0)},
         weight: 10,
         features: {WeaponFeature.twoHanded}));
-    items.put("handaxe", Weapon.smart(
+    await items.put("handaxe", Weapon.smart(
         name: "Ручной топор",
-        cost: 500,
+        cost: 5,
         proficiencies: {proficiencies.get("handaxes")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(slashing: true),
+        damage: {DamageType.slashing: Dice(1, 6, 0)},
         weight: 2,
         features: {WeaponFeature.light},
         throwableDistance: [20, 60]));
-    items.put("sickle", Weapon.smart(
+    await items.put("sickle", Weapon.smart(
         name: "Серп",
-        cost: 100,
+        cost: 1,
         proficiencies: {proficiencies.get("sickles")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(slashing: true),
+        damage: {DamageType.slashing: Dice(1, 4, 0)},
         weight: 2,
         features: {WeaponFeature.light}));
-    items.put("crossbow, light", Weapon.smart(
+    await items.put("crossbow, light", Weapon.smart(
         name: "Арбалет, лёгкий",
-        cost: 2500,
+        cost: 25,
         proficiencies: {proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 8)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 8, 0)},
         weight: 5,
         rangedDistance: [80, 320],
         features: {WeaponFeature.reloading, WeaponFeature.twoHanded}));
-    items.put("dart", Weapon.smart(
+    await items.put("dart", Weapon.smart(
         name: "Дротик",
-        cost: 5,
+        cost: 0.05,
         proficiencies: {proficiencies.get("darts")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 4, 0)},
         throwableDistance: [20, 60],
         features: {WeaponFeature.fencing}));
-    items.put("shortbow", Weapon.smart(
+    await items.put("shortbow", Weapon.smart(
         name: "Короткий лук",
-        cost: 2500,
+        cost: 25,
         proficiencies: {proficiencies.get("shortbows")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 6)],
-        damageType: DamageType.smart(piercing: true),
+        damage: {DamageType.piercing: Dice(1, 6, 0)},
         weight: 2,
         rangedDistance: [80, 320],
         features: {WeaponFeature.twoHanded}));
-    items.put("sling", Weapon.smart(
+    await items.put("sling", Weapon.smart(
         name: "Праща",
-        cost: 10,
+        cost: 0.1,
         proficiencies: {proficiencies.get("slings")!, proficiencies.get("simple weapons")!},
-        damage: [Dice(1, 4)],
-        damageType: DamageType.smart(bludgeoning: true),
+        damage: {DamageType.bludgeoning: Dice(1, 4, 0)},
         rangedDistance: [30, 120]));
-    return;
+    await items.put("small knife", Weapon.smart(
+        name: "Маленький нож",
+        cost: 0.2,
+        weight: 1,
+        proficiencies: {proficiencies.get("simple weapons")!},
+        damage: {DamageType.piercing: Dice(1, 4, 0)}));
+    await items.put("long sword", Weapon.smart(
+        name: "Длинный меч",
+        cost: 15,
+        weight: 3,
+        proficiencies: {proficiencies.get("martial weapons")!},
+        damage: {DamageType.slashing: Dice(1, 8, 0)},
+        versatileDamage: {DamageType.slashing: Dice(1, 10, 0)}));
+  }
+
+  @override
+  String getType() {
+      for (int i = 0; i < super.proficiencies.length; i++) {
+        switch (super.proficiencies.elementAt(i).mark) {
+          case "простое":
+            return "Простое оружие";
+          case "воинское":
+            return "Воинское оружие";
+          default:
+            break;
+        }
+      }
+      return "Оружие";
+    }
+
+  String getFeatures(){
+    String ret = "";
+    for(int i=0; i<features.length; i++){
+      ret+=features.elementAt(i).getText() + ", ";
+    }
+    if(versatileDamage.isNotEmpty){
+      ret += "универсальное(" + getStringVersatileDamage() + "), ";
+    }
+    if(rangedDistance.isNotEmpty){
+      ret += "Боеприпас (дис. " + rangedDistance.elementAt(0).toString() + "/" + rangedDistance.elementAt(1).toString() + "), ";
+    }
+    if(throwableDistance.isNotEmpty){
+      ret += "метательное (дис. " + throwableDistance.elementAt(0).toString() + "/" + throwableDistance.elementAt(1).toString() + "), ";
+    }
+    if(ret==""){
+      return ret;
+    } else {
+      return ret.substring(0, ret.length-2);
+    }
+  }
+
+  String getStringDamage(){
+    String ret = "";
+    for(int i=0; i < damage.length; i++){
+      ret += (damage.values.elementAt(i).name == "1D1" ? "1" : damage.values.elementAt(i).name) + " " + damage.keys.elementAt(i).getText() + ", ";
+    }
+    if(ret != "") ret = ret.substring(0, ret.length-2);
+    return ret;
+  }
+
+  String getStringVersatileDamage(){
+    String ret = "";
+    for(int i=0; i < versatileDamage.length; i++){
+      ret += (versatileDamage.values.elementAt(i).name == "1D1" ? "1" : versatileDamage.values.elementAt(i).name) + " " + (versatileDamage.keys.elementAt(i) == damage.keys.elementAt(i) ? "" : versatileDamage.keys.elementAt(i).getText()) + ", ";
+    }
+    if(ret != "") ret = ret.substring(0, ret.length-2);
+    return ret;
+  }
+
+  bool checkProficiency(Character character){
+    for(Proficiency prof in super.proficiencies){
+      if (character.proficiencies.contains(prof)){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Map<String, int> getAttackMap(Character character, bool dex){
+    Map<String, int> ret = {};
+    ret["1к20"] = Dice(1, 20, 0).roll().first;
+    if(dex){
+      ret["Лов"] = character.getStatBonus(Characteristic.dexterity);
+    } else {
+      ret["Сил"] = character.getStatBonus(Characteristic.strength);
+    }
+    if(checkProficiency(character)){
+      ret["Мастер"] = character.getProficiencyBonus();
+    }
+    return ret;
   }
 
   List<int> get throwableDistance => _throwableDistance;
@@ -195,46 +272,32 @@ class Weapon extends Item {
     _features = value;
   }
 
-  List<Dice> get versatileDamage => _versatileDamage;
+  Map<DamageType, Dice> get versatileDamage => _versatileDamage;
 
-  set versatileDamage(List<Dice> value) {
+  set versatileDamage(Map<DamageType, Dice> value) {
     _versatileDamage = value;
   }
 
-  DamageType get damageType => _damageType;
+  Map<DamageType, Dice> get damage => _damage;
 
-  set damageType(DamageType value) {
-    _damageType = value;
-  }
-
-  List<Dice> get damage => _damage;
-
-  set damage(List<Dice> value) {
+  set damage(Map<DamageType, Dice> value) {
     _damage = value;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      super == other &&
-          other is Weapon &&
-          runtimeType == other.runtimeType &&
-          _damage == other._damage &&
-          _damageType == other._damageType &&
-          _versatileDamage == other._versatileDamage &&
-          _features == other._features &&
-          _rangedDistance == other._rangedDistance &&
-          _throwableDistance == other._throwableDistance;
+          super == other && other is Weapon &&
+              runtimeType == other.runtimeType && _damage == other._damage &&
+              _versatileDamage == other._versatileDamage &&
+              _features == other._features &&
+              _rangedDistance == other._rangedDistance &&
+              _throwableDistance == other._throwableDistance;
 
   @override
   int get hashCode =>
-      super.hashCode ^
-      _damage.hashCode ^
-      _damageType.hashCode ^
-      _versatileDamage.hashCode ^
-      _features.hashCode ^
-      _rangedDistance.hashCode ^
-      _throwableDistance.hashCode;
+      super.hashCode ^ _damage.hashCode ^ _versatileDamage.hashCode ^ _features
+          .hashCode ^ _rangedDistance.hashCode ^ _throwableDistance.hashCode;
 
 //Weapon.copyFrom(Weapon object) : super(object.name, object. description, object.weight, object.cost, {}, false){
 //  addNotes(object.notes);

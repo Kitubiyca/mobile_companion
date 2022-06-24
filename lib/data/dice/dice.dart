@@ -1,27 +1,24 @@
 import 'dart:math';
+import 'package:dnd_companion/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 
 class Dice{
 
   int _count;
-  late String _name;
   int _max;
+  int _add;
 
-  static List<Dice> dices = [];
-
-  Dice(this._count, this._max){
-    if(_count<1) throw Exception("Incorrect input data: expected at least 1 roll at count.");
-    _name = _count.toString() + "D" + _max.toString();
-  }
-
-  Dice.withAdd(this._count, this._max){
-    if(_count<1) throw Exception("Incorrect input data: expected at least 1 roll at count.");
-    _name = _count.toString() + "D" + _max.toString();
-    Dice.dices.add(this);
-  }
+  Dice(this._count, this._max, this._add);
 
   List<int> rollAdvantage(bool advantage){
-    int ret1 = Random().nextInt(_max);
-    int ret2 = Random().nextInt(_max);
+    int ret1 = 0;
+    int ret2 = 0;
+    if(_max > 0){
+      ret1 = Random().nextInt(_max);
+      ret2 = Random().nextInt(_max);
+    }
+    ret1 += _count;
+    ret2 += _count;
     if (advantage){
       return ret1 > ret2 ? List<int>.filled(ret1, ret2) : List<int>.filled(ret2, ret1);
     }
@@ -33,9 +30,14 @@ class Dice{
   List<int> roll(){
     List<int> ret = <int>[0];
     for(int i = 0; i<_count; i++) {
-      ret.add(Random().nextInt(_max) + 1);
+      if(_max > 0){
+        ret.add(Random().nextInt(_max) + 1);
+      } else {
+        ret.add(0);
+      }
     }
     for (int element in ret) {ret[0]+=element;}
+    ret[0] += _add;
     return ret;
   }
 
@@ -43,7 +45,17 @@ class Dice{
 
   int get max => _max;
 
-  String get name => _name;
+  String get name => _count.toString() + "к" + _max.toString() + (_add == 0 ? "" : (_add > 0 ? " +" + _add.toString() : " " + _add.toString()));
+
+  int get add => _add;
+
+  set add(int value) {
+    _add = value;
+  }
+
+  void rollWithAlert(BuildContext context){
+    Utils.showAlertRoll(context, "Бросок " + name, {name: roll().first});
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -51,9 +63,9 @@ class Dice{
       other is Dice &&
           runtimeType == other.runtimeType &&
           _count == other._count &&
-          _name == other._name &&
-          _max == other._max;
+          _max == other._max &&
+          _add == other._add;
 
   @override
-  int get hashCode => _count.hashCode ^ _name.hashCode ^ _max.hashCode;
+  int get hashCode => _count.hashCode ^ _max.hashCode ^ _add.hashCode;
 }

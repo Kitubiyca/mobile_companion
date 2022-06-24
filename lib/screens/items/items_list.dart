@@ -1,10 +1,10 @@
-import 'package:dnd_companion/data/character/character.dart';
-import 'package:dnd_companion/data/character/class/class.dart';
 import 'package:dnd_companion/data/equipment/armor.dart';
 import 'package:dnd_companion/data/equipment/item.dart';
 import 'package:dnd_companion/data/equipment/weapon.dart';
+import 'package:dnd_companion/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:dnd_companion/data/structures/rare_type.dart';
 
 class ItemList extends StatefulWidget {
   const ItemList({Key? key}) : super(key: key);
@@ -29,6 +29,7 @@ class _ItemListState extends State<ItemList> {
       },
       child: Scaffold(
         key: _scaffoldKey,
+        floatingActionButton: Utils.diceOverlayMenu(context),
         drawer: Drawer(
           child: Container(
             decoration: const BoxDecoration(
@@ -52,6 +53,22 @@ class _ItemListState extends State<ItemList> {
                   height: 20,
                 ),
                 _drawerElement("Заклинания", "/spells"),
+                const SizedBox(
+                  height: 20,
+                ),
+                _drawerElement("Расы", "/races"),
+                const SizedBox(
+                  height: 20,
+                ),
+                _drawerElement("Классы", "/classes"),
+                const SizedBox(
+                  height: 20,
+                ),
+                _drawerElement("Черты", "/feats"),
+                const SizedBox(
+                  height: 20,
+                ),
+                _drawerElement("Предыстории", "/backgrounds"),
               ],
             ),
           ),
@@ -88,10 +105,16 @@ class _ItemListState extends State<ItemList> {
                             fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: (){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("WIP, currently unavailable"),));},
-                        color: const Color(0xffebd8b5),
+                      Visibility(
+                        maintainSize: true,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: false,
+                        child: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: (){ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("WIP, currently unavailable"),));},
+                          color: const Color(0xffebd8b5),
+                        ),
                       ),
                     ]
                 ),
@@ -134,17 +157,23 @@ class _ItemListState extends State<ItemList> {
                                   ),
                                 ),
                                 child: InkWell(
-                                  onTap: () => {
+                                  onTap: (){
                                     Navigator.pushNamed(
                                         context, "/items/view",
-                                        arguments: items.getAt(index))
+                                        arguments: items.getAt(index));
                                   },
                                   child: ListTile(
                                     leading: Container(
-                                        child: Image.asset(
-                                            "resources/icons/question-mark.png"),
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(35),
+                                          child: Image(image: items.getAt(index).getImage(),),
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: (items.getAt(index) as Item).rare.getColor(),
+                                            width: 2,
+                                          ),
+                                          borderRadius: const BorderRadius.all(
                                               Radius.circular(35)),
                                         )),
                                     title: Text(
@@ -207,7 +236,7 @@ class _ItemListState extends State<ItemList> {
         ),
       ),
       child: InkWell(
-        onTap: () => {Navigator.pushReplacementNamed(context, path)},
+        onTap: (){Hive.box<Item>("Items").close();Navigator.pushReplacementNamed(context, path);},
         child: Center(
           child: Text(
             name,

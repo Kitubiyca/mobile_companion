@@ -8,7 +8,7 @@ part of 'weapon_feature.dart';
 
 class WeaponFeatureAdapter extends TypeAdapter<WeaponFeature> {
   @override
-  final int typeId = 9;
+  final int typeId = 11;
 
   @override
   WeaponFeature read(BinaryReader reader) {

@@ -8,7 +8,7 @@ part of 'spellcaster_type.dart';
 
 class SpellcasterTypeAdapter extends TypeAdapter<SpellcasterType> {
   @override
-  final int typeId = 7;
+  final int typeId = 9;
 
   @override
   SpellcasterType read(BinaryReader reader) {

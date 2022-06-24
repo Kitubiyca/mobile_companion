@@ -31,7 +31,7 @@ class SkillAdapter extends TypeAdapter<Skill> {
       fields[11] as bool,
       fields[12] as bool,
       (fields[13] as List?)?.cast<Characteristic>().toSet(),
-      fields[14] as int?,
+      fields[14] as double?,
       fields[15] as bool,
     );
   }

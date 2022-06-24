@@ -1,10 +1,8 @@
-
-
 import 'package:hive/hive.dart';
 
 part 'rest.g.dart';
 
-@HiveType(typeId: 6)
+@HiveType(typeId: 7)
 enum Rest{
 
   @HiveField(0)

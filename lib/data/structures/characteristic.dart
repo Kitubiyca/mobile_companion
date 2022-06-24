@@ -1,5 +1,3 @@
-
-
 import 'package:hive/hive.dart';
 
 part 'characteristic.g.dart';
@@ -34,7 +32,7 @@ extension CharacteristicsExtension on Characteristic{
       case Characteristic.intelligence: return "интеллект";
       case Characteristic.wisdom: return "мудрость";
       case Characteristic.charisma: return "харизма";
-      case Characteristic.none: return "";
+      case Characteristic.none: return "нет";
       default: return "ошибка";
     }
   }

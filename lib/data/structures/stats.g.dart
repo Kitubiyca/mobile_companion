@@ -8,7 +8,7 @@ part of 'stats.dart';
 
 class StatsAdapter extends TypeAdapter<Stats> {
   @override
-  final int typeId = 8;
+  final int typeId = 10;
 
   @override
   Stats read(BinaryReader reader) {

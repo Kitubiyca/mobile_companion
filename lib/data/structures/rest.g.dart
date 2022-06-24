@@ -8,7 +8,7 @@ part of 'rest.dart';
 
 class RestAdapter extends TypeAdapter<Rest> {
   @override
-  final int typeId = 6;
+  final int typeId = 7;
 
   @override
   Rest read(BinaryReader reader) {

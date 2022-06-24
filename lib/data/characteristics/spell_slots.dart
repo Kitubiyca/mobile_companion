@@ -1,9 +1,9 @@
 class SpellSlots {
   static List<List<int>> basicMagicTable =
-      List.filled(20, List.filled(9, 0, growable: false), growable: false);
+      List.generate(20, (index) => List.generate(9, (index) => 0, growable: false), growable: false);
 
-  static List<List<int>> specialMagicTable = List.filled(
-      20, List.filled(2, 0, growable: false),
+  static List<List<int>> specialMagicTable = List.generate(
+      20, (index) => List.generate(2, (index) => 0, growable: false),
       growable: false); //[0]-level [1]-count
 
   static initialize() {

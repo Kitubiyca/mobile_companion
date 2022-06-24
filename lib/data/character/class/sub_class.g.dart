@@ -24,16 +24,16 @@ class SubClassAdapter extends TypeAdapter<SubClass> {
       fields[4] as String?,
       fields[5] as Rest?,
       fields[6] as String?,
-      (fields[7] as Map).map((dynamic k, dynamic v) =>
-          MapEntry(k as int, (v as List).cast<SubClassLevel>().toSet())),
-      fields[8] as bool,
+      (fields[7] as Map).cast<int, Dice>(),
+      (fields[8] as Map).cast<int, SubClassLevel>(),
+      fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, SubClass obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj._name)
       ..writeByte(1)
@@ -47,10 +47,12 @@ class SubClassAdapter extends TypeAdapter<SubClass> {
       ..writeByte(5)
       ..write(obj._restType)
       ..writeByte(6)
-      ..write(obj._subClassDiceName)
+      ..write(obj._diceName)
       ..writeByte(7)
-      ..write(obj._subClassSkills)
+      ..write(obj._dice)
       ..writeByte(8)
+      ..write(obj._subClassSkills)
+      ..writeByte(9)
       ..write(obj._protected);
   }
 

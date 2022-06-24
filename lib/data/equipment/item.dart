@@ -1,5 +1,7 @@
 import 'package:dnd_companion/data/skill/proficiency.dart';
 import 'package:dnd_companion/data/structures/characteristic.dart';
+import 'package:dnd_companion/data/structures/rare_type.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 part 'item.g.dart';
@@ -12,30 +14,36 @@ class Item {
   @HiveField(1)
   String _description;
   @HiveField(2)
-  int _weight;
+  String _image;
   @HiveField(3)
-  int _cost;
+  int _weight;
   @HiveField(4)
-  Set<Proficiency> _proficiencies;
+  double _cost;
   @HiveField(5)
-  bool _equipment;
+  RareType _rare;
   @HiveField(6)
-  Map<Characteristic, int> _additionalStats;
+  Set<Proficiency> _proficiencies;
   @HiveField(7)
-  Map<Characteristic, int> _forcedStats;
+  bool _equipment;
   @HiveField(8)
-  Set<String> _notes; // TODO реализовать владение
+  Map<Characteristic, int> _additionalStats;
   @HiveField(9)
+  Map<Characteristic, int> _forcedStats;
+  @HiveField(10)
+  Set<String> _notes;
+  @HiveField(11)
   bool _protected;
 
-  Item(this._name, this._description, this._weight, this._cost, this._proficiencies, this._equipment, this._additionalStats, this._forcedStats, this._notes,
+  Item(this._name, this._description, this._image, this._weight, this._cost, this._rare, this._proficiencies, this._equipment, this._additionalStats, this._forcedStats, this._notes,
       this._protected);
 
   Item.smart(
       {required String name,
       String description = "",
+      String image = "question-mark.png",
       int weight = 0,
-      int cost = 0,
+      double cost = 0,
+      RareType? rare,
       Set<Proficiency>? proficiencies,
       bool equipment = false,
       Map<Characteristic, int>? additionalStats,
@@ -44,8 +52,10 @@ class Item {
       bool protected = false})
       : _name = name,
         _description = description,
+        _image = image,
         _weight = weight,
-        _cost = cost,
+        _cost = double.parse(cost.toStringAsFixed(2)),
+        _rare = rare ?? RareType.common,
         _proficiencies = proficiencies ?? {},
         _equipment = equipment,
         _additionalStats = additionalStats ?? {},
@@ -63,12 +73,36 @@ class Item {
   //}
 
   static Future<void> unpack(Box<Item> items, Box<Proficiency> proficiencies) async {
-    items.put("tasha", Item.smart(name: "маленькие пирожные и перо, которым нужно махать в воздухе"));
-    items.put("mage armor", Item.smart(name: "кусочек выделанной кожи"));
-    items.put("invisibility", Item.smart(name: "ресница в смоле"));
-    items.put("rope trick", Item.smart(name: "экстракт зерна и петля из пергамента"));
-    items.put("fireball", Item.smart(name: "крошечный шарик из гуано летучей мыши и серы"));
-    return;
+    await items.put("tasha", Item.smart(name: "Маленькие пирожные и перо, которым нужно махать в воздухе"));
+    await items.put("mage armor", Item.smart(name: "Кусочек выделанной кожи"));
+    await items.put("invisibility", Item.smart(name: "Ресница в смоле"));
+    await items.put("rope trick", Item.smart(name: "Экстракт зерна и петля из пергамента"));
+    await items.put("fireball", Item.smart(name: "Крошечный шарик из гуано летучей мыши и серы"));
+    await items.put("city map", Item.smart(name: "Карта города"));
+    await items.put("pet mouse", Item.smart(name: "Ручная мышь"));
+    await items.put("token", Item.smart(name: "Безделушка"));
+    await items.put("silk rope", Item.smart(name: "Шёлковая верёвка"));
+    await items.put("lucky charm", Item.smart(name: "Талисман"));
+    await items.put("scroll case", Item.smart(name: "Контейнер для свитков"));
+    await items.put("winter blanket", Item.smart(name: "Тёплое одеяло"));
+    await items.put("herbalism kit", Item.smart(name: "Набор травника"));
+    await items.put("holy symbol", Item.smart(name: "Священный символ"));
+    await items.put("prayer book", Item.smart(name: "Молитвенник"));
+    await items.put("incense stick", Item.smart(name: "Палочка благовоний"));
+    await items.put("insignia of rank", Item.smart(name: "Знак отличия"));
+    await items.put("enemy trophy", Item.smart(name: "Трофей врага"));
+    await items.put("bone dice", Item.smart(name: "Набор игровых костей"));
+    await items.put("bolt", Item.smart(name: "Болт"));
+    await items.put("component pouch", Item.smart(name: "мешочек с компонентами", image: "component-pouch.png"));
+    await items.put("spellbook", Item.smart(name: "Книга заклинаний", image: "spellbook.png"));
+  }
+
+  AssetImage getImage(){
+    return AssetImage("resources/icons/items/" + _image);
+  }
+
+  String getType(){
+    return "предмет";
   }
 
   bool get protected => _protected;
@@ -95,9 +129,9 @@ class Item {
     _notes.remove(value);
   }
 
-  int get cost => _cost;
+  double get cost => _cost;
 
-  set cost(int value) {
+  set cost(double value) {
     if (_protected) throw Exception("Denied access to protected data.");
     _cost = value;
   }
@@ -147,6 +181,18 @@ class Item {
     _equipment = value;
   }
 
+  String get image => _image;
+
+  set image(String value) {
+    _image = value;
+  }
+
+  RareType get rare => _rare;
+
+  set rare(RareType value) {
+    _rare = value;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -154,8 +200,10 @@ class Item {
           runtimeType == other.runtimeType &&
           _name == other._name &&
           _description == other._description &&
+          _image == other._image &&
           _weight == other._weight &&
           _cost == other._cost &&
+          _rare == other._rare &&
           _proficiencies == other._proficiencies &&
           _equipment == other._equipment &&
           _additionalStats == other._additionalStats &&
@@ -167,8 +215,10 @@ class Item {
   int get hashCode =>
       _name.hashCode ^
       _description.hashCode ^
+      _image.hashCode ^
       _weight.hashCode ^
       _cost.hashCode ^
+      _rare.hashCode ^
       _proficiencies.hashCode ^
       _equipment.hashCode ^
       _additionalStats.hashCode ^

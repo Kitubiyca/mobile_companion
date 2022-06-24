@@ -6,7 +6,8 @@ class DiceAdapter extends TypeAdapter<Dice>{
   Dice read(BinaryReader reader) {
     final int count = reader.readInt();
     final int max = reader.readInt();
-    return Dice(count, max);
+    final int add = reader.readInt();
+    return Dice(count, max, add);
   }
 
   @override
@@ -16,6 +17,7 @@ class DiceAdapter extends TypeAdapter<Dice>{
   void write(BinaryWriter writer, Dice obj) {
     writer.writeInt(obj.count);
     writer.writeInt(obj.max);
+    writer.writeInt(obj.add);
   }
 
 }

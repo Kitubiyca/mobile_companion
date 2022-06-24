@@ -2,8 +2,10 @@ import 'package:hive/hive.dart';
 
 part 'weapon_feature.g.dart';
 
-@HiveType(typeId: 9)
+@HiveType(typeId: 11)
 enum WeaponFeature{
+
+  //TODO добавить боеприпасы
 
   @HiveField(0)
   heavy, // disadvantage for small creatures
@@ -19,5 +21,22 @@ enum WeaponFeature{
   fencing, // finesse // uses str or dex for attack and damage roll
   @HiveField(6)
   reloading, // only one attack at turn // needs to be reloaded
+
+}
+
+extension WeaponFeatureExtension on WeaponFeature{
+
+  String getText(){
+    switch(this){
+      case WeaponFeature.heavy: return "тяжёлое";
+      case WeaponFeature.light: return "лёгкое";
+      case WeaponFeature.twoHanded: return "двуручное";
+      case WeaponFeature.reach: return "досягаемость";
+      case WeaponFeature.special: return "особое";
+      case WeaponFeature.fencing: return "фехтовальное";
+      case WeaponFeature.reloading: return "перезаряжаемое";
+      default: return "ошибка";
+    }
+  }
 
 }

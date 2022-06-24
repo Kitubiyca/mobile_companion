@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 
 part 'stats.g.dart';
 
-@HiveType(typeId: 8)
+@HiveType(typeId: 10)
 enum Stats {
 
   @HiveField(0)

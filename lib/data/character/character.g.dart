@@ -20,7 +20,7 @@ class CharacterAdapter extends TypeAdapter<Character> {
       fields[0] as String,
       (fields[1] as Map).cast<Class, int>(),
       fields[2] as Background,
-      fields[3] as SubRace,
+      fields[3] as Race,
       fields[4] as String,
       fields[5] as int,
       fields[6] as int,
@@ -28,33 +28,37 @@ class CharacterAdapter extends TypeAdapter<Character> {
       fields[8] as int,
       fields[9] as int,
       fields[10] as int,
-      (fields[11] as Map).cast<Characteristic, int>(),
+      fields[11] as int,
       (fields[12] as Map).cast<Characteristic, int>(),
       (fields[13] as Map).cast<Characteristic, int>(),
       (fields[14] as Map).cast<Characteristic, int>(),
-      fields[15] as int,
-      (fields[16] as Map).map((dynamic k, dynamic v) => MapEntry(
+      (fields[15] as Map).cast<Characteristic, int>(),
+      fields[16] as int,
+      (fields[17] as Map).map((dynamic k, dynamic v) => MapEntry(
           k as String?,
           (v as Map).map((dynamic k, dynamic v) =>
               MapEntry(k as String?, (v as Map).cast<int, int>())))),
-      (fields[17] as List).cast<SkillCheck>().toSet(),
-      (fields[18] as List).cast<Proficiency>().toSet(),
-      (fields[19] as List).cast<Feat>().toSet(),
-      (fields[20] as Map).cast<Skill, int?>(),
-      (fields[21] as List).cast<Spell>().toSet(),
+      (fields[18] as List).cast<SkillCheck>().toSet(),
+      (fields[19] as List).cast<Proficiency>().toSet(),
+      (fields[20] as List).cast<Feat>().toSet(),
+      (fields[21] as Map).cast<Skill, int?>(),
       (fields[22] as List).cast<Spell>().toSet(),
       (fields[23] as List).cast<Spell>().toSet(),
-      (fields[24] as Map).cast<Item, int>(),
-      (fields[25] as Map).cast<Item, int>(),
-      (fields[26] as List).cast<WeaponHotkey>().toSet(),
-      fields[27] as bool,
+      (fields[24] as List).cast<Spell>().toSet(),
+      fields[25] as double,
+      (fields[26] as Map).cast<Item, int>(),
+      (fields[27] as List).cast<Item>(),
+      (fields[28] as List).cast<WeaponHotkey>().toSet(),
+      fields[29] as bool,
+      fields[30] as String,
+      (fields[31] as List).cast<int>()
     );
   }
 
   @override
   void write(BinaryWriter writer, Character obj) {
     writer
-      ..writeByte(28)
+      ..writeByte(32)
       ..writeByte(0)
       ..write(obj._name)
       ..writeByte(1)
@@ -66,51 +70,59 @@ class CharacterAdapter extends TypeAdapter<Character> {
       ..writeByte(4)
       ..write(obj._alignment)
       ..writeByte(5)
-      ..write(obj._experience)
+      ..write(obj._level)
       ..writeByte(6)
-      ..write(obj._maxHits)
+      ..write(obj._experience)
       ..writeByte(7)
-      ..write(obj._hits)
+      ..write(obj._maxHits)
       ..writeByte(8)
-      ..write(obj._additionalHits)
+      ..write(obj._hits)
       ..writeByte(9)
-      ..write(obj._deathRolls)
+      ..write(obj._additionalHits)
       ..writeByte(10)
-      ..write(obj._lifeRolls)
+      ..write(obj._deathRolls)
       ..writeByte(11)
-      ..write(obj._stats)
+      ..write(obj._lifeRolls)
       ..writeByte(12)
-      ..write(obj._temporaryStatsAdd)
+      ..write(obj._stats)
       ..writeByte(13)
-      ..write(obj._temporaryStatsForced)
+      ..write(obj._temporaryStatsAdd)
       ..writeByte(14)
-      ..write(obj._maxStats)
+      ..write(obj._temporaryStatsForced)
       ..writeByte(15)
-      ..write(obj._additionalPoints)
+      ..write(obj._maxStats)
       ..writeByte(16)
-      ..write(obj._spellCount)
+      ..write(obj._additionalPoints)
       ..writeByte(17)
-      ..write(obj._skillChecks.toList())
+      ..write(obj._spellCount)
       ..writeByte(18)
-      ..write(obj._proficiencies.toList())
+      ..write(obj._skillChecks.toList())
       ..writeByte(19)
-      ..write(obj._feats.toList())
+      ..write(obj._proficiencies.toList())
       ..writeByte(20)
-      ..write(obj._knownSkills)
+      ..write(obj._feats.toList())
       ..writeByte(21)
-      ..write(obj._knownSpells.toList())
+      ..write(obj._knownSkills)
       ..writeByte(22)
-      ..write(obj._preparedSpells.toList())
+      ..write(obj._knownSpells.toList())
       ..writeByte(23)
-      ..write(obj._alwaysPreparedSpells.toList())
+      ..write(obj._preparedSpells.toList())
       ..writeByte(24)
-      ..write(obj._inventory)
+      ..write(obj._alwaysPreparedSpells.toList())
       ..writeByte(25)
-      ..write(obj._equippedItems)
+      ..write(obj._coins)
       ..writeByte(26)
-      ..write(obj._weaponHotkeys.toList())
+      ..write(obj._inventory)
       ..writeByte(27)
-      ..write(obj._inspiration);
+      ..write(obj._equippedItems)
+      ..writeByte(28)
+      ..write(obj._weaponHotkeys.toList())
+      ..writeByte(29)
+      ..write(obj._inspiration)
+      ..writeByte(30)
+      ..write(obj._image)
+      ..writeByte(31)
+      ..write(obj._spellSlots);
   }
 
   @override

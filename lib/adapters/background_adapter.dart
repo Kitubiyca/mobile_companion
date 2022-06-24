@@ -14,10 +14,11 @@ class BackgroundAdapter extends TypeAdapter<Background>{
     final String skill = reader.readString();
     final Set<SkillCheck> skillChecks = Set.castFrom(reader.readList().toSet());
     final Set<Proficiency> proficiencies = Set.castFrom(reader.readList().toSet());
-    final Set<Item> items = Set.castFrom(reader.readList().toSet());
+    final double coins = reader.readDouble();
+    final Map<Item, int> items = Map.castFrom(reader.readMap());
     final Set<String> languages = reader.readStringList().toSet();
     final bool protected = reader.readBool();
-    return Background(name, description, skillName, skill, skillChecks, proficiencies, items, languages, protected);
+    return Background(name, description, skillName, skill, skillChecks, proficiencies, coins, items, languages, protected);
   }
 
   @override
@@ -31,7 +32,8 @@ class BackgroundAdapter extends TypeAdapter<Background>{
     writer.writeString(obj.skill);
     writer.writeList(obj.skillChecks.toList());
     writer.writeList(obj.proficiencies.toList());
-    writer.writeList(obj.items.toList());
+    writer.writeDouble(obj.coins);
+    writer.writeMap(obj.items);
     writer.writeStringList(obj.languages.toList());
     writer.writeBool(obj.protected);
   }

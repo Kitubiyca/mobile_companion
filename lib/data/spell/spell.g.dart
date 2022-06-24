@@ -22,29 +22,29 @@ class SpellAdapter extends TypeAdapter<Spell> {
       fields[2] as String,
       fields[3] as String,
       (fields[4] as List).cast<String>(),
-      fields[5] as int,
+      fields[5] as String,
       fields[6] as bool,
       fields[7] as bool,
-      (fields[8] as Map).cast<Item, int>(),
+      (fields[8] as Map).cast<Item, bool>(),
       fields[9] as bool,
       fields[10] as String,
       fields[11] as bool,
       fields[12] as bool,
       fields[13] as int,
-      fields[14] as String,
+      fields[14] as Characteristic,
       fields[15] as bool,
-      fields[16] as DamageType,
-      (fields[17] as Map).map((dynamic k, dynamic v) =>
-          MapEntry(k as int, (v as List).cast<Dice>())),
-      fields[18] as int,
-      fields[19] as bool,
+      (fields[16] as Map).map((dynamic k, dynamic v) => MapEntry(
+          k as int,
+          (v as Map).map((dynamic k, dynamic v) =>
+              MapEntry(k as DamageType, (v as List).cast<Dice>())))),
+      fields[17] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Spell obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj._name)
       ..writeByte(1)
@@ -78,12 +78,8 @@ class SpellAdapter extends TypeAdapter<Spell> {
       ..writeByte(15)
       ..write(obj._armorPenetration)
       ..writeByte(16)
-      ..write(obj._damageType)
-      ..writeByte(17)
       ..write(obj._impact)
-      ..writeByte(18)
-      ..write(obj._constImpact)
-      ..writeByte(19)
+      ..writeByte(17)
       ..write(obj._protected);
   }
 

@@ -19,40 +19,46 @@ class ItemAdapter extends TypeAdapter<Item> {
     return Item(
       fields[0] as String,
       fields[1] as String,
-      fields[2] as int,
+      fields[2] as String,
       fields[3] as int,
-      (fields[4] as List).cast<Proficiency>().toSet(),
-      fields[5] as bool,
-      (fields[6] as Map).cast<Characteristic, int>(),
-      (fields[7] as Map).cast<Characteristic, int>(),
-      (fields[8] as List).cast<String>().toSet(),
-      fields[9] as bool,
+      fields[4] as double,
+      fields[5] as RareType,
+      (fields[6] as List).cast<Proficiency>().toSet(),
+      fields[7] as bool,
+      (fields[8] as Map).cast<Characteristic, int>(),
+      (fields[9] as Map).cast<Characteristic, int>(),
+      (fields[10] as List).cast<String>().toSet(),
+      fields[11] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Item obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj._name)
       ..writeByte(1)
       ..write(obj._description)
       ..writeByte(2)
-      ..write(obj._weight)
+      ..write(obj._image)
       ..writeByte(3)
-      ..write(obj._cost)
+      ..write(obj._weight)
       ..writeByte(4)
-      ..write(obj._proficiencies.toList())
+      ..write(obj._cost)
       ..writeByte(5)
-      ..write(obj._equipment)
+      ..write(obj._rare)
       ..writeByte(6)
-      ..write(obj._additionalStats)
+      ..write(obj._proficiencies.toList())
       ..writeByte(7)
-      ..write(obj._forcedStats)
+      ..write(obj._equipment)
       ..writeByte(8)
-      ..write(obj._notes.toList())
+      ..write(obj._additionalStats)
       ..writeByte(9)
+      ..write(obj._forcedStats)
+      ..writeByte(10)
+      ..write(obj._notes.toList())
+      ..writeByte(11)
       ..write(obj._protected);
   }
 

@@ -42,7 +42,6 @@ class SkillCheck { // Навык
     await skillChecks.put("stealth", SkillCheck("Скрытность", Characteristic.dexterity, true));
     await skillChecks.put("persuasion", SkillCheck("Убеждение", Characteristic.charisma, true));
     await skillChecks.put("animal handling", SkillCheck("Уход за животными", Characteristic.wisdom, true));
-    return;
   }
 
   bool get protected => _protected;

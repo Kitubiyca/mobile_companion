@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'spellcaster_type.g.dart';
 
-@HiveType(typeId: 7)
+@HiveType(typeId: 9)
 enum SpellcasterType{
   @HiveField(0)
   full,

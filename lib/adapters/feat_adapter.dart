@@ -1,3 +1,4 @@
+import 'package:dnd_companion/data/structures/stats.dart';
 import 'package:hive/hive.dart';
 import '../data/skill/feat.dart';
 
@@ -7,7 +8,7 @@ class FeatAdapter extends TypeAdapter<Feat>{
     final String name = reader.readString();
     final List<String> description = reader.readStringList();
     final String requirement = reader.readString();
-    final Map<String, int> benefits = Map.castFrom(reader.readMap());
+    final Map<Stats, int> benefits = Map.castFrom(reader.readMap());
     final bool protected = reader.readBool();
     return Feat(name, description, requirement, benefits, protected);
   }

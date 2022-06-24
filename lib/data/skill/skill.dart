@@ -1,8 +1,14 @@
+import 'dart:math';
+
+import 'package:dnd_companion/data/character/character.dart';
+import 'package:dnd_companion/data/character/class/class.dart';
 import 'package:dnd_companion/data/characteristics/damage_type.dart';
 import 'package:dnd_companion/data/dice/dice.dart';
 import 'package:dnd_companion/data/structures/characteristic.dart';
 import 'package:dnd_companion/data/structures/class_dependency.dart';
 import 'package:dnd_companion/data/structures/rest.dart';
+import 'package:dnd_companion/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
 part 'skill.g.dart';
@@ -32,7 +38,7 @@ class Skill {
   @HiveField(7)
   Map<int, Dice>? _diceImpact; // dice impact (heal or damage), depends on level
   @HiveField(8)
-  Map<int, int>? _constImpact; // cost impact instead of dice, depends on level
+  Map<int, int>? _constImpact; // const impact instead of dice, depends on level
   @HiveField(9)
   bool _addClassLevel;
   @HiveField(10)
@@ -45,7 +51,7 @@ class Skill {
   @HiveField(13)
   Set<Characteristic>? _characteristics; // characteristics modifier check
   @HiveField(14)
-  int? _levelMultiplier; // adds class level multiplied by this number
+  double? _levelMultiplier; // adds class level multiplied by this number
 
   //Set<BonusType> _bonusTypes; // TODO возможность сохранения бонуса (многразовость)
 
@@ -85,7 +91,7 @@ class Skill {
       bool castDifficulty = false,
       bool attack = false,
       Set<Characteristic>? characteristics,
-      int? levelMultiplier,
+      double? levelMultiplier,
       bool protected = false})
       : _name = name,
         _description = description,
@@ -104,15 +110,30 @@ class Skill {
         _levelMultiplier = levelMultiplier,
         _protected = protected;
 
+  void use(BuildContext context, Character character, Class? characterClass){
+    Map<String, int> ret = {};
+    if(_diceImpact != null){
+      int index = _diceImpact!.keys.lastWhere((element) => element <= character.level);
+      ret[_diceImpact![index]!.name] = _diceImpact![index]!.roll().first;
+    }
+    if(_constImpact != null){
+      ret["константа"] = _constImpact![_constImpact!.keys.lastWhere((element) => element <= character.level)]!;
+    }
+    if(_addClassLevel && characterClass != null){
+      ret["уровень класса"] = character.characterClass[characterClass]!;
+    }
+    Utils.showAlertRoll(context, _name, ret);
+  }
+
   bool get protected => _protected;
 
   set protected(bool value) {
     _protected = value;
   }
 
-  int? get levelMultiplier => _levelMultiplier;
+  double? get levelMultiplier => _levelMultiplier;
 
-  set levelMultiplier(int? value) {
+  set levelMultiplier(double? value) {
     _levelMultiplier = value;
   }
 
